@@ -22,10 +22,5 @@
     }
   ],
 
-  "routes": [
-    { "pattern": "bitbybit.com", "custom_domain": true },
-    { "pattern": "www.bitbybit.com", "custom_domain": true }
-  ],
-
   "observability": { "enabled": true }
 }
