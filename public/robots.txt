@@ -5,3 +5,40 @@ Disallow: /e/
 Disallow: /p/
 Disallow: /api/
 Sitemap: https://bitibybit.com/sitemap.xml
+
+# AI assistants and their crawlers are welcome on public pages —
+# the same disallows above (/s/, /e/, /p/, /api/) apply to everyone.
+User-agent: GPTBot
+Allow: /
+Disallow: /s/
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /s/
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /s/
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /s/
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /s/
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
