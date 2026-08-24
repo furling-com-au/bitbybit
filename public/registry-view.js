@@ -431,7 +431,7 @@
         "”. Straight in the tank."
       : "The " + done.slot.name.toLowerCase() + " is yours. It's already painted onto the Prado above.";
 
-    const p = BOOT.payment || {};
+    const p = resp.payment || BOOT.payment || {};
     const rows = [
       ["Amount", money(cents)],
       ["Method", p.method],

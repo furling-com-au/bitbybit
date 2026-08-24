@@ -246,6 +246,7 @@ async function claim(request, env) {
   const body = await request.json().catch(() => ({}));
   const row = await getBySlug(env, String(body.slug || ""));
   if (!row || row.tool_type !== "registry") return json({ error: "not found" }, 404);
+  const data = JSON.parse(row.data);
 
   const slotId = String(body.slotId || "");
   if (!SLOT_CENTS.has(slotId))
@@ -269,7 +270,7 @@ async function claim(request, env) {
       return json({ error: "Someone beat you to that one by a whisker." }, 409);
     throw e;
   }
-  return json({ ref, cents }, 201);
+  return json({ ref, cents, payment: data.payment }, 201);
 }
 
 /* The overflow patch: an uncapped extra item so latecomers are
@@ -279,6 +280,7 @@ async function contribute(request, env) {
   const body = await request.json().catch(() => ({}));
   const row = await getBySlug(env, String(body.slug || ""));
   if (!row || row.tool_type !== "registry") return json({ error: "not found" }, 404);
+  const data = JSON.parse(row.data);
 
   const name = clean(body.name, MAX_NAME);
   const message = String(body.message || "").trim().slice(0, MAX_MESSAGE);
@@ -296,7 +298,7 @@ async function contribute(request, env) {
          VALUES (?, ?, ?, ?, ?, ?, 0, ?)`
       ).bind(row.id, slotId, name, message, cents,
         reference(slotId, name), new Date().toISOString()).run();
-      return json({ ref: reference(slotId, name), cents }, 201);
+      return json({ ref: reference(slotId, name), cents, payment: data.payment }, 201);
     } catch (e) {
       if (!/UNIQUE/.test(String(e))) throw e; // astronomically unlikely; try a fresh id
     }
@@ -372,10 +374,13 @@ function shellBody(row, data, { organiser, origin }) {
     coupleNames: data.coupleNames,
     tagline: data.tagline,
     weddingDate: data.weddingDate,
-    payment: data.payment,
+    // Payment details deliberately stay OUT of the public page source.
+    // Guests receive them in the claim/contribute response — you see
+    // how to pay at the moment you've claimed something, not before.
+    hasPayment,
     overflowTitle: data.overflowTitle,
   };
-  if (organiser) boot.editToken = row.edit_token;
+  if (organiser) { boot.editToken = row.edit_token; boot.payment = data.payment; }
 
   const organiserTop = organiser ? `
   <div class="organiser-banner pixel-note">
