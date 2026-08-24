@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to play Werewolf — full rules, roles and moderator script | biti by bit</title>
+<meta name="description" content="The complete rules for Werewolf (and Mafia): setup, the night and day cycle, what every role does, how many werewolves for your player count, a moderator script you can read aloud, and the house-rule arguments settled.">
+<link rel="canonical" href="https://bitibybit.com/secret-role-dealer/werewolf-rules/">
+<meta property="og:title" content="How to play Werewolf — the full rules">
+<meta property="og:description" content="Setup, roles, role counts by player number, a moderator script, and every house-rule argument settled before it starts.">
+<meta property="og:image" content="https://bitibybit.com/art/og-roles.png">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://bitibybit.com/secret-role-dealer/werewolf-rules/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to play Werewolf — the full rules">
+<meta name="twitter:description" content="Setup, roles, role counts by player number, a moderator script, and every house-rule argument settled before it starts.">
+<meta name="twitter:image" content="https://bitibybit.com/art/og-roles.png">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<style>
+  .script { background: var(--paper-2); border: 3px solid var(--line);
+    padding: .9rem 1.1rem; margin: 1.1rem 0; font-family: var(--mono);
+    font-size: .78rem; line-height: 1.8; color: var(--ink-soft); }
+  .script b { color: var(--ink); font-weight: 700; }
+  .callout { background: var(--paper-2); border-left: 6px solid var(--gold);
+    padding: .8rem 1.1rem; margin: 1.2rem 0; font-size: .86rem;
+    line-height: 1.65; color: var(--ink-soft); }
+  .callout strong { color: var(--ink); }
+  .content .table-scroll { margin: 1.3rem 0; }
+  .content .status-table { min-width: 30rem; }
+  .content .status-table td { color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="scanlines" aria-hidden="true"></div>
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="biti by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    biti by bit
+    <span class="beta-badge">beta</span>
+  </a>
+  <nav class="site-nav"><a href="/secret-role-dealer/">the role dealer</a></nav>
+</header>
+
+<main class="wrap page">
+  <p class="kicker">Hidden roles, after dark</p>
+  <h1>How to play Werewolf</h1>
+  <p class="lede">The full rules for Werewolf — which is also Mafia, with
+  different costumes. Setup, the night and day cycle, what each role actually
+  does, how many werewolves you need, and the arguments to settle before
+  anyone closes their eyes.</p>
+
+  <section class="content">
+    <h2>The game in one paragraph</h2>
+    <p>A group of villagers has a werewolf problem. Every night the werewolves
+    quietly eat one villager. Every day the whole village argues about who the
+    werewolves are and votes one person out. The villagers win when every
+    werewolf is dead. The werewolves win when they equal or outnumber
+    everyone else — at that point they can simply out-vote the village, so
+    most groups end it there rather than play the formality out. Only the
+    werewolves know who the werewolves are. Everyone else is guessing, lying,
+    or both.</p>
+    <p>It's a social deduction game, generally credited to Dimitry Davidoff
+    at Moscow State University in 1986 as <em>Mafia</em>, and rethemed with
+    werewolves in the late 1990s. Neither version has an official rulebook,
+    which is why every group swears their house rules are the real ones.</p>
+
+    <h2>What you need</h2>
+    <ul>
+      <li><strong>Seven players minimum.</strong> Under seven and one bad day
+      vote ends it. Eight to twelve is the sweet spot. Above about eighteen
+      you want a confident moderator and a timer.</li>
+      <li><strong>A moderator</strong> — sometimes called the narrator, the
+      storyteller, or God. They run the game and do not play.</li>
+      <li><strong>A way to hand out secret roles.</strong> Playing cards work
+      (red for werewolves), so do folded scraps of paper. Both mean the
+      moderator sees who got what, and someone always drops their card.</li>
+      <li><strong>A circle you can all sit in</strong>, and enough discipline
+      to actually keep your eyes shut.</li>
+    </ul>
+
+    <h2>How many werewolves? Role counts by player number</h2>
+    <p>The working rule is <strong>about one werewolf per four players</strong>,
+    and special villager roles no more than a third of the village. Too few
+    wolves and the village wins on luck; too many and the village never gets
+    a foothold. These are the counts most groups land on:</p>
+    <div class="table-scroll">
+      <table class="status-table">
+        <thead>
+          <tr><th>Players</th><th>Werewolves</th><th>Special villagers</th><th>Plain villagers</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="st-name">6</td><td>1</td><td>Seer</td><td>4</td></tr>
+          <tr><td class="st-name">7</td><td>2</td><td>Seer</td><td>4</td></tr>
+          <tr><td class="st-name">8</td><td>2</td><td>Seer, Doctor</td><td>4</td></tr>
+          <tr><td class="st-name">9</td><td>2</td><td>Seer, Doctor</td><td>5</td></tr>
+          <tr><td class="st-name">10</td><td>2</td><td>Seer, Doctor, Hunter</td><td>5</td></tr>
+          <tr><td class="st-name">11</td><td>3</td><td>Seer, Doctor</td><td>6</td></tr>
+          <tr><td class="st-name">12</td><td>3</td><td>Seer, Doctor, Hunter</td><td>6</td></tr>
+          <tr><td class="st-name">14</td><td>3</td><td>Seer, Doctor, Hunter, Witch</td><td>7</td></tr>
+          <tr><td class="st-name">16</td><td>4</td><td>Seer, Doctor, Hunter, Witch</td><td>8</td></tr>
+          <tr><td class="st-name">18</td><td>4</td><td>Seer, Doctor, Hunter, Witch</td><td>10</td></tr>
+          <tr><td class="st-name">20</td><td>5</td><td>Seer, Doctor, Hunter, Witch</td><td>11</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>First game with a new crowd? Drop the Witch and the Hunter and run
+    wolves, Seer, Doctor, villagers. You can add the toys once everyone knows
+    what a night phase feels like.</p>
+
+    <h2>The night phase</h2>
+    <p>The moderator says the same lines every night, in the same order, at
+    the same speed. Consistency is the whole job — if you speed up when the
+    Seer is awake, people notice. Here is a script you can read straight off
+    the screen:</p>
+    <div class="script">
+      <b>Everybody, close your eyes.</b> Night falls on the village.<br>
+      <b>Werewolves, open your eyes.</b> Look around — these are your fellow
+      wolves. Silently agree on one villager, and point at them.<br>
+      <i>(moderator notes the target)</i><br>
+      <b>Werewolves, close your eyes.</b><br>
+      <b>Seer, open your eyes.</b> Point at one player.<br>
+      <i>(moderator gives a silent thumbs up for werewolf, thumbs down for not)</i><br>
+      <b>Seer, close your eyes.</b><br>
+      <b>Doctor, open your eyes.</b> Point at one player to protect tonight.<br>
+      <b>Doctor, close your eyes.</b><br>
+      <b>Everybody, open your eyes.</b> Last night, <b>[name]</b> was taken.
+      <i>(or: last night, everybody survived)</i>
+    </div>
+    <p>Add a line of thumping on the table or knees during every phase, so the
+    room is never silent — silence is how people count footsteps and work out
+    who's awake. If the Doctor protects the werewolves' target, nobody dies
+    and the moderator announces a quiet night, which is genuinely good drama.</p>
+
+    <h2>The day phase</h2>
+    <p>The village wakes, learns who died, and argues. The dead player says
+    nothing from that moment on — not a hint, not a face, not a knowing sigh.
+    Then the village votes one living player out, and that player is dead too.</p>
+    <p>Older rule sets call this a lynch. A lot of groups now just say
+    "vote out" or "exile", and there's no reason not to; the mechanics don't
+    change. Run the vote one of two ways:</p>
+    <ul>
+      <li><strong>Nominate and second.</strong> Anyone can nominate; a second
+      puts the name on the block. When time is up, vote on each nominee in turn.
+      Slower, more theatre, better for big groups.</li>
+      <li><strong>Simultaneous point.</strong> The moderator counts to three
+      and everyone points at once. Fast, honest, and impossible to bandwagon
+      into at the last second. Best for eight to twelve.</li>
+    </ul>
+    <p>Give the day a hard time limit — five minutes for a small game, eight
+    for a big one. Without a timer, one confident player runs the whole day
+    and the quiet ones never speak.</p>
+
+    <div class="callout"><strong>Deal the roles without the paper cuts.</strong>
+    The <a href="/secret-role-dealer/">secret role dealer</a> gives every player
+    a private link showing only their own role, so nobody sees the moderator's
+    hands and the moderator can play too. Run one free, no signup.</div>
+
+    <h2>The roles, explained</h2>
+    <p>Every one of these is played slightly differently somewhere. What
+    follows is the common version — agree on it out loud before you start.</p>
+    <h3>Werewolf</h3>
+    <p>Wakes each night with the other werewolves and picks one player to kill.
+    By day, pretends to be a villager and votes with enthusiasm. Werewolves
+    know each other from night one. Their real job isn't the killing, it's the
+    talking: a wolf who says nothing all day is a wolf who gets voted out on
+    day two.</p>
+    <h3>Villager</h3>
+    <p>No night power, no information, just a vote and an opinion. This is not
+    a spare role — most of the village is villagers, and the game is won by
+    villagers reading the room. If you're a villager, say things. Silence looks
+    exactly like a wolf hiding.</p>
+    <h3>Seer</h3>
+    <p>Each night, points at one player and learns whether that player is a
+    werewolf. Usually just werewolf-or-not, not the exact role. The Seer's
+    problem is telling the village what they know without getting eaten that
+    same night — which is why experienced Seers sit on their information for
+    a night or two, then dump it all when they're about to die anyway.</p>
+    <h3>Doctor (also Healer, Medic, Bodyguard)</h3>
+    <p>Each night, protects one player from the werewolves. If they guess
+    right, nobody dies. Common variants: may protect themselves once per game,
+    may never protect themselves, or may not protect the same person two
+    nights running. Pick one before the first night.</p>
+    <h3>Hunter</h3>
+    <p>When the Hunter dies — eaten at night or voted out by day — they
+    immediately take one other player down with them. The moderator asks them
+    to point, and that person is dead too. It's the role that most often ends
+    a game, and the reason a village will sometimes vote out a player they
+    suspect of being the Hunter's mate.</p>
+    <h3>Witch</h3>
+    <p>Has two potions, each usable once in the whole game: one heal and one
+    poison. She wakes after the werewolves, is shown who they chose, and may
+    save that person. Separately, she may poison any player, who dies that
+    night. Powerful, and the reason a game with a Witch is usually shorter.</p>
+    <h3>Extras worth knowing</h3>
+    <ul>
+      <li><strong>Cupid</strong> — on night one, links two players as lovers.
+      If one dies the other dies of grief. If the lovers are a wolf and a
+      villager, they win together and against everyone.</li>
+      <li><strong>Tanner (or Fool, or Jester)</strong> — wins outright if the
+      village votes them out, and only then. Chaos in the best way.</li>
+      <li><strong>Little Girl</strong> — may peek during the werewolf phase,
+      but if the moderator catches her, she dies. Divisive. Many groups ban it.</li>
+      <li><strong>Alpha Werewolf</strong> — reads as "not a werewolf" to the
+      Seer. Only add this if your village keeps winning easily.</li>
+    </ul>
+
+    <h2>Mafia is the same game</h2>
+    <p>If half your group learned it as Mafia, you already agree on the rules —
+    only the nouns differ.</p>
+    <div class="table-scroll">
+      <table class="status-table">
+        <thead><tr><th>Werewolf</th><th>Mafia</th></tr></thead>
+        <tbody>
+          <tr><td class="st-name">Werewolf</td><td>Mafioso</td></tr>
+          <tr><td class="st-name">Villager</td><td>Townsperson / Citizen</td></tr>
+          <tr><td class="st-name">Seer</td><td>Detective / Cop</td></tr>
+          <tr><td class="st-name">Doctor</td><td>Doctor / Medic</td></tr>
+          <tr><td class="st-name">Moderator</td><td>Narrator / Game master</td></tr>
+          <tr><td class="st-name">Night kill</td><td>The hit</td></tr>
+          <tr><td class="st-name">Day vote</td><td>The trial</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>How to moderate well</h2>
+    <ul>
+      <li><strong>Write the setup down before you deal.</strong> Wolves, roles,
+      counts. You will forget who the Witch is at 11pm otherwise.</li>
+      <li><strong>Say every line the same way.</strong> Same pace, same volume,
+      same words. Tone is a tell.</li>
+      <li><strong>Keep noise going all night.</strong> Table drumming, a fan, a
+      playlist — anything that hides movement.</li>
+      <li><strong>Never react.</strong> Not to a brilliant read, not to the
+      village voting out the Seer on day one. Especially not then.</li>
+      <li><strong>Narrate the deaths with a bit of colour.</strong> "Found by
+      the well, boots missing" beats "Sam is dead" every time, and it costs
+      nothing.</li>
+      <li><strong>Enforce the dead staying silent</strong>, and give them
+      something to do — hand them the timer, or let them start the next game's
+      setup. Dead players getting bored is how games fall apart.</li>
+      <li><strong>Keep games short.</strong> Twenty minutes is a good game.
+      Two short games beat one long one, because everyone gets a different role.</li>
+    </ul>
+
+    <h2>The house-rule arguments, settled</h2>
+    <p>These are the six fights every group has. There isn't a correct answer
+    to any of them — there's just an answer you agreed on before the deal.</p>
+    <ul>
+      <li><strong>Do you reveal the role of the dead?</strong> Revealing gives
+      the village hard information and speeds games up; hiding makes it much
+      harder for the village and much better for experienced groups. Default
+      to revealing until your village starts winning too often.</li>
+      <li><strong>Is there a kill on night one?</strong> A first-night kill
+      means someone sits out the entire game having done nothing. Skipping it
+      is kinder and costs almost nothing. Many groups run night one as
+      information-only: Seer and Doctor act, wolves just meet each other.</li>
+      <li><strong>What happens on a tied vote?</strong> Three fair options:
+      nobody dies, a straight re-vote between the tied players only, or a
+      coin flip. Nobody-dies is the most common and the most frustrating,
+      which is roughly the right amount of both.</li>
+      <li><strong>Can the village choose not to vote anyone out?</strong>
+      Allowing a no-lynch day protects the village on day one when there's no
+      information at all. Forcing a vote keeps games moving. Big groups tend
+      to force it.</li>
+      <li><strong>Can the Doctor save themselves?</strong> Once per game is the
+      usual compromise. Never is harsher and better for balance. Every night is
+      too strong.</li>
+      <li><strong>Can you claim your role out loud?</strong> Yes — it's legal
+      and it's a real strategy, and it's also how the Seer dies on night two.
+      Wolves fake-claiming Seer is one of the best moves in the game, so a
+      claim is information, not proof.</li>
+    </ul>
+    <div class="callout">Write your house rules on the back of an envelope and
+    leave it on the table. It ends the arguments and it means the person who
+    arrives late can catch up without a lecture.</div>
+
+    <h2>FAQ</h2>
+    <h3>How many players do you need for Werewolf?</h3>
+    <p>Seven is the practical minimum and eight to twelve is the best range.
+    You can run six with one werewolf, but the margin for error is tiny.
+    Above eighteen, use a timer and a confident moderator.</p>
+    <h3>Is Mafia the same game as Werewolf?</h3>
+    <p>Yes. Same rules, different names — werewolves are the mafia, the Seer is
+    the detective, and the moderator is the narrator. Mafia came first;
+    Werewolf is the retheme that spread through parties and camps.</p>
+    <h3>How many werewolves should there be?</h3>
+    <p>Roughly one werewolf per four players, so two wolves in an eight-to-ten
+    player game and three in eleven to thirteen. Fewer makes the game a
+    formality for the village; more and the village never gets traction.</p>
+    <h3>Can the moderator play?</h3>
+    <p>Not in the paper version — the moderator sees every role. If you deal
+    the roles so that nobody can see the whole board, the moderator can hold a
+    role like anyone else and just read the script honestly.</p>
+    <h3>Should dead players reveal their role?</h3>
+    <p>It's a house rule. Revealing gives the village real information and
+    shortens games, which suits new groups. Hiding roles makes the game much
+    harder for the village and is better once everyone knows what they're doing.</p>
+    <h3>Can the Doctor save themselves?</h3>
+    <p>Also a house rule. The common compromise is once per game. Some groups
+    say never, which is harder on the Doctor but better balanced. Decide before
+    the first night, not after the Doctor dies.</p>
+
+    <h2>Run one tonight</h2>
+    <p>You don't need anything but a group and a script — the rules above are
+    the whole game. If you'd rather not cut up bits of paper, the
+    <a href="/secret-role-dealer/">secret role dealer</a> deals the roles for
+    you: type the roles (or hit a preset for your player count), share one
+    link, and each person taps their name to see only their own role on their
+    own phone. It's free, there's no signup, and because nobody has to hold
+    the cards, the moderator can play too.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
+    small free tools for groups. No tracking, no ads.</p>
+    <p class="foot-links">
+      <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
+    </p>
+  </footer>
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "How many players do you need for Werewolf?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Seven is the practical minimum and eight to twelve is the best range. You can run six with one werewolf, but the margin for error is tiny. Above eighteen, use a timer and a confident moderator."}},
+    {"@type": "Question", "name": "Is Mafia the same game as Werewolf?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Same rules, different names - werewolves are the mafia, the Seer is the detective, and the moderator is the narrator. Mafia came first; Werewolf is the retheme that spread through parties and camps."}},
+    {"@type": "Question", "name": "How many werewolves should there be?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Roughly one werewolf per four players, so two wolves in an eight to ten player game and three in eleven to thirteen. Fewer makes the game a formality for the village; more and the village never gets traction."}},
+    {"@type": "Question", "name": "Can the moderator play?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Not in the paper version, because the moderator sees every role. If the roles are dealt so nobody can see the whole board, the moderator can hold a role like anyone else and simply read the script honestly."}},
+    {"@type": "Question", "name": "Should dead players reveal their role?",
+     "acceptedAnswer": {"@type": "Answer", "text": "It is a house rule. Revealing gives the village real information and shortens games, which suits new groups. Hiding roles makes the game much harder for the village and is better once everyone knows what they are doing."}},
+    {"@type": "Question", "name": "Can the Doctor save themselves?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Also a house rule. The common compromise is once per game. Some groups say never, which is harder on the Doctor but better balanced. Decide before the first night, not after the Doctor dies."}}
+  ]
+}
+</script>
+<!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
+     Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,
+     the pages people share with their group. What their friends do in a sweep
+     or a meal train is none of our business. Token: Cloudflare dashboard →
+     Web Analytics → Add a site → copy the token. -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "REPLACE_WITH_CF_WEB_ANALYTICS_TOKEN"}'></script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to seed a tournament bracket — byes, formats and timing | biti by bit</title>
+<meta name="description" content="How tournament seeding actually works: why brackets are powers of two, how byes are allocated, standard seed pairing, random draw vs ranked vs snake seeding, single vs double elimination vs round robin, and how long each one really takes.">
+<link rel="canonical" href="https://bitibybit.com/tournament-bracket/how-to-seed/">
+<meta property="og:title" content="How to seed a tournament bracket">
+<meta property="og:description" content="Byes, seed pairing, random vs ranked draws, and how long your format will actually take.">
+<meta property="og:image" content="https://bitibybit.com/art/og-bracket.png">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://bitibybit.com/tournament-bracket/how-to-seed/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to seed a tournament bracket">
+<meta name="twitter:description" content="Byes, seed pairing, random vs ranked draws, and how long your format will actually take.">
+<meta name="twitter:image" content="https://bitibybit.com/art/og-bracket.png">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<style>
+  .callout { background: var(--paper-2); border-left: 6px solid var(--gold);
+    padding: .8rem 1.1rem; margin: 1.2rem 0; font-size: .86rem;
+    line-height: 1.65; color: var(--ink-soft); }
+  .callout strong { color: var(--ink); }
+  .pairs { background: var(--paper-2); border: 3px solid var(--line);
+    padding: .9rem 1.1rem; margin: 1.1rem 0; font-family: var(--mono);
+    font-size: .78rem; line-height: 1.9; color: var(--ink-soft);
+    overflow-x: auto; white-space: nowrap; }
+  .pairs b { color: var(--ink); font-weight: 700; }
+  .content .table-scroll { margin: 1.3rem 0; }
+  .content .status-table { min-width: 34rem; }
+  .content .status-table td { color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="scanlines" aria-hidden="true"></div>
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="biti by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    biti by bit
+    <span class="beta-badge">beta</span>
+  </a>
+  <nav class="site-nav"><a href="/tournament-bracket/">the bracket maker</a></nav>
+</header>
+
+<main class="wrap page">
+  <p class="kicker">Draws, byes and the maths of a Saturday</p>
+  <h1>How to seed a tournament bracket</h1>
+  <p class="lede">Why brackets come in powers of two, where the byes go and
+  why, the three ways to seed a draw, and an honest estimate of how long your
+  format will take before somebody has to leave for dinner.</p>
+
+  <section class="content">
+    <h2>Why brackets are powers of two</h2>
+    <p>A single-elimination bracket halves the field every round: sixteen
+    become eight, eight become four, four become two, two become one. That
+    only works cleanly if you start at a number you can keep halving —
+    2, 4, 8, 16, 32, 64. Anything else leaves a player standing around with
+    nobody to play.</p>
+    <p>So the bracket doesn't shrink to fit your ten entrants; it grows to
+    sixteen and leaves six slots empty. Those empty slots are the byes.</p>
+    <p>The number of rounds is just how many times you halve: a bracket of 8
+    is three rounds, 16 is four, 32 is five, 64 is six. That's worth knowing
+    early, because rounds — not games — are what set the minimum length of
+    your day.</p>
+
+    <h2>How byes work</h2>
+    <p>A bye is a free pass through round one. It isn't a game, it isn't a
+    walkover, and it doesn't get recorded as a win against anybody. The
+    player simply appears in round two.</p>
+    <p>The arithmetic is short:</p>
+    <ul>
+      <li><strong>Bracket size</strong> = the next power of two at or above
+      your entrant count.</li>
+      <li><strong>Byes</strong> = bracket size − entrants.</li>
+      <li>Ten entrants → bracket of 16 → 6 byes. Twelve entrants → bracket of
+      16 → 4 byes. Six entrants → bracket of 8 → 2 byes.</li>
+    </ul>
+    <p>Two things matter about where they land. First, <strong>byes go to the
+    top seeds</strong>: seed 1 gets the first bye, seed 2 the second, and so
+    on. That's not favouritism for its own sake — it's the point of seeding.
+    A ranked draw is a promise that the best players don't knock each other
+    out early, and a bye is the strongest version of that promise. Second,
+    <strong>byes must be spread across the draw</strong>, never stacked in one
+    half, or one side of the bracket walks to the semi-final while the other
+    fights through a full round.</p>
+    <p>If you're running a random draw instead of a ranked one, hand the byes
+    out at random too — and say so out loud before you draw, because
+    otherwise the person who drew one gets accused of arranging it.</p>
+
+    <h2>Standard seed pairing</h2>
+    <p>Once you've got seeds, the pairing isn't a matter of taste. The rule is
+    that every first-round pair adds up to <strong>bracket size + 1</strong>,
+    and the halves are arranged so 1 and 2 can only meet in the final, 1 and 4
+    only in the semi, and so on. For a bracket of 16, top to bottom:</p>
+    <div class="pairs">
+      <b>1 v 16</b> &nbsp; <b>8 v 9</b> &nbsp; <b>5 v 12</b> &nbsp; <b>4 v 13</b><br>
+      <b>3 v 14</b> &nbsp; <b>6 v 11</b> &nbsp; <b>7 v 10</b> &nbsp; <b>2 v 15</b>
+    </div>
+    <p>Every pair sums to 17. For a bracket of 8 it's 1v8, 4v5, 3v6, 2v7 —
+    each summing to 9. For a bracket of 4, 1v4 and 2v3. With twelve entrants
+    in a sixteen bracket, seeds 13 to 16 don't exist, so seeds 1 to 4 have no
+    round-one opponent: that's your four byes, already correctly spread.</p>
+
+    <h2>Three ways to seed</h2>
+    <h3>Random draw</h3>
+    <p>Everyone goes in a hat. Fastest, needs no rankings, and nobody can
+    complain about the committee, because there wasn't one. The cost is that
+    the two best players might meet in round one and the final might be a
+    mismatch. For an office ping-pong ladder or a backyard comp among friends,
+    that cost is usually worth paying — random is socially cheap, and the story
+    of the round-one blockbuster is half the fun.</p>
+    <h3>Ranked seeding</h3>
+    <p>Order the field best to worst and use the pairing above. Use it when you
+    have something real to rank on: last term's ladder, a club rating,
+    head-to-head history. Ranked draws protect the final and reward form. They
+    also mean the bottom seed opens against the champion, which is either a
+    great yarn or a miserable four minutes depending on the person.</p>
+    <p>No rankings? Two honest shortcuts. Ask everyone to self-rate out of five
+    and sort on that — people are surprisingly accurate about their own ability
+    when nothing's at stake. Or seed only the top few you're confident about,
+    put those at the far corners of the draw, and randomise the rest.</p>
+    <h3>Snake (serpentine) seeding</h3>
+    <p>This one's for pools, not brackets. To split sixteen players into four
+    even pools, deal seeds down and back like a snake draft:</p>
+    <div class="pairs">
+      Pool A &nbsp; <b>1</b> &nbsp; <b>8</b> &nbsp; <b>9</b> &nbsp; <b>16</b><br>
+      Pool B &nbsp; <b>2</b> &nbsp; <b>7</b> &nbsp; <b>10</b> &nbsp; <b>15</b><br>
+      Pool C &nbsp; <b>3</b> &nbsp; <b>6</b> &nbsp; <b>11</b> &nbsp; <b>14</b><br>
+      Pool D &nbsp; <b>4</b> &nbsp; <b>5</b> &nbsp; <b>12</b> &nbsp; <b>13</b>
+    </div>
+    <p>Every pool adds up to 34, which is the point: no pool of death, no pool
+    of doom. The same snake is how you split a field into balanced teams.</p>
+    <div class="callout">One more seeding convention worth borrowing:
+    <strong>separate the obvious pairs.</strong> Housemates, doubles partners,
+    the two people from the same team — put them in opposite halves so they
+    meet late or not at all. It costs nothing and it kills the "why do I have
+    to play my own brother first up" complaint before it starts.</div>
+
+    <h2>Which format for your group</h2>
+    <p>The format decides two things: how many games get played, and how many
+    people go home after twenty minutes. Pick with both in mind.</p>
+    <ul>
+      <li><strong>Single elimination.</strong> One loss and you're out.
+      Shortest format by a distance, and the only one that reliably fits a
+      lunch hour. The flaw is obvious: half your field plays exactly one game.
+      Best when time is tight or the field is large.</li>
+      <li><strong>Double elimination.</strong> You need two losses to go home,
+      so there's a winners' bracket and a losers' bracket. Roughly twice the
+      games, much fairer to someone who had one bad start, and considerably
+      harder to run on a whiteboard. Best for eight to sixteen entrants when
+      the result actually matters.</li>
+      <li><strong>Round robin.</strong> Everyone plays everyone. The fairest
+      result there is, and completely impractical past about eight entrants —
+      the game count grows on the square. Best for a small, serious field.</li>
+      <li><strong>Pools then a knockout.</strong> Split into pools of three or
+      four, everyone plays a few, the top one or two from each pool go into a
+      bracket. This is what most well-run one-day comps do, and it's usually
+      the right answer: everybody gets a guaranteed handful of games, and the
+      day still ends with a final.</li>
+      <li><strong>Add a plate.</strong> Whatever the main format, running a
+      second bracket for the round-one losers gives everyone a second game for
+      almost no extra time. Very dignified.</li>
+    </ul>
+
+    <h2>How many games, and how long</h2>
+    <p>Single elimination is always <strong>entrants − 1</strong> games,
+    because every game eliminates exactly one player and you need to eliminate
+    all but one. Round robin is <strong>n × (n−1) ÷ 2</strong>. Double
+    elimination is about <strong>2n − 2</strong>, plus one more if you play a
+    reset final when the winners'-bracket leader loses once.</p>
+    <div class="table-scroll">
+      <table class="status-table">
+        <thead>
+          <tr><th>Entrants</th><th>Bracket</th><th>Byes</th><th>Rounds</th><th>Single elim</th><th>Double elim</th><th>Round robin</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="st-name">4</td><td>4</td><td>0</td><td>2</td><td>3</td><td>6</td><td>6</td></tr>
+          <tr><td class="st-name">5</td><td>8</td><td>3</td><td>3</td><td>4</td><td>8</td><td>10</td></tr>
+          <tr><td class="st-name">6</td><td>8</td><td>2</td><td>3</td><td>5</td><td>10</td><td>15</td></tr>
+          <tr><td class="st-name">8</td><td>8</td><td>0</td><td>3</td><td>7</td><td>14</td><td>28</td></tr>
+          <tr><td class="st-name">10</td><td>16</td><td>6</td><td>4</td><td>9</td><td>18</td><td>45</td></tr>
+          <tr><td class="st-name">12</td><td>16</td><td>4</td><td>4</td><td>11</td><td>22</td><td>66</td></tr>
+          <tr><td class="st-name">16</td><td>16</td><td>0</td><td>4</td><td>15</td><td>30</td><td>120</td></tr>
+          <tr><td class="st-name">24</td><td>32</td><td>8</td><td>5</td><td>23</td><td>46</td><td>276</td></tr>
+          <tr><td class="st-name">32</td><td>32</td><td>0</td><td>5</td><td>31</td><td>62</td><td>496</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Now the wall clock. Take your realistic game length including
+    changeover — for office ping pong, best of three to 11 is about ten
+    minutes by the time people stop chatting; a FIFA match is fifteen; backyard
+    cricket, however long it takes to find the ball.</p>
+    <ul>
+      <li><strong>One table:</strong> total time ≈ games × game length.
+      Twelve entrants, single elimination, ten minutes a game = 11 games ≈
+      just under two hours.</li>
+      <li><strong>Several tables:</strong> you can only parallelise within a
+      round, and rounds get smaller. Two tables on that same comp gets you to
+      roughly an hour and a quarter, not one hour — the semi-finals and final
+      can't be split.</li>
+      <li><strong>The floor:</strong> even with infinite tables, you can't beat
+      <strong>rounds × game length</strong>. A bracket of 16 is four rounds, so
+      forty minutes minimum at ten minutes a game. Plan the day around that
+      number and you'll never be the organiser explaining why the final is at
+      nine at night.</li>
+    </ul>
+    <p>And the reason round robin quietly eats weekends: twelve entrants is 66
+    games. On one table at ten minutes each, that's eleven hours. Pools of four
+    plus a knockout gets you a comparable result in an afternoon.</p>
+
+    <div class="callout"><strong>Don't draw it by hand.</strong> The
+    <a href="/tournament-bracket/">bracket maker</a> takes 2 to 64 names, pads
+    to the right power of two, spreads the byes properly, and gives you one
+    link the whole group can watch fill in. Run one free, no signup.</div>
+
+    <h2>Six things that go wrong</h2>
+    <ul>
+      <li><strong>Seeding after people have arrived.</strong> Do the draw
+      before anyone shows up, or in front of everyone. Never in between.</li>
+      <li><strong>Byes stacked in one half.</strong> Follow the pairing table
+      and this can't happen. Freehand it on a whiteboard and it will.</li>
+      <li><strong>Not writing down the format.</strong> Best of three or best
+      of five? First to 11 or first to 21? Decide once, announce it, don't
+      revisit it at the semi-final.</li>
+      <li><strong>No plan for a no-show.</strong> Agree in advance: a player
+      who isn't there fifteen minutes after their game is called forfeits.
+      Written down, it's a rule; improvised, it's a grudge.</li>
+      <li><strong>Forgetting the third-place playoff.</strong> Either schedule
+      it or say clearly there isn't one. Two people will ask.</li>
+      <li><strong>Ranking on vibes and calling it a seeding.</strong> If you
+      can't point at the reason someone is top seed, run a random draw and
+      keep your friends.</li>
+    </ul>
+
+    <h2>FAQ</h2>
+    <h3>Why do brackets have to be a power of two?</h3>
+    <p>Because single elimination halves the field each round. Only 2, 4, 8,
+    16, 32 and 64 can be halved all the way down to one winner. Any other
+    entrant count gets padded up to the next power of two, and the empty slots
+    become byes.</p>
+    <h3>How do byes work in a tournament bracket?</h3>
+    <p>A bye is a free pass into round two, given to a player when the bracket
+    has more slots than entrants. The number of byes is bracket size minus
+    entrants — ten players in a bracket of sixteen means six byes. A bye isn't
+    a win and isn't a walkover; the player simply starts in round two.</p>
+    <h3>Who should get the byes?</h3>
+    <p>In a seeded draw, the top seeds: seed 1 gets the first bye, seed 2 the
+    second, and so on. That's the whole purpose of seeding — keeping the
+    strongest entrants apart until late. In a random draw, allocate them
+    randomly and say so before you draw. Either way, spread them across the
+    bracket rather than stacking them in one half.</p>
+    <h3>How many games are in a single elimination tournament?</h3>
+    <p>Entrants minus one, always. Every game eliminates exactly one player,
+    and you need to eliminate everyone but the winner. Twelve players is
+    eleven games regardless of how many byes there are.</p>
+    <h3>Single or double elimination?</h3>
+    <p>Single if time is short or the field is big — it's the only format that
+    reliably fits a lunch hour. Double if the result matters and you have eight
+    to sixteen entrants, since it takes roughly twice as many games but stops
+    one bad start ending someone's day.</p>
+    <h3>How long will a tournament actually take?</h3>
+    <p>Multiply games by your realistic game length including changeover. On
+    one table, twelve players in single elimination at ten minutes a game is
+    about two hours. With extra tables you can only parallelise within a round,
+    so the absolute floor is rounds times game length — four rounds at ten
+    minutes is forty minutes, no matter how many tables you have.</p>
+
+    <h2>Then build it</h2>
+    <p>All of the above works just as well on butcher's paper, and there's no
+    shame in that. If you'd rather the maths handled itself, the
+    <a href="/tournament-bracket/">tournament bracket maker</a> takes your list
+    of names, pads to the right bracket size, spreads the byes using the
+    pairing above, and lets you choose a random draw or your typed order as the
+    seeding. You tap winners as games finish and everyone else watches the same
+    link update. Free, no signup, no accounts to chase.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
+    small free tools for groups. No tracking, no ads.</p>
+    <p class="foot-links">
+      <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
+    </p>
+  </footer>
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Why do brackets have to be a power of two?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Because single elimination halves the field each round. Only 2, 4, 8, 16, 32 and 64 can be halved all the way down to one winner. Any other entrant count is padded up to the next power of two, and the empty slots become byes."}},
+    {"@type": "Question", "name": "How do byes work in a tournament bracket?",
+     "acceptedAnswer": {"@type": "Answer", "text": "A bye is a free pass into round two, given when the bracket has more slots than entrants. The number of byes is bracket size minus entrants - ten players in a bracket of sixteen means six byes. A bye is not a win and not a walkover; the player simply starts in round two."}},
+    {"@type": "Question", "name": "Who should get the byes?",
+     "acceptedAnswer": {"@type": "Answer", "text": "In a seeded draw, the top seeds: seed 1 gets the first bye, seed 2 the second, and so on, because the purpose of seeding is keeping the strongest entrants apart until late. In a random draw, allocate them randomly and say so before drawing. Either way, spread them across the bracket rather than stacking them in one half."}},
+    {"@type": "Question", "name": "How many games are in a single elimination tournament?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Entrants minus one, always. Every game eliminates exactly one player and you need to eliminate everyone but the winner. Twelve players is eleven games regardless of how many byes there are."}},
+    {"@type": "Question", "name": "Single or double elimination?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Single if time is short or the field is big - it is the only format that reliably fits a lunch hour. Double if the result matters and you have eight to sixteen entrants, since it takes roughly twice as many games but stops one bad start ending someone's day."}},
+    {"@type": "Question", "name": "How long will a tournament actually take?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Multiply games by your realistic game length including changeover. On one table, twelve players in single elimination at ten minutes a game is about two hours. Extra tables only parallelise within a round, so the floor is rounds times game length - four rounds at ten minutes is forty minutes no matter how many tables you have."}}
+  ]
+}
+</script>
+<!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
+     Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,
+     the pages people share with their group. What their friends do in a sweep
+     or a meal train is none of our business. Token: Cloudflare dashboard →
+     Web Analytics → Add a site → copy the token. -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "REPLACE_WITH_CF_WEB_ANALYTICS_TOKEN"}'></script>
+</body>
+</html>
