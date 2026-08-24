@@ -1861,3 +1861,16 @@ h1.qotd-q {
 }
 .tpl-list li:last-child { border-bottom: 1px solid var(--line); }
 .tpl-list strong { flex: 1 1 15rem; font-weight: 700; }
+
+/* the download panel at the top of each roster guide */
+.dl-panel {
+  border: 3px solid var(--ink); background: var(--paper-2);
+  padding: 1rem 1.2rem; margin: 1.4rem 0 2rem;
+}
+.dl-panel .dl-label {
+  font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-faint); margin: 0 0 .6rem;
+}
+.dl-panel .dl-row { margin: 0 0 .7rem; }
+.dl-panel .fine { margin: 0; }
+.more-link { font-size: .82rem; color: var(--ink-soft); margin: .4rem 0 .8rem; }

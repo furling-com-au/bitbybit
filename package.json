@@ -11,9 +11,9 @@
     "migrate:remote": "wrangler d1 migrations apply bitbybit --remote",
     "templates": "node scripts/gen-roster-templates.mjs",
     "robots": "node scripts/gen-robots.mjs",
-    "apidocs": "node scripts/gen-api-docs.mjs",
+    "apidocs": "node scripts/gen-api-docs.mjs", "pages": "node scripts/gen-roster-pages.mjs",
     "faq": "node scripts/sync-faq-schema.mjs",
-    "build": "npm run robots && npm run apidocs && npm run templates && npm run faq"
+    "build": "npm run robots && npm run apidocs && npm run templates && npm run pages && npm run faq"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

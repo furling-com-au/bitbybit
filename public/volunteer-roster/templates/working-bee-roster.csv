@@ -1,7 +1,7 @@
 Working bee roster,,,,,
 "List the jobs, not the hours. People pick a job they can do and stay until it is done, which is not how a shift roster behaves.",,,,,
 ,,,,,
-Shift,Time,Job,Name,Phone,Confirmed?
+Area,Time,Job,Name,Phone,Confirmed?
 Grounds,8:00am – 12:00pm,Mowing,,,
 ,,Whipper snipper,,,
 ,,Garden beds,,,

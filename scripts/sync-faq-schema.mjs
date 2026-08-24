@@ -64,7 +64,7 @@ const faqBlock = (pairs) =>
   }, null, 2);
 
 const files = globSync("public/**/*.html");
-let changed = 0, checked = 0, skipped = [];
+let changed = 0, checked = 0, added = 0, skipped = [];
 
 for (const file of files) {
   const src = readFileSync(file, "utf8");
@@ -84,11 +84,27 @@ for (const file of files) {
     if (m[0] !== rebuilt) { out = out.replace(m[0], rebuilt); hit = true; }
   }
 
+  /* A page with a visible FAQ and no markup gets one inserted, so this
+     script is the only thing that ever writes FAQPage on this site.
+     Hand-written blocks are what drifted from the page last time. */
+  if (!hit && !/"@type":\s*"FAQPage"/.test(src)) {
+    const pairs = visibleFaq(src);
+    if (pairs.length >= 2) {
+      const block = `<script type="application/ld+json">\n${faqBlock(pairs)}\n</script>\n</body>`;
+      if (out.includes("</body>")) {
+        out = out.replace("</body>", block);
+        writeFileSync(file, out, "utf8");
+        changed++; added++; checked++;
+        continue;
+      }
+    }
+  }
+
   if (hit) { writeFileSync(file, out, "utf8"); changed++; }
 }
 
 console.log(`FAQPage blocks checked: ${checked}`);
-console.log(`files rewritten:        ${changed}`);
+console.log(`files rewritten:        ${changed} (${added} newly given markup)`);
 if (skipped.length) {
   console.log(`\nNEEDS A HUMAN (${skipped.length}):`);
   for (const s of skipped) console.log("  " + s);
