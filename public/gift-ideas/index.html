@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gift Idea Board — group gift ideas, vote &amp; no double-ups, free | biti by bit</title>
+<meta name="description" content="A free group gift ideas board. Everyone suggests what to get someone for their birthday or big occasion, upvotes the best, and claims one to buy — so nobody double-buys. No accounts, one shared link, and the recipient never sees it.">
+<link rel="canonical" href="https://bitibybit.com/gift-ideas/">
+<meta property="og:title" content="Gift Idea Board — suggest, vote, no double-ups">
+<meta property="og:description" content="Everyone suggests and upvotes gift ideas, then claims one to buy so nobody doubles up. Free, no signup, a surprise link the recipient never sees.">
+<meta property="og:image" content="https://bitibybit.com/art/og-giftidea.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Gift Idea Board",
+"url":"https://bitibybit.com/gift-ideas/","applicationCategory":"UtilitiesApplication",
+"operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},
+"description":"A group gift ideas board: suggest ideas, upvote them, and claim one to buy so nobody double-buys. Free, no accounts."}
+</script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="biti by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    biti by bit
+    <span class="beta-badge">beta</span>
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no signup · one shareable link</p>
+    <h1>Gift Idea Board</h1>
+    <p class="lede">For "what should we get Mum for her 60th?" Everyone chips in
+    ideas and upvotes the good ones, then claims the one they'll buy — so three
+    of you don't turn up with the same candle. A surprise board: you share the
+    link with everyone <strong>except</strong> the person it's for.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/giftidea-hero.png"
+           alt="Pixel art of a glowing lightbulb between a wrapped gift and a green tick"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="giftideaForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Who's the gift for?</span>
+            <input type="text" id="recipient" maxlength="80" placeholder="Mum" autocomplete="off">
+          </label>
+          <label class="field">
+            <span>Occasion <em>(optional)</em></span>
+            <input type="text" id="occasion" maxlength="80" placeholder="Her 60th birthday">
+          </label>
+          <label class="field">
+            <span>Budget <em>(optional — any wording)</em></span>
+            <input type="text" id="budget" maxlength="40" placeholder="$40–60 each, or one big joint gift">
+          </label>
+        </div>
+        <div>
+          <label class="field">
+            <span>Note for the group <em>(optional)</em></span>
+            <textarea id="note" rows="7" maxlength="300" placeholder="She's after nothing she has to dust. Keen on the garden lately. Let's aim to have this sorted by the 12th."></textarea>
+          </label>
+        </div>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="makeBtn">Start the board →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevBoards" hidden>
+      <p class="fine">Your earlier boards (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>The group-gift problem</h2>
+    <p>Group gifts fall over in two predictable ways. First, nobody can agree on
+    <em>what</em> to get — the thread goes quiet, someone panics, and it ends up
+    being a gift card. Second, everybody quietly buys the "safe" option, and the
+    birthday person unwraps two of the same book and a candle they already own. A
+    <strong>gift idea board</strong> fixes both: ideas in one place, a vote to
+    surface the winner, and a visible "I'll get this" so the buying is claimed in
+    the open.</p>
+
+    <h2>How it works</h2>
+    <h3>1. Start the board</h3>
+    <p>Say who it's for and — if you like — the occasion, a rough budget, and a
+    note (what they're into, when you want it sorted by). You get two links: a
+    <strong>share link</strong> for the group chat, and a private
+    <strong>organiser link</strong> that can remove ideas or delete the board.
+    Bookmark the organiser one — there are no accounts, so the link is the only
+    key.</p>
+    <h3>2. Share it with everyone but the recipient</h3>
+    <p>This is a surprise board, so the one person who mustn't get the link is the
+    person the gift is for. Everybody else opens it, adds ideas, and upvotes the
+    ones they like. Paste in a product link if you've found the actual thing.</p>
+    <h3>3. Claim what you'll buy</h3>
+    <p>When you're going to buy something, tap <strong>I'll get this</strong> and
+    put your name on it. It locks to you — only one person can claim each idea, so
+    the rest of the group can see it's handled and pick something else. Changed
+    your mind? Take your name back off and it opens up again.</p>
+
+    <h2>What it doesn't do</h2>
+    <p>It doesn't touch money. No card numbers, no splitting the bill, no
+    collecting funds — it sorts out <em>what</em> and <em>who's buying</em>, and
+    the dollars stay between you and the group, however you usually square up. It
+    also pairs neatly with the <a href="/group-card/">Group Card</a> for the
+    message that goes with the present.</p>
+
+    <h2>FAQ</h2>
+    <h3>Is it actually free?</h3>
+    <p>Yes. No account, no trial, no card. It's a small tool, not a platform.</p>
+    <h3>Can the person we're buying for see it?</h3>
+    <p>Only if someone shares the link with them — so don't. It's a surprise
+    board; the shared link goes to everyone except the recipient. The board is
+    unlisted and search engines don't index it.</p>
+    <h3>How do we stop two people buying the same thing?</h3>
+    <p>Each idea can be claimed by exactly one person with "I'll get this". Once
+    it's claimed, everyone else sees who's getting it, so nobody doubles up. If
+    two people tap at the same instant, the first one wins and the second is told
+    to pick another.</p>
+    <h3>Do people need accounts?</h3>
+    <p>No — tap the link, add an idea, vote, claim one. Their browser remembers
+    the ideas they added and what they're buying, so they can undo their own.</p>
+    <h3>Does it handle the money?</h3>
+    <p>No, deliberately. It organises the ideas and who's buying what — settle up
+    however your group always does.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
+    small free tools for groups. No tracking, no ads.</p>
+    <p class="foot-links">
+      <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
+    </p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is the Gift Idea Board free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You make a board and share one link with the group."}},
+    {"@type": "Question", "name": "Can the person we're buying for see the board?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Only if someone shares the link with them, so don't. It's a surprise board — the shared link goes to everyone except the recipient, and the board is unlisted and not indexed by search engines."}},
+    {"@type": "Question", "name": "How does it stop two people buying the same gift?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Each idea can be claimed by exactly one person with 'I'll get this'. Once claimed, everyone sees who's getting it, so nobody double-buys. If two people claim at once, the first wins and the second is asked to pick another."}},
+    {"@type": "Question", "name": "Do people need accounts?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. People tap the link, add an idea, upvote the good ones, and claim what they'll buy. Their browser remembers their own ideas and claims so they can undo them."}},
+    {"@type": "Question", "name": "Does it handle the money?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No, deliberately. It organises the gift ideas and who's buying what — settle up however your group normally does."}}
+  ]
+}
+</script>
+<script src="/giftidea.js"></script>
+</body>
+</html>

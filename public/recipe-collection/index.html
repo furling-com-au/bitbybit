@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recipe Collection — collaborative recipe book, free | biti by bit</title>
+<meta name="description" content="The free way to make a collaborative recipe book. Everyone adds a recipe through one link and you get a printable keepsake — for a bridal shower, a farewell, a family milestone or a new home. No accounts, no fees.">
+<link rel="canonical" href="https://bitibybit.com/recipe-collection/">
+<meta property="og:title" content="Recipe Collection — everyone adds a recipe, you get a book">
+<meta property="og:description" content="A family recipe collection online, made together. Share one link, gather everyone's recipes, print the keepsake. Free, no signup.">
+<meta property="og:image" content="https://bitibybit.com/art/og-recipe.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Recipe Collection",
+"url":"https://bitibybit.com/recipe-collection/","applicationCategory":"LifestyleApplication",
+"operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},
+"description":"A collaborative recipe book — everyone adds a recipe through one shared link and the organiser gets a printable keepsake. Free, no accounts."}
+</script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="biti by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    biti by bit
+    <span class="beta-badge">beta</span>
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no signup · one shareable link</p>
+    <h1>Recipe Collection</h1>
+    <p class="lede">Everyone adds a recipe; you get a book. Start it, share the
+    link, and watch the contributions come in — Nan's lemon slice, the curry
+    someone finally wrote down, the story behind each one. Then print the whole
+    thing as a keepsake.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/recipe-hero.png"
+           alt="Pixel art kitchen bench with a little recipe book standing open, a handwritten recipe card, a whisk, a wooden spoon and a mixing bowl"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="recipeForm" novalidate>
+      <label class="field">
+        <span>Book title</span>
+        <input type="text" id="title" maxlength="80" placeholder="Grandma Rosa's Recipe Book">
+      </label>
+      <label class="field">
+        <span>Who's it for? <em>(optional)</em></span>
+        <input type="text" id="forWhom" maxlength="80" placeholder="Priya &amp; Tom, for the new house">
+      </label>
+      <label class="field">
+        <span>Note for contributors <em>(optional)</em></span>
+        <textarea id="note" rows="4" maxlength="300" placeholder="One recipe each would be lovely — a main, a bake, whatever you're known for. We'll print it for the shower on the 14th."></textarea>
+      </label>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="makeBtn">Start the book →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevBooks" hidden>
+      <p class="fine">Your earlier books (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>A recipe book, made by everyone</h2>
+    <p>Some of the best cookbooks aren't bought — they're compiled. A
+    <strong>collaborative recipe book</strong> is the gift where everyone puts in
+    one recipe and the person on the receiving end gets a whole kitchen's worth
+    of them, in the handwriting of the people who taught them. This is the tool
+    that gathers them without a group email thread forty replies deep.</p>
+    <p>It suits a bridal or kitchen-tea shower, a farewell for someone moving on,
+    a milestone birthday, a new home, or a family reunion where the recipes have
+    only ever lived in someone's head. Start a book, share one link, and each
+    person adds their recipe — the ingredients, the method, and the little story
+    that goes with it.</p>
+
+    <h2>How it works</h2>
+    <h3>1. Start the book</h3>
+    <p>Name it — <em>Grandma Rosa's Recipe Book</em>, <em>The Patel Family
+    Collection</em> — and say who it's for if you like. You get two links: a
+    <strong>share link</strong> for everyone contributing, and an
+    <strong>organiser link</strong> that can tidy up and print. Bookmark the
+    organiser one; there are no accounts, so the link is the only key.</p>
+    <h3>2. Everyone adds a recipe</h3>
+    <p>Contributors tap the link and fill in their recipe: who's sharing it, the
+    dish, the ingredients, the method, and optionally a memory of why it matters.
+    No sign-up. Their browser remembers which recipes are theirs, so they can
+    fix a typo or add the step they forgot. Two people can share a recipe under
+    the same name — two Mums, two Sams, no problem.</p>
+    <h3>3. Print the keepsake</h3>
+    <p>Every recipe lands in one nicely set-out book. When you're ready, hit
+    <strong>Print the book</strong> — the print view drops all the buttons and
+    forms and keeps each recipe on its own, so it comes out looking like a proper
+    little cookbook you can bind, frame, or slip into a card.</p>
+
+    <h2>FAQ</h2>
+    <h3>Is the recipe book actually free?</h3>
+    <p>Yes. No account, no trial, no card. It's a small tool made for the joy of
+    it, not a platform. A <strong>recipe book gift, free</strong> and without the
+    catch.</p>
+    <h3>Do contributors need an account?</h3>
+    <p>No — they tap the link, write their recipe, done. Their browser remembers
+    their own recipes so they can edit or remove them; nobody signs up for
+    anything.</p>
+    <h3>Can I use it for a family recipe collection?</h3>
+    <p>Absolutely — that's a favourite. A <strong>family recipe collection
+    online</strong> means the recipes that only ever lived in someone's head
+    finally get written down, in everyone's own words, before they're lost.</p>
+    <h3>Can two people add a recipe with the same name?</h3>
+    <p>Yes. Duplicate contributor names are fine — the book happily holds three
+    recipes all "shared by Mum".</p>
+    <h3>Does it print well?</h3>
+    <p>That's the whole point. Each recipe is set to stay together on the page,
+    the on-screen chrome disappears, and you're left with a clean book to print
+    at home or take to a copy shop. Ideal for a <strong>shower recipe
+    collection</strong> handed over on the day.</p>
+    <h3>Does it handle money?</h3>
+    <p>No — deliberately. It gathers recipes; there's nothing to pay and nothing
+    to collect. Just a book, made together.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
+    small free tools for groups. No tracking, no ads.</p>
+    <p class="foot-links">
+      <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
+    </p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is the Recipe Collection book free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You start a book and share one link with everyone contributing a recipe."}},
+    {"@type": "Question", "name": "Do contributors need an account?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. Contributors tap the link and write their recipe. Their browser remembers their own recipes so they can edit or remove them; nobody signs up."}},
+    {"@type": "Question", "name": "Can I use it for a family recipe collection?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — it's ideal for a family recipe collection online, so the recipes that only lived in someone's head get written down in everyone's own words."}},
+    {"@type": "Question", "name": "Can two people add a recipe with the same name?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Duplicate contributor names are fine — the book can hold several recipes all shared by, say, Mum."}},
+    {"@type": "Question", "name": "Does the recipe book print well?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — that's the point. Each recipe stays together on the page and the on-screen buttons disappear, leaving a clean keepsake book to print or bind."}},
+    {"@type": "Question", "name": "Does it handle money?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No, deliberately. It gathers recipes — there's nothing to pay and nothing to collect."}}
+  ]
+}
+</script>
+<script src="/recipe.js"></script>
+</body>
+</html>

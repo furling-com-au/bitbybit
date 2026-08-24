@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hens Party Planner — free who's-bringing-what list | biti by bit</title>
+<meta name="description" content="Free hens party planner and bridal or baby shower organiser. Set who's bringing what, lay out the plan, and add a no-money kitty note. Share one link — no accounts, no fees.">
+<link rel="canonical" href="https://bitibybit.com/hens-planner/">
+<meta property="og:title" content="Hens &amp; Shower Planner">
+<meta property="og:description" content="Who's bringing what, the plan, and a no-money kitty note. Share one link — free, no signup.">
+<meta property="og:image" content="https://bitibybit.com/art/og-hens.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Hens & Shower Planner",
+"url":"https://bitibybit.com/hens-planner/","applicationCategory":"UtilitiesApplication",
+"operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},
+"description":"Plan a hens party, bridal shower or baby shower — who's bringing what, an agenda, and a text-only kitty note. Free, no accounts."}
+</script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="biti by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    biti by bit
+    <span class="beta-badge">beta</span>
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no signup · one shareable link</p>
+    <h1>Hens &amp; Shower Planner</h1>
+    <p class="lede">Plan a hens do, a bridal shower, a baby shower — or any group
+    celebration. Set who's bringing what, lay out the plan for the day, and add a
+    plain-language note about how the kitty gets split. Share one link; everyone
+    puts their name down. No accounts, no chasing.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/hens-hero.png"
+           alt="Pixel art party table with a tiered cake, cocktails, a champagne bottle and a wrapped gift, under a string of bunting"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="hensForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Name of the do</span>
+            <input type="text" id="title" maxlength="80" placeholder="Mia's Hens Weekend">
+          </label>
+          <label class="field">
+            <span>Guest of honour <em>(optional)</em></span>
+            <input type="text" id="forWhom" maxlength="80" placeholder="Mia">
+          </label>
+          <label class="field">
+            <span>When <em>(optional — any wording)</em></span>
+            <input type="text" id="when" maxlength="80" placeholder="Sat 15 March, from noon">
+          </label>
+          <label class="field">
+            <span>Where <em>(optional — shared with guests only)</em></span>
+            <input type="text" id="where" maxlength="120" placeholder="The Wine Room, 12 Vine St, Fitzroy">
+          </label>
+          <label class="field">
+            <span>Kitty note <em>(optional — no money handled)</em></span>
+            <textarea id="kitty" rows="2" maxlength="200" placeholder="Roughly $50 each for the venue — PayID to Sam, settle up on the day."></textarea>
+          </label>
+          <label class="field">
+            <span>Note for the group <em>(optional)</em></span>
+            <textarea id="note" rows="3" maxlength="400" placeholder="Dress code is garden-party. Keep it a surprise until 12:30 — meet out the front."></textarea>
+          </label>
+        </div>
+        <div>
+          <label class="field">
+            <span>Who's bringing what <em>(one per line — "Name x spots")</em></span>
+            <textarea id="categories" rows="7" spellcheck="false">Drinks x3
+Decorations x2
+Cake x1
+Games x2
+Nibbles x4</textarea>
+          </label>
+          <label class="field">
+            <span>The plan <em>(optional — one item per line)</em></span>
+            <textarea id="activities" rows="6" spellcheck="false">Meet for lunch, 12:30
+High tea at 3
+Cocktail class, 5pm
+Dinner &amp; dancing, 7:30</textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+        </div>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="makeBtn">Start planning →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevBoards" hidden>
+      <p class="fine">Your earlier plans (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>One link, no group-chat chaos</h2>
+    <p>Planning a hens party or a shower usually means one person holding the
+    whole thing in their head, a group chat that scrolls past every decision,
+    and three people all quietly buying the same balloons. This is the boring,
+    reliable fix: a single page that says who's bringing what, what the plan is,
+    and how the money gets sorted — shared with one link, updated by everyone.</p>
+
+    <h2>How it works</h2>
+    <h3>1. Set the lists</h3>
+    <p>The "who's bringing what" lists work like a potluck board: one line each,
+    with how many people you need — <em>Decorations x2</em> means two spots for
+    decorations. Use them for things to bring (drinks, cake, nibbles) or jobs to
+    sort (transport, games, playlist). When a list is full, it's full.</p>
+    <h3>2. Lay out the plan</h3>
+    <p>Pop the agenda in, one line per item — lunch, the cocktail class, dinner.
+    It shows up as a numbered plan on the shared page. It's display-only: a
+    running order everyone can glance at, not another thing to sign up for.</p>
+    <h3>3. Share the link</h3>
+    <p>You get two links: a <strong>share link</strong> for the group chat, and
+    an <strong>organiser link</strong> that can remove claims or delete the
+    board. Bookmark the organiser one — there are no accounts, so the link is
+    the only key. Guests tap an open spot, add their name and what they've got,
+    done.</p>
+
+    <h2>The kitty, without the money</h2>
+    <p>This planner deliberately handles no money — no card numbers, no
+    payments, nothing to reconcile. The kitty note is just words: "$50 each,
+    PayID to Sam", "pay Priya for the venue by Friday". It shows to guests on
+    the shared page (which search engines can't see) so everyone knows the deal;
+    the actual dollars stay between you and the group, same as always.</p>
+
+    <h2>FAQ</h2>
+    <h3>Is the hens party planner free?</h3>
+    <p>Yes. No account, no trial, no card. It's a small tool, not a platform.</p>
+    <h3>Does it work for bridal and baby showers too?</h3>
+    <p>Yes — it's the same job. Rename the lists to suit: gifts, food, games,
+    decorations. A bridal shower planning checklist or a baby shower run-sheet
+    fits exactly the same shape.</p>
+    <h3>Do guests need accounts?</h3>
+    <p>No — tap the link, tap an open spot, type your name and what you're
+    bringing, done. Their browser remembers which spots are theirs, so they can
+    take their own name back off.</p>
+    <h3>Is the venue address public?</h3>
+    <p>No — the shared page is unlisted and blocked from search engines, so only
+    people you send the link to see the address and the kitty note. Don't post
+    the link somewhere public if the day is a surprise.</p>
+    <h3>Does it handle the money?</h3>
+    <p>No, deliberately. The kitty note explains how costs are split in plain
+    words; collecting the actual money stays between you and the group.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
+    small free tools for groups. No tracking, no ads.</p>
+    <p class="foot-links">
+      <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
+    </p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is the hens party planner free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You make a plan and share one link with the group."}},
+    {"@type": "Question", "name": "Does it work for bridal and baby showers too?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. It's the same job — rename the lists to suit gifts, food, games or decorations. A bridal shower planning checklist or baby shower run-sheet fits the same shape."}},
+    {"@type": "Question", "name": "Do guests need accounts?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. Guests tap the link, tap an open spot, type their name and what they're bringing, done. Their browser remembers which spots are theirs."}},
+    {"@type": "Question", "name": "Is the venue address public?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. The shared page is unlisted and blocked from search engines, so only people you send the link to can see the address and the kitty note."}},
+    {"@type": "Question", "name": "Does it handle the money?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No, deliberately. The kitty note explains how costs are split in plain words — collecting the actual money stays between you and the group."}}
+  ]
+}
+</script>
+<script src="/hens.js"></script>
+</body>
+</html>

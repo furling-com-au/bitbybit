@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Group Vote — free poll maker, no signup | biti by bit</title>
+<meta name="description" content="A free poll maker with no signup. Ask a question, paste the options, share one link — the group votes and the tally fills in live. Great for a book club's next read, a baby name, where to eat, or picking a date.">
+<link rel="canonical" href="https://bitibybit.com/group-vote/">
+<meta property="og:title" content="Group Vote — one quick poll, everyone picks">
+<meta property="og:description" content="Ask a question, share a link, watch the tally fill in. Free group vote online, no accounts.">
+<meta property="og:image" content="https://bitibybit.com/art/og-poll.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Group Vote",
+"url":"https://bitibybit.com/group-vote/","applicationCategory":"UtilitiesApplication",
+"operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},
+"description":"A free group poll for a shared decision. Ask a question, share one link, everyone votes and the tally fills in live. No accounts."}
+</script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="biti by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    biti by bit
+    <span class="beta-badge">beta</span>
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no signup · one shareable link</p>
+    <h1>Group Vote</h1>
+    <p class="lede">The dead-simple poll for a group decision. Ask the question,
+    paste the options, share one link — everyone picks and the tally fills in as
+    the votes land. The next book, a baby name, where to eat, which date works.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/poll-hero.png"
+           alt="Pixel art ballot box with a slip going in, beside a little bar chart of results with the leader in gold"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="pollForm" novalidate>
+      <label class="field">
+        <span>The question</span>
+        <input type="text" id="question" maxlength="140" placeholder="What should we read next?">
+      </label>
+
+      <label class="field">
+        <span>The options <em>(one per line — 2 to 30)</em></span>
+        <textarea id="options" rows="7" spellcheck="false" placeholder="Option one
+Option two
+Option three">Friday
+Saturday
+Sunday</textarea>
+      </label>
+
+      <label class="tp-check">
+        <input type="checkbox" id="multi">
+        <span>Let people pick more than one <em>(handy for "which dates work?")</em></span>
+      </label>
+      <label class="tp-check">
+        <input type="checkbox" id="allowSuggestions">
+        <span>Let voters add their own option</span>
+      </label>
+
+      <p class="status-line" id="statusLine"></p>
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="makeBtn">Start the vote →</button>
+      <p class="fine">Picking a date? Put one date per line and tick "let people
+      pick more than one" — you'll see at a glance which day suits the most people.</p>
+    </form>
+
+    <div class="prev-sweeps" id="prevPolls" hidden>
+      <p class="fine">Your earlier polls (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>A poll without the palaver</h2>
+    <p>Most "quick votes" die in the group chat: forty replies, three people
+    voting for options that scrolled off the top, and no clear answer. Group
+    Vote is the boring fix. You write the question and the options, you get one
+    link, everyone taps it and picks. The running tally is right there, so the
+    decision makes itself.</p>
+
+    <h2>What it's good for</h2>
+    <p>Anything a group has to agree on and nobody wants to chair a meeting
+    about. A book club's <strong>next read</strong>. A <strong>baby name</strong>
+    shortlist. <strong>Where to eat</strong> on Friday. <strong>Which date</strong>
+    works for the dinner — tick "pick more than one" and it becomes a
+    when-are-you-free poll. Team name, tip jar cause, the office coffee order:
+    if it's a shared call, this sorts it.</p>
+
+    <h2>How it works</h2>
+    <h3>1. Write the question and options</h3>
+    <p>One option per line, two to thirty of them. Decide whether people pick
+    just one or as many as they like, and whether voters can add their own
+    option when you've missed something obvious.</p>
+    <h3>2. Share the link</h3>
+    <p>You get two links: a <strong>share link</strong> for the group chat, and
+    an <strong>organiser link</strong> that shows who voted, lets you add or
+    remove options, and closes the poll when you're done. Bookmark the organiser
+    one — there are no accounts, so the link is the only key.</p>
+    <h3>3. Watch the bars fill in</h3>
+    <p>Each vote nudges the bars; the leader sits in gold. Voters see the
+    results the moment they've voted, and can change their mind any time until
+    you close it. When you close voting, the tally freezes and the winner's
+    called.</p>
+
+    <h2>FAQ</h2>
+    <h3>Is it actually free?</h3>
+    <p>Yes. No account, no trial, no card. It's a small tool, not a platform.</p>
+    <h3>Is it really one vote per person?</h3>
+    <p>On the honour system. There are no accounts, so a browser remembers a
+    person's vote — but a determined voter on two phones could vote twice. It's
+    built for friendly group decisions, not elections. If you need a locked-down
+    ballot, this isn't it, and it says so honestly.</p>
+    <h3>Can voters add their own options?</h3>
+    <p>If you switch it on, yes — a voter can add an option that isn't listed and
+    vote for it in one go. Leave it off and the list stays exactly as you set it.</p>
+    <h3>Can I change my vote?</h3>
+    <p>Yes, any time until the poll's closed. Your browser remembers your vote,
+    so "change my vote" is right there on the results.</p>
+    <h3>Who can see how I voted?</h3>
+    <p>Only the organiser sees the breakdown of who picked what. Everyone else —
+    anyone with the share link — sees just the totals.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
+    small free tools for groups. No tracking, no ads.</p>
+    <p class="foot-links">
+      <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
+    </p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is the Group Vote poll maker free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You make a poll and share one link with the group."}},
+    {"@type": "Question", "name": "Is it really one vote per person?",
+     "acceptedAnswer": {"@type": "Answer", "text": "It's on the honour system. There are no accounts, so the browser remembers a person's vote, but a determined voter on two devices could vote twice. It's for friendly group decisions, not elections."}},
+    {"@type": "Question", "name": "Can voters add their own options?",
+     "acceptedAnswer": {"@type": "Answer", "text": "If you switch it on, yes. A voter can add an option that isn't listed and vote for it in one go. Leave it off and the option list stays exactly as you set it."}},
+    {"@type": "Question", "name": "Can I change my vote?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes, any time until the organiser closes the poll. Your browser remembers your vote, so a change-my-vote button sits right on the results."}}
+  ]
+}
+</script>
+<script src="/poll.js"></script>
+</body>
+</html>

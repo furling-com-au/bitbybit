@@ -118,6 +118,63 @@ function iconBubbles() {
   return g;
 }
 
+
+function iconCasserole() {
+  const g = new Grid(16, 16);
+  g.rect(2, 8, 13, 13, "#c96a4a");              // dish body
+  g.rect(2, 7, 13, 8, P.terraDark);             // rim
+  g.rect(1, 9, 2, 11, P.terraDark);             // handle L
+  g.rect(13, 9, 14, 11, P.terraDark);           // handle R
+  g.rect(4, 5, 11, 7, "#e2d3b6");               // lid
+  g.rect(7, 3, 8, 5, P.ink);                    // knob
+  g.px(5, 2, P.line); g.px(6, 1, P.line); g.px(10, 2, P.line); g.px(9, 1, P.line); // steam
+  return g;
+}
+function iconBallot() {
+  const g = new Grid(16, 16);
+  g.rect(2, 3, 13, 13, P.paper2);               // paper
+  g.rect(2, 3, 13, 3, P.ink); g.rect(2, 13, 13, 13, P.ink);
+  g.rect(2, 3, 2, 13, P.ink); g.rect(13, 3, 13, 13, P.ink);
+  g.rect(4, 5, 5, 6, P.ink); g.rect(7, 5, 11, 5, P.inkSoft);   // row 1 box+line
+  g.rect(4, 8, 5, 9, P.sageDark);                               // row 2 checked box
+  g.px(4, 9, P.sage); g.px(5, 8, P.sage);                       // tick hint
+  g.rect(7, 8, 11, 8, P.inkSoft);
+  g.rect(4, 11, 5, 12, P.ink); g.rect(7, 11, 10, 11, P.inkSoft); // row 3
+  return g;
+}
+function iconRecipe() {
+  const g = new Grid(16, 16);
+  g.rect(2, 2, 12, 14, P.paper2);               // card
+  g.rect(2, 2, 12, 3, P.terra);                 // header band
+  g.rect(2, 2, 2, 14, P.ink); g.rect(12, 2, 12, 14, P.ink);
+  g.rect(2, 14, 12, 14, P.ink); g.rect(2, 2, 12, 2, P.ink);
+  g.rect(4, 6, 10, 6, P.inkSoft); g.rect(4, 8, 10, 8, P.inkSoft); g.rect(4, 10, 8, 10, P.inkSoft);
+  g.rect(13, 5, 14, 11, "#9a9086"); g.px(13, 4, "#9a9086");     // whisk handle
+  g.px(14, 4, "#9a9086"); g.px(14, 11, "#9a9086");
+  return g;
+}
+function iconBulb() {
+  const g = new Grid(16, 16);
+  g.disc(8, 6, 4, P.gold);                      // bulb
+  g.px(6, 4, P.paper); g.px(10, 7, "#b5852f");  // shine/shade
+  g.rect(6, 10, 9, 11, "#9a9086");              // base
+  g.rect(6, 12, 9, 13, P.ink);                  // screw
+  g.px(2, 3, P.gold); g.px(13, 3, P.gold); g.px(3, 6, P.gold); g.px(12, 6, P.gold); // rays
+  return g;
+}
+function iconCocktail() {
+  const g = new Grid(16, 16);
+  g.rect(3, 3, 12, 3, P.sky);                   // glass rim
+  g.rect(4, 4, 11, 4, "#f0b46e");               // drink
+  g.px(5, 5, "#f0b46e"); g.px(6, 5, "#f0b46e"); g.px(9, 5, "#f0b46e"); g.px(10, 5, "#f0b46e");
+  g.px(7, 6, "#f0b46e"); g.px(8, 6, "#f0b46e"); g.px(7, 7, "#f0b46e"); g.px(8, 7, "#f0b46e");
+  g.rect(7, 8, 8, 12, "#c9bda9");               // stem
+  g.rect(4, 13, 11, 14, "#c9bda9");             // base
+  g.rect(11, 1, 12, 4, P.terra);                // straw
+  g.disc(4, 3, 1, P.terra);                     // cherry/garnish
+  return g;
+}
+
 /* ---------- footy field scene ------------------------------- */
 function fieldScene(w, h) {
   const g = new Grid(w, h, P.paper);
@@ -164,6 +221,7 @@ const icons = {
   footy: iconFooty(), horse: iconHorse(), gift: iconGift(), car: iconCar(),
   wolf: iconWolf(), pot: iconPot(), card: iconCard(), trophy: iconTrophy(),
   rattle: iconRattle(), clipboard: iconClipboard(), bubbles: iconBubbles(),
+  casserole: iconCasserole(), ballot: iconBallot(), recipe: iconRecipe(), bulb: iconBulb(), cocktail: iconCocktail(),
 };
 for (const [name, g] of Object.entries(icons)) g.toPng(`public/icons/${name}.png`, 8);
 
