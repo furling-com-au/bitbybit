@@ -168,11 +168,12 @@ async function reset(token, request, env) {
 
   const body = await request.json().catch(() => ({}));
   const name = String(body.name || "");
-  // Rotate the token so the old private link dies, reopen the claim.
-  // The fact itself stays put — a reset is for a lost link or the
-  // wrong person claiming, not for wiping what someone wrote.
+  // Rotate the token so the old private link dies, reopen the claim,
+  // AND clear the fact. Whoever re-claims the name would otherwise be
+  // handed the previous person's secret fact before the reveal, so a
+  // reset wipes it — the rightful owner re-enters theirs.
   const hit = await env.DB.prepare(
-    `UPDATE participants SET token = ?, claimed_at = NULL, viewed_at = NULL
+    `UPDATE participants SET token = ?, claimed_at = NULL, viewed_at = NULL, data = '{"fact":""}'
      WHERE instance_id = ? AND name = ?
      RETURNING id`
   ).bind(randomString(22), row.id, name).first();
@@ -483,7 +484,7 @@ async function editPage(row, env, origin) {
   </div>
   <p class="fine">Reset a name if the wrong person claimed it or a link is lost:
   the old private link stops working on the spot and the name becomes claimable
-  again. Their fact is kept.</p>
+  again — their fact is cleared, and they re-enter it when they rejoin.</p>
 
   <h2>${revealed ? "The answer key" : "The facts to read out"}</h2>
   ${revealed
@@ -531,9 +532,9 @@ async function editPage(row, env, origin) {
     btn.addEventListener("click", function () {
       var name = btn.getAttribute("data-reset");
       post("reset", { name: name },
-        "Reset " + name + "? Their current private link stops working " +
-        "immediately, and the name goes back to unclaimed so the right " +
-        "person can grab it. Their fact is kept.",
+        "Reset " + name + "? Their private link stops working and the " +
+        "name reopens for claiming — so their fact is cleared too (whoever " +
+        "re-claims would otherwise see it). They re-enter it when they rejoin.",
         function () { location.reload(); });
     });
   });

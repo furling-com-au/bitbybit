@@ -14,7 +14,7 @@
   /* ---- names: one per line ----------------------------------- */
   const nameLines = () =>
     $("names").value.split("\n")
-      .map((s) => s.trim().replace(/\s+/g, " "))
+      .map((s) => s.trim().replace(/\s+/g, " ").slice(0, 40))
       .filter(Boolean);
 
   function firstDupe(names) {

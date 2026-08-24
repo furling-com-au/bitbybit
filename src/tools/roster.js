@@ -188,7 +188,7 @@ function board(data, bySlot, organiser) {
         filled++;
         cards.push(`
       <li class="rost-slot claimed" data-slot="${sid}">
-        <span class="rost-slot-name">${esc(c.name)}</span>${c.message ? `
+        <span class="rost-slot-name">${esc(c.name)}</span>${organiser && c.message ? `
         <span class="rost-slot-note">${esc(c.message)}</span>` : ""}${organiser ? `
         <button class="btn ghost rost-mini rost-remove" type="button" data-slot="${sid}">Remove</button>` : ""}
       </li>`);
@@ -203,7 +203,7 @@ function board(data, bySlot, organiser) {
         <button class="btn rost-put" type="button">Put me down</button>
         <form class="rost-form" hidden>
           <input type="text" name="name" maxlength="${MAX_NAME}" placeholder="Your name" aria-label="Your name" autocomplete="name">
-          <input type="text" name="message" maxlength="${MAX_MESSAGE}" placeholder="Note (optional) — phone, 'can bring urn'" aria-label="Note (optional)">
+          <input type="text" name="message" maxlength="${MAX_MESSAGE}" placeholder="Note for the coordinator (optional) — phone, 'can bring urn'" aria-label="Note (optional)">
           <div class="rost-form-row">
             <button class="btn primary rost-mini" type="submit">Put me down</button>
             <button class="btn ghost rost-mini rost-cancel" type="button">Never mind</button>
@@ -305,7 +305,7 @@ async function publicPage(row, env) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ slug: slug, slotId: c.slotId, secret: c.secret }),
       }).then(function (r) {
-        if (!r.ok && r.status !== 404) throw new Error("failed");
+        if (!r.ok && r.status !== 404) return r.json().catch(function () { return {}; }).then(function (d) { throw new Error(d.error || "That didn't work — try again."); });
         saveMine(mine().filter(function (x) { return x.slotId !== c.slotId; }));
         location.reload();
       }).catch(function (e) { alert((e && e.message) || "That didn't work — try again."); });
