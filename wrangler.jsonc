@@ -17,7 +17,7 @@
       "binding": "DB",
       "database_name": "bitbybit",
       // npx wrangler d1 create bitbybit  → paste the id here
-      "database_id": "PASTE_D1_DATABASE_ID",
+      "database_id": "d1035a28-3bf4-42bd-88ee-fe66a020488d",
       "migrations_dir": "migrations"
     }
   ],
