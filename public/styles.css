@@ -200,7 +200,7 @@ a { color: var(--terra-dark); }
   text-transform: uppercase; color: #f6f1e4; background: var(--terra-dark);
   padding: .18rem .55rem; margin-bottom: .5rem;
 }
-.feature-card h3 { margin: 0 0 .25rem; font-size: 1.25rem; text-transform: uppercase; letter-spacing: .03em; }
+.feature-card h2 { margin: 0 0 .25rem; font-size: 1.25rem; text-transform: uppercase; letter-spacing: .03em; }
 .feature-card p { margin: 0; font-size: .82rem; color: var(--ink-soft); max-width: 46ch; }
 .feature-art img { display: block; width: clamp(96px, 18vw, 150px); height: auto; }
 
@@ -1811,3 +1811,20 @@ h1.qotd-q {
   .meal-admin { display: none; }
   .meal-link { border-color: #000; }
 }
+
+/* ------------------------------------------------------------
+   homepage guides list
+   The guide pages carry most of the site's actual writing, and
+   until now the homepage — the only page with any inbound links
+   — pointed at none of them. Two columns of plain links; this is
+   a signpost, not another card grid competing with the shelf.
+   ------------------------------------------------------------ */
+.guide-list {
+  list-style: none; margin: 1.1rem 0 0; padding: 0;
+  columns: 2; column-gap: 2.2rem; font-size: .84rem;
+}
+.guide-list li { margin: 0 0 .45rem; break-inside: avoid; }
+.guide-list a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line); }
+.guide-list a:hover { color: var(--ink); border-bottom-color: var(--ink); }
+.section-note { font-size: .84rem; color: var(--ink-faint); margin: .2rem 0 0; max-width: 46ch; }
+@media (max-width: 34rem) { .guide-list { columns: 1; } }

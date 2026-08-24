@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Team Picker — random team generator, free | biti by bit</title>
-<meta name="description" content="Split any list of names into fair random teams. Pick '3 teams' or 'teams of 5', hit shuffle — sizes stay within one, every time. Free, no signup, and the names never leave your browser.">
+<title>Team Picker — random team generator, free</title>
+<meta name="description" content="Free random team generator, no signup. Paste the names, pick 3 teams or teams of 5, shuffle — sides stay within one, and nothing leaves your browser.">
 <link rel="canonical" href="https://bitibybit.com/team-picker/">
 <meta property="og:title" content="Team Picker — fair random teams">
 <meta property="og:description" content="Paste the names, hit shuffle, get fair teams. Nothing stored — the names never leave your browser.">
@@ -188,12 +188,46 @@ Ravi"></textarea>
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type": "Question", "name": "Is the team picker's shuffle fair?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes — names are shuffled with the browser's cryptographic randomness using an unbiased Fisher–Yates shuffle, then dealt round-robin into teams. Every arrangement is equally likely and nobody can rig it."}},
-    {"@type": "Question", "name": "Can the teams come out uneven?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Only by one person. Round-robin dealing means 17 names into 3 teams gives sizes of 6, 6 and 5 — a bigger gap is impossible. Which team gets the extra person is random each shuffle."}},
-    {"@type": "Question", "name": "Do you store the names?",
-     "acceptedAnswer": {"@type": "Answer", "text": "No. The names never leave your browser — the tool has no server side at all, so nothing is sent or stored anywhere. Your own browser keeps the list locally for convenience."}}
+    {
+      "@type": "Question",
+      "name": "Is the shuffle actually fair?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. It uses your browser's cryptographic randomness (not the wobbly kind), run through an unbiased Fisher–Yates shuffle. Every arrangement of names is equally likely, and nobody can rig it — including us, since we're not involved: it all happens on your device."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can teams come out uneven?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Only by one. Dealing round-robin means 17 people into 3 teams gives 6, 6 and 5 — a bigger gap is impossible. Which team carries the extra body is random every shuffle."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you store the names?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — they never leave your browser. There's no server involved, so there's nowhere for them to go. Your own browser keeps the list locally so it's still there next week; delete it by clearing the box."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Isn't this what the spinning wheel does?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A picker wheel picks one name at a time, with suspense. This deals the whole list into teams at once, without the theatre. If you want drama, spin something; if you want fair sides before the siren goes, paste and shuffle."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it actually free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. No account, no trial, no card. It's a small tool, not a platform — and this one doesn't even have a server to pay for. The shelf has the rest of them."
+      }
+    }
   ]
 }
 </script>
