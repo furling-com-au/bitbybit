@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fact Matcher — fun facts icebreaker generator, free | bitibybit.com</title>
+<meta name="description" content="A fun facts icebreaker for work. Everyone secretly submits a fact about themselves, the team guesses who's who, then you reveal the answers. Free, no signup — a two truths and a lie alternative that beats the email thread.">
+<link rel="canonical" href="https://bitibybit.com/fact-matcher/">
+<meta property="og:title" content="Fact Matcher — the office icebreaker">
+<meta property="og:description" content="Everyone submits a secret fun fact, the team guesses who's who, then you reveal. Free, no signup.">
+<meta property="og:image" content="https://bitibybit.com/art/og-fact.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Fact Matcher",
+"url":"https://bitibybit.com/fact-matcher/","applicationCategory":"UtilitiesApplication",
+"operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},
+"description":"A fun facts icebreaker: everyone submits a secret fact, the group guesses who said it, then the organiser reveals. Free, no accounts."}
+</script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="bitibybit.com — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    bitibybit.com
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no signup · one shareable link</p>
+    <h1>Fact Matcher</h1>
+    <p class="lede">The office icebreaker without the awkward round-robin.
+    Everyone secretly submits one fun fact about themselves; the team guesses
+    who's who; then you reveal the answers. New starters, offsites, that first
+    all-hands where nobody knows anybody.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/fact-hero.png"
+           alt="Pixel art of a few little people with speech bubbles full of question marks, and a disguise mask"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="factForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Game title <em>(optional)</em></span>
+            <input type="text" id="title" maxlength="80" placeholder="New starters — August icebreaker">
+          </label>
+          <label class="field">
+            <span>The prompt <em>(edit it however you like)</em></span>
+            <input type="text" id="prompt" maxlength="140" value="Share a fun fact about yourself">
+          </label>
+          <label class="field">
+            <span>Note for the group <em>(optional)</em></span>
+            <textarea id="note" rows="4" maxlength="300" placeholder="Keep it work-appropriate and guessable. We'll do the reveal at Friday drinks."></textarea>
+          </label>
+        </div>
+        <div>
+          <label class="field">
+            <span>Who's playing? <em>(one name per line)</em></span>
+            <textarea id="names" rows="11" spellcheck="false" placeholder="Sam
+Priya
+Jordan
+Alex
+Mia
+Tom"></textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+        </div>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="makeBtn">Collect the facts →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevGames" hidden>
+      <p class="fine">Your earlier games (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>How it works</h2>
+    <h3>1. Add the names</h3>
+    <p>One name per line — everyone who's playing. Each person gets their own
+    private link off the shared page, so two Sams should get a surname initial
+    to tell them apart.</p>
+    <h3>2. Everyone submits privately</h3>
+    <p>Share one link. Each person taps their own name, gets a private card, and
+    writes their answer to the prompt — <em>Share a fun fact about yourself</em>
+    by default, though you can change it to anything: a hidden talent, where you
+    were born, your first concert. Nobody sees anyone else's answer. Not the
+    group, not even you until you choose to reveal.</p>
+    <h3>3. Guess, then reveal</h3>
+    <p>Once the facts are in, gather the room. Your organiser page lists the
+    facts in a shuffled order, numbered — read them out one at a time and let
+    everyone guess who's who. When you're done, hit <strong>reveal</strong> and
+    the shared link flips to the answer key: every fact, with the name attached.</p>
+
+    <h2>Why not just an email thread?</h2>
+    <p>Because the reply-all spirals, half the facts land in everyone's inbox
+    before the game starts, and the two quiet people never send theirs. Fact
+    Matcher keeps every submission secret until the reveal, so the guessing is
+    actually a surprise — and there's no thread to mute. It's the low-effort
+    version of <strong>two truths and a lie</strong>: one fact, submitted once,
+    guessed together.</p>
+
+    <h2>Good for</h2>
+    <p><strong>Onboarding.</strong> A batch of new starters learns names and
+    faces faster when there's a fact to hang each one on.
+    <strong>Team offsites and retros.</strong> A five-minute warm-up that isn't
+    a trust fall. <strong>Remote teams</strong> meeting in person for the first
+    time. <strong>Classrooms and clubs</strong> at the start of a term. Anywhere
+    a group needs to thaw out and an ordinary round of introductions would put
+    everyone to sleep.</p>
+
+    <h2>FAQ</h2>
+    <h3>Is it actually free?</h3>
+    <p>Yes. No account, no trial, no card. It's a small tool, not a platform.</p>
+    <h3>Can people see each other's facts before the reveal?</h3>
+    <p>No. Each fact lives on that person's private link and shows up nowhere
+    else until the organiser reveals. That's the whole point — the guessing only
+    works if the answers stay hidden.</p>
+    <h3>Someone lost their private link — now what?</h3>
+    <p>The organiser page has a reset next to every name. Reset it, and that
+    person can claim their name again from the shared link and pick up where they
+    left off. Their fact is kept.</p>
+    <h3>How many people can play?</h3>
+    <p>Three at a minimum — with fewer it's not much of a guessing game — and up
+    to sixty. For a bigger crowd, run two rounds and reveal them separately.</p>
+    <h3>What are some good icebreaker questions for work?</h3>
+    <p>Beyond a plain fun fact: a hidden talent, the worst job you've had, a
+    place on your bucket list, your karaoke song, or something people would never
+    guess about you. Set the prompt to whichever suits the room — keep it
+    guessable, and keep it kind.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">bitibybit.com</a> —
+    small free tools for groups. No tracking, no ads.</p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is the Fact Matcher icebreaker free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You make a game and share one link with the group."}},
+    {"@type": "Question", "name": "Can people see each other's facts before the reveal?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. Each fact lives on that person's private link and appears nowhere else until the organiser reveals the answers. The guessing only works because the submissions stay secret."}},
+    {"@type": "Question", "name": "Someone lost their private link — what happens?",
+     "acceptedAnswer": {"@type": "Answer", "text": "The organiser page has a reset next to every name. Reset it and that person can claim their name again from the shared link. Their fact is kept."}},
+    {"@type": "Question", "name": "How many people can play Fact Matcher?",
+     "acceptedAnswer": {"@type": "Answer", "text": "From three up to sixty. With fewer than three it isn't much of a guessing game; for a bigger crowd, run two rounds and reveal them separately."}}
+  ]
+}
+</script>
+<script src="/fact.js"></script>
+</body>
+</html>

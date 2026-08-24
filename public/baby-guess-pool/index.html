@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baby Guess Pool — guess the date & weight, free | bitibybit.com</title>
+<meta name="description" content="A free baby pool template — the online baby guessing game where everyone guesses the arrival date and weight, and the closest guess wins. Share one link, no accounts, no money. Perfect for a baby shower or the group chat.">
+<link rel="canonical" href="https://bitibybit.com/baby-guess-pool/">
+<meta property="og:title" content="Baby Guess Pool — guess the date and weight">
+<meta property="og:description" content="Everyone guesses the baby's arrival date and weight. Closest guess wins. Free, no signup, one shareable link.">
+<meta property="og:image" content="https://bitibybit.com/art/og-baby.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Baby Guess Pool",
+"url":"https://bitibybit.com/baby-guess-pool/","applicationCategory":"UtilitiesApplication",
+"operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},
+"description":"A baby guessing game where everyone guesses the arrival date and weight and the closest guess wins. Free, no accounts."}
+</script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="bitibybit.com — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    bitibybit.com
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no signup · one shareable link</p>
+    <h1>Baby Guess Pool</h1>
+    <p class="lede">Everyone picks the arrival date and the weight; when bub
+    actually lands, the closest guess wins the bragging rights. Set it up in a
+    minute, share one link, and let the group chat argue about whether it'll be
+    an early one.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/baby-hero.png"
+           alt="Pixel art scene of a pram and a rattle under paper bunting, with soft confetti dots"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="babyForm" novalidate>
+      <label class="field">
+        <span>Parents' names <em>(shows at the top of the pool)</em></span>
+        <input type="text" id="parents" maxlength="80" placeholder="Priya &amp; Tom" autocomplete="off">
+      </label>
+      <label class="field">
+        <span>Due date <em>(optional — any wording)</em></span>
+        <input type="text" id="dueDate" maxlength="60" placeholder="Early September, all going well">
+      </label>
+      <label class="field">
+        <span>Note for the group <em>(optional)</em></span>
+        <textarea id="note" rows="3" maxlength="300" placeholder="First bub. We're keeping the name a secret, so don't bother guessing that one."></textarea>
+      </label>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="makeBtn">Start the pool →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevPools" hidden>
+      <p class="fine">Your earlier pools (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>What's a baby guess pool?</h2>
+    <p>It's the oldest baby-shower game there is, minus the paper slips. Everyone
+    guesses two things — <strong>the day the baby arrives</strong> and
+    <strong>how much they'll weigh</strong> — and once the little one turns up,
+    whoever guessed closest wins. No prize required; the bragging rights carry
+    the whole thing. Some people call it a baby pool, a baby sweepstake, or a
+    guess-the-date game. Same idea, and this is the free online version.</p>
+
+    <h2>How it works</h2>
+    <h3>1. Start the pool</h3>
+    <p>Pop in the parents' names and, if you like, a rough due date and a note.
+    You get two links: a <strong>share link</strong> for the group chat or the
+    shower invite, and an <strong>organiser link</strong> that records the birth
+    and can tidy up guesses. Bookmark the organiser one — there are no accounts,
+    so the link is the only key.</p>
+    <h3>2. Everyone guesses</h3>
+    <p>Guests tap the share link, put in their name, a date, and a weight in
+    kilograms (type "3.4" — it's stored to the gram under the hood), plus an
+    optional cheeky message. No app, no login. Their browser remembers their own
+    guesses so they can take one back if they change their mind.</p>
+    <h3>3. Record the arrival</h3>
+    <p>When bub arrives, open your organiser link and enter the actual date and
+    weight (and the time, if you're feeling thorough). That closes guessing and
+    reveals the leaderboard to everyone — winner up top, sorted by who came
+    closest.</p>
+
+    <h2>How the winner is decided</h2>
+    <p>The scoring is deliberately simple and shown right on the page, so nobody
+    can accuse the organiser of fudging it. Each guess earns a closeness
+    score:</p>
+    <ul>
+      <li><strong>One point for every day</strong> away from the actual arrival
+      date.</li>
+      <li><strong>One point for every 100 grams</strong> away from the actual
+      weight.</li>
+    </ul>
+    <p>Add them up; the <strong>lowest score wins</strong>. That means being 200
+    grams out counts about the same as being two days out — date and weight pull
+    roughly equal weight, so you can't just spam a guess right on the due date
+    and ignore the scales. If two guesses tie, the one made first takes it.</p>
+
+    <h2>FAQ</h2>
+    <h3>Is it actually free?</h3>
+    <p>Yes. No account, no trial, no card. It's a small tool, not a platform,
+    and it never touches money.</p>
+    <h3>How is the winner decided?</h3>
+    <p>By a combined closeness score: one point per day off the real date, plus
+    one point per 100 grams off the real weight. Lowest score wins, ties go to
+    whoever guessed first. The rule is printed on the pool so it's all in the
+    open.</p>
+    <h3>Can guests guess without an account?</h3>
+    <p>Yes — that's the whole point. They tap the link, type a name, a date and
+    a weight, and they're in. Their browser quietly remembers which guesses are
+    theirs so they can pull one back.</p>
+    <h3>Can I run it for a baby shower before the birth?</h3>
+    <p>Absolutely — that's the classic use. Start the pool, share the link on
+    the shower invite or in the group chat, and collect guesses for as long as
+    you like. You only record the actual arrival weeks later, whenever bub
+    decides to show up.</p>
+    <h3>Does it handle prizes or money?</h3>
+    <p>No, deliberately. It sorts out who guessed closest; if there's a prize,
+    that stays between you and the group, same as always.</p>
+    <h3>Can I use pounds instead of kilograms?</h3>
+    <p>The pool runs in kilograms — the Australian default. If your guests think
+    in pounds, they can convert (1 lb is about 0.45 kg) and enter the kilogram
+    figure. The scoring works the same either way.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">bitibybit.com</a> —
+    small free tools for groups. No tracking, no ads.</p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is the baby guess pool free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You start a pool and share one link with the group. It never handles money."}},
+    {"@type": "Question", "name": "How is the winner decided?",
+     "acceptedAnswer": {"@type": "Answer", "text": "By a combined closeness score: one point for every day away from the actual arrival date, plus one point for every 100 grams away from the actual weight. The lowest score wins, and a tie goes to whoever guessed first. The rule is shown on the pool."}},
+    {"@type": "Question", "name": "Can guests guess without an account?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Guests tap the link, type their name, a date and a weight in kilograms, and they're in. Their browser remembers which guesses are theirs so they can remove one."}},
+    {"@type": "Question", "name": "Can I run it for a baby shower before the birth?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — that's the classic use. Start the pool, share the link on the shower invite or in the group chat, and collect guesses. You record the actual arrival later, whenever the baby shows up."}}
+  ]
+}
+</script>
+<script src="/baby.js"></script>
+</body>
+</html>

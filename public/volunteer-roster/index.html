@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Volunteer Roster — free sign up sheet online | bitibybit.com</title>
+<meta name="description" content="A free volunteer roster template. Set the shifts for your fete, canteen, working bee or sausage sizzle, share one link, and volunteers put their name down. No accounts. Print it or export CSV.">
+<link rel="canonical" href="https://bitibybit.com/volunteer-roster/">
+<meta property="og:title" content="Volunteer Roster — sign up, show up, sorted">
+<meta property="og:description" content="Set the shifts, share the link, volunteers sign themselves up. Free, no accounts. Print or export the filled roster.">
+<meta property="og:image" content="https://bitibybit.com/art/og-roster.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Volunteer Roster",
+"url":"https://bitibybit.com/volunteer-roster/","applicationCategory":"UtilitiesApplication",
+"operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},
+"description":"A volunteer sign-up roster with shifts and per-shift capacities. Free, no accounts. Print and CSV export."}
+</script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="bitibybit.com — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    bitibybit.com
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no signup · one shareable link</p>
+    <h1>Volunteer Roster</h1>
+    <p class="lede">The sign-up sheet for the fete, the canteen, the working bee,
+    the sausage sizzle. Set the shifts, share one link, and volunteers put their
+    own name down. You watch it fill in — and print or export the lot when it's done.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/roster-hero.png"
+           alt="Pixel art canteen marquee with a sign-up clipboard and a sausage-sizzle grill with a couple of snags on it"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="rosterForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Roster title <em>(optional)</em></span>
+            <input type="text" id="title" maxlength="80" placeholder="Spring Fair — canteen">
+          </label>
+          <label class="field">
+            <span>When is it? <em>(optional — any wording)</em></span>
+            <input type="text" id="eventDate" maxlength="60" placeholder="Saturday 4 October, 8am–2pm">
+          </label>
+          <label class="field">
+            <span>Note for volunteers <em>(optional)</em></span>
+            <textarea id="note" rows="4" maxlength="300" placeholder="Wear closed-in shoes. Hi-vis and aprons are in the canteen. Park behind the hall."></textarea>
+          </label>
+        </div>
+        <div>
+          <label class="field">
+            <span>Shifts <em>(one per line — "Job time xN")</em></span>
+            <textarea id="shifts" rows="9" spellcheck="false">Setup 8-9am x2
+Grill 9-11am x3
+Grill 11am-1pm x3
+Serving 9am-1pm x4
+Pack down 1-2pm x4</textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+        </div>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="makeBtn">Build the roster →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevRosters" hidden>
+      <p class="fine">Your earlier rosters (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>A sign-up sheet without the clipboard</h2>
+    <p>The paper roster on the canteen wall works right up until it doesn't:
+    it lives in one spot, the same three families sign every column, and by
+    Thursday nobody can remember whether Grill 9–11 is covered. This is that
+    sheet, online. You set the shifts once, share a link, and volunteers put
+    their own name down from wherever they are — the school pickup line, the
+    group chat, the couch. When a shift is full, it's full. No double-ups, no
+    chasing.</p>
+
+    <h2>Built for the coordinator who has enough on</h2>
+    <p>If you've ended up running the roster for the fete or the sizzle, you did
+    not sign up for a spreadsheet and thirty reply-all emails. There are
+    <strong>no accounts</strong> — not for you, not for the volunteers. You get
+    two links: a share link for the group, and a private coordinator link that
+    can remove a name or delete the roster. When the day comes, hit
+    <strong>Print</strong> for the fridge or the marquee wall, or
+    <strong>Download CSV</strong> to keep a copy. That's the whole tool.</p>
+
+    <h2>How it works</h2>
+    <h3>1. Set the shifts</h3>
+    <p>One per line, with how many people each needs —
+    <em>Grill 9-11am x3</em> means three spots on the grill for that slot.
+    The defaults suit a sausage sizzle; edit them for a canteen, a fete stall,
+    a working bee, or a whole day of them. No <em>xN</em> on a line? It gets two
+    spots. Up to twenty shifts, up to thirty spots each.</p>
+    <h3>2. Share the link</h3>
+    <p>Paste the share link into the class group, the club chat, the email.
+    There's a ready-made message waiting on your coordinator page. Bookmark the
+    coordinator link — there are no accounts, so that link is the only key.</p>
+    <h3>3. Watch it fill in</h3>
+    <p>Volunteers tap an open spot, type their name and an optional note (a
+    phone number, "can bring the urn"), done. Each shift shows a running count
+    and gets a tick when it's fully staffed. Changed plans? Everyone can take
+    their own name back off, which reopens the spot on the spot.</p>
+
+    <h2>FAQ</h2>
+    <h3>Is it actually free?</h3>
+    <p>Yes. No account, no trial, no card, no catch. It's a small tool run for
+    the love of it, not a platform.</p>
+    <h3>Do volunteers need an account?</h3>
+    <p>No. They tap the link, tap an open shift, type their name, done. Their
+    browser quietly remembers which spots are theirs so they can undo their own.</p>
+    <h3>Can someone drop out?</h3>
+    <p>Yes. Each volunteer's own spot has a "can't make it?" button that takes
+    their name off and reopens the shift. You can also remove any name from the
+    coordinator page if someone lets you know instead.</p>
+    <h3>Can I print it?</h3>
+    <p>Yes — the coordinator page has a Print button that lays out just the
+    roster, no buttons or chrome, ready for the fridge or the canteen wall.
+    There's a Download CSV button too, for a spreadsheet copy.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">bitibybit.com</a> —
+    small free tools for groups. No tracking, no ads.</p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is the volunteer roster free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You set the shifts and share one link with your volunteers."}},
+    {"@type": "Question", "name": "Do volunteers need an account?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. Volunteers tap the link, tap an open shift, type their name and an optional note, done. Their browser remembers which spots are theirs."}},
+    {"@type": "Question", "name": "Can someone drop out of a shift?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Each volunteer's own spot has a 'can't make it?' button that takes their name off and reopens the shift. The coordinator can also remove any name."}},
+    {"@type": "Question", "name": "Can I print the roster?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. The coordinator page has a Print button that lays out just the roster with no buttons, and a Download CSV button for a spreadsheet copy."}}
+  ]
+}
+</script>
+<script src="/roster.js"></script>
+</body>
+</html>

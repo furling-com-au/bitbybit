@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "art": "node scripts/gen-art.mjs && node scripts/art-cup.mjs && node scripts/art-kringle.mjs && node scripts/art-roles.mjs && node scripts/art-plate.mjs && node scripts/art-bracket.mjs && node scripts/art-card.mjs && node scripts/art-registry.mjs && node scripts/art-teams.mjs",
+    "art": "node scripts/gen-art.mjs && node scripts/art-cup.mjs && node scripts/art-kringle.mjs && node scripts/art-roles.mjs && node scripts/art-plate.mjs && node scripts/art-bracket.mjs && node scripts/art-card.mjs && node scripts/art-registry.mjs && node scripts/art-teams.mjs && node scripts/art-fact.mjs",
     "migrate:local": "wrangler d1 migrations apply bitbybit --local",
     "migrate:remote": "wrangler d1 migrations apply bitbybit --remote"
   },
