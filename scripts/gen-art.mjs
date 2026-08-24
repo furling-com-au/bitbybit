@@ -89,6 +89,35 @@ function iconTrophy() {
   return g;
 }
 
+
+function iconRattle() {
+  const g = new Grid(16, 16);
+  g.disc(8, 5, 4, P.gold);                       // rattle head
+  g.px(6, 4, P.paper); g.px(10, 6, "#b5852f");   // shine + shade
+  g.rect(7, 9, 8, 13, P.terra);                  // handle
+  g.disc(8, 14, 1, P.terraDark);                 // ring
+  g.px(4, 2, P.sky); g.px(12, 2, P.plum); g.px(13, 9, P.sage); // confetti
+  return g;
+}
+function iconClipboard() {
+  const g = new Grid(16, 16);
+  g.rect(3, 2, 12, 14, P.ink);                   // board
+  g.rect(4, 3, 11, 13, P.paper2);                // paper
+  g.rect(6, 1, 9, 3, P.grey);                    // clip
+  g.rect(5, 5, 10, 5, P.inkSoft); g.rect(5, 8, 10, 8, P.inkSoft); g.rect(5, 11, 8, 11, P.inkSoft);
+  g.px(11, 10, P.sageDark); g.px(12, 9, P.sageDark); g.px(10, 11, P.sageDark); // tick
+  return g;
+}
+function iconBubbles() {
+  const g = new Grid(16, 16);
+  g.rect(1, 2, 9, 7, P.sage);                    // first speech bubble
+  g.px(3, 8, P.sage); g.px(3, 9, P.sage);        // tail
+  g.rect(6, 8, 14, 13, P.terra);                 // second bubble
+  g.px(12, 14, P.terra);                         // tail
+  g.rect(3, 4, 7, 4, P.paper); g.rect(8, 10, 12, 10, P.paper); // text hints
+  return g;
+}
+
 /* ---------- footy field scene ------------------------------- */
 function fieldScene(w, h) {
   const g = new Grid(w, h, P.paper);
@@ -134,6 +163,7 @@ mkdirSync("public/art", { recursive: true });
 const icons = {
   footy: iconFooty(), horse: iconHorse(), gift: iconGift(), car: iconCar(),
   wolf: iconWolf(), pot: iconPot(), card: iconCard(), trophy: iconTrophy(),
+  rattle: iconRattle(), clipboard: iconClipboard(), bubbles: iconBubbles(),
 };
 for (const [name, g] of Object.entries(icons)) g.toPng(`public/icons/${name}.png`, 8);
 

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Group Card — one card everyone signs, free | bitibybit.com</title>
+<meta name="description" content="Make a group card online, free. Farewells, new babies, big birthdays, retirements — share one link, everyone signs, no accounts and no subscription. Hand it over as a link or print it.">
+<link rel="canonical" href="https://bitibybit.com/group-card/">
+<meta property="og:title" content="Group Card — one card, everyone signs">
+<meta property="og:description" content="Start a card, share the link, everyone signs. Free, no signup, no paywall.">
+<meta property="og:image" content="https://bitibybit.com/art/og-card.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="bitibybit.com — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    bitibybit.com
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no signup · one shareable link</p>
+    <h1>Group Card</h1>
+    <p class="lede">The farewell card, minus the manila envelope sneaking desk
+    to desk. Start a card, share the link with everyone except the person it's
+    for, and the messages pile up as sticky notes. Hand it over as a link — or
+    print it.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/card-hero.png"
+           alt="Pixel art of a big greeting card with a heart, an envelope beside it, and colourful sticky notes scattered around under a string of bunting"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="cardForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Who's it for?</span>
+            <input type="text" id="recipient" maxlength="60" placeholder="Dawn from accounts" autocomplete="off">
+          </label>
+          <label class="field">
+            <span>Card title <em>(optional)</em></span>
+            <input type="text" id="title" maxlength="80" placeholder="A card for…">
+          </label>
+        </div>
+        <div>
+          <label class="field">
+            <span>A note at the top <em>(optional)</em></span>
+            <textarea id="note" rows="5" maxlength="300" placeholder="Dawn's last day is Friday the 12th. Sign by Thursday — and keep it out of the main chat, it's a surprise."></textarea>
+          </label>
+        </div>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="makeBtn">Start the card →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevCards" hidden>
+      <p class="fine">Your earlier cards (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>How it works</h2>
+    <h3>1. Start the card</h3>
+    <p>Say who it's for, add a line at the top if you like — when to sign by,
+    what the occasion is, whether it's a surprise. Ten seconds, no account.</p>
+    <h3>2. Share the link — carefully</h3>
+    <p>You get two links: a <strong>share link</strong> for everyone who's
+    signing, and an <strong>organiser link</strong> that can remove messages or
+    delete the card. Bookmark the organiser one — there are no accounts, so the
+    link is the only key. Anyone with the share link types a name and a
+    message, done. Two Sams? Both fine — nobody's forced to become Sam H.</p>
+    <h3>3. Hand it over</h3>
+    <p>When the card's full, send the recipient the same share link so they can
+    read the lot — or print it. The print view is just the messages, no
+    buttons, ready for an actual envelope if you're feeling traditional.</p>
+
+    <h2>One rule: don't let them see it early</h2>
+    <p>The share link <em>is</em> the card, so the classic blunder is posting
+    it in a group chat the recipient is in. Make a side chat without them —
+    every workplace farewell already runs on one — and drop the link there.
+    The organiser page repeats this warning, because someone ignores it every
+    week and we'd rather it wasn't you.</p>
+
+    <h2>FAQ</h2>
+    <h3>Is it actually free?</h3>
+    <p>Yes. The big group-card sites charge per card once you pass a handful of
+    messages, or want you on a subscription. This one's a small tool, not a
+    platform: no account, no trial, no card required to make a card.</p>
+    <h3>Do people need accounts to sign?</h3>
+    <p>No — open the link, type a name and a message, done. It works on
+    whatever phone the link lands on.</p>
+    <h3>Can a message be removed?</h3>
+    <p>Yes, from either end. Signers can take their own message back off (same
+    browser they signed from), and the organiser link can remove any message —
+    handy when someone's "joke" doesn't survive contact with daylight.</p>
+    <h3>How do we give it to them?</h3>
+    <p>Share the link with the recipient once everyone's signed, or print the
+    page — the print view is just the card. Either way it stays up afterwards,
+    unless the organiser deletes it.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">bitibybit.com</a> —
+    small free tools for groups. No tracking, no ads.</p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is the group card actually free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account, no trial and no subscription. The big group-card sites charge per card or per month; this one is a small tool, not a platform."}},
+    {"@type": "Question", "name": "Do people need accounts to sign the card?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. Anyone with the share link types a name and a message, done. It works on any phone or browser."}},
+    {"@type": "Question", "name": "Can a message be removed from the card?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Signers can remove their own message from the browser they signed in, and the organiser link can remove any message."}},
+    {"@type": "Question", "name": "How do we give the card to the recipient?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Share the link with them once everyone has signed, or print the page — the print view shows just the card, no buttons."}}
+  ]
+}
+</script>
+<script src="/card.js"></script>
+</body>
+</html>

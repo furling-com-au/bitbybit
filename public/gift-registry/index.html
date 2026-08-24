@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixel Gift Registry — the wishing well alternative, no fees | bitibybit.com</title>
+<meta name="description" content="A wedding gift registry with no fees, drawn as a pixel-art 4WD. Guests claim a part — a tyre, the snorkel, the $15 air freshener — and the picture paints itself in. Money goes straight to you by PayID or bank transfer. Free, no signup.">
+<link rel="canonical" href="https://bitibybit.com/gift-registry/">
+<meta property="og:title" content="Pixel Gift Registry">
+<meta property="og:description" content="Guests claim a part and the pixel Prado paints itself in. No fees, no cards, no signup — the money goes straight to you.">
+<meta property="og:image" content="https://bitibybit.com/art/og-registry.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="bitibybit.com — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    bitibybit.com
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no fees · one shareable link</p>
+    <h1>Pixel Gift Registry</h1>
+    <p class="lede">A gift registry drawn as the thing itself. Your guests claim
+    a part — a tyre, the snorkel, the $15 air freshener — and a pixel-art
+    Toyota Prado paints itself in as the parts get claimed. The money goes
+    straight to you. We never touch it.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/registry-hero.png"
+           alt="Pixel art cutaway of a fully built Toyota Prado with rooftop tent, snorkel and bull bar"
+           width="1120" height="360">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="registryForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Your names</span>
+            <input type="text" id="coupleNames" maxlength="80" placeholder="Sam &amp; Alex">
+          </label>
+          <label class="field">
+            <span>Tagline <em>(optional)</em></span>
+            <input type="text" id="tagline" maxlength="140" value="Help us build the Prado, one part at a time.">
+          </label>
+          <label class="field">
+            <span>Wedding date <em>(optional — any wording)</em></span>
+            <input type="text" id="weddingDate" maxlength="60" placeholder="14 March 2027">
+          </label>
+          <label class="field">
+            <span>The overflow patch <em>(the one item that never fills up)</em></span>
+            <input type="text" id="overflowTitle" maxlength="60" value="Fuel &amp; rego for the first year">
+          </label>
+        </div>
+        <div>
+          <p class="fine" style="margin:0 0 .8rem">How guests pay you — all
+          optional, shown to guests <strong>after</strong> they claim a part.
+          PayID or bank transfer; we never handle the money.</p>
+          <label class="field">
+            <span>Payment method <em>(optional)</em></span>
+            <input type="text" id="payMethod" maxlength="40" value="PayID / Bank transfer">
+          </label>
+          <label class="field">
+            <span>PayID <em>(optional)</em></span>
+            <input type="text" id="payId" maxlength="80" placeholder="0400 000 000 or you@example.com">
+          </label>
+          <label class="field">
+            <span>Account name <em>(optional)</em></span>
+            <input type="text" id="accountName" maxlength="80" placeholder="S &amp; A Nguyen">
+          </label>
+          <div class="builder-cols">
+            <label class="field">
+              <span>BSB <em>(optional)</em></span>
+              <input type="text" id="bsb" maxlength="10" placeholder="000-000" autocomplete="off">
+            </label>
+            <label class="field">
+              <span>Account no. <em>(optional)</em></span>
+              <input type="text" id="accountNumber" maxlength="20" placeholder="12345678" autocomplete="off">
+            </label>
+          </div>
+          <label class="field">
+            <span>Payment note <em>(optional)</em></span>
+            <input type="text" id="payNote" maxlength="200" value="Pop the reference code in the description so we know it's you.">
+          </label>
+        </div>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="makeBtn">Open the garage →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevRegistries" hidden>
+      <p class="fine">Your earlier registries (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>Why this beats a wishing well</h2>
+    <p>A wishing well says <em>give us money</em>. This says <em>help us build
+    something</em> — and it turns out that's a completely different feeling.
+    Claiming the snorkel feels like joining in. Your aunt takes the driver's
+    seat, your mates split the tyres, someone claims the horn purely for the
+    joke, and everyone watches the car assemble on the page as the claims come
+    in. Same dollars, none of the awkwardness — and nobody has to write
+    "contribution towards our future" on an envelope.</p>
+    <p>There are <strong>126 parts from $15 to $1,200</strong>, so nobody feels
+    priced out: the air freshener is a real, claimable, $15 gift with its name
+    on the crew wall, same as the engine block.</p>
+
+    <h2>How it works</h2>
+    <h3>1. Make it yours</h3>
+    <p>Put in your names, the date, and how guests pay you — PayID or bank
+    details, shown only after someone claims. That's the whole setup; the
+    parts list, prices and pixel car are ready to go.</p>
+    <h3>2. Share the link</h3>
+    <p>You get two links: a <strong>share link</strong> for the invitations and
+    the group chat, and an <strong>organiser link</strong> where you tick off
+    payments as they land, export a CSV, and release claims if plans change.
+    Bookmark the organiser one — there are no accounts, so the link is the
+    only key.</p>
+    <h3>3. Watch it build</h3>
+    <p>Guests pick a part, leave their name and a note, and get your payment
+    details plus a bank-friendly reference code. Their part paints itself onto
+    the car on the spot — by the wedding you've got a finished pixel Prado and
+    a wall of names that built it.</p>
+
+    <h2>The honest bits</h2>
+    <p>Payments happen directly between your guests and your bank account.
+    That's why there are no fees — and also why there's no card checkout.
+    Guests see your PayID or BSB and do a transfer, the same way they'd pay
+    their share of dinner. This suits Australian weddings very well and
+    overseas guests somewhat less well; the FAQ below doesn't pretend
+    otherwise.</p>
+
+    <h2>FAQ</h2>
+    <h3>Can guests pay by card?</h3>
+    <p>No — and that's the trade. Registry platforms that take cards keep
+    2–3% of every gift plus a surcharge. Here guests pay you directly by PayID
+    or bank transfer, so a $500 gift arrives as $500. The claim screen shows
+    your details and a reference code to put in the transfer description.</p>
+    <h3>What about overseas guests?</h3>
+    <p>Straight answer: PayID is domestic-only. Overseas guests can claim a
+    part and pay by international transfer to your BSB and account number, but
+    their bank may charge them for it and it can take a few days. If you have
+    a lot of overseas guests, mention your preferred route (Wise and the like)
+    in the payment note.</p>
+    <h3>What if not everything gets claimed?</h3>
+    <p>Nothing bad. Every claim stands on its own — there's no target to hit
+    and no "all or nothing". And the <strong>overflow patch</strong> works the
+    other way too: once someone's favourite part is gone, or if none of them
+    appeal, guests can chip in any amount from $5 to $2,000. Nobody gets
+    turned away and the total has no ceiling.</p>
+    <h3>Do you touch the money?</h3>
+    <p>Never. We draw the car, keep the claim list, and generate reference
+    codes. The money moves from your guest's bank to yours without coming
+    anywhere near us — we couldn't take a cut if we wanted to.</p>
+    <h3>Can we register for something other than a 4WD?</h3>
+    <p>One subject for now — the Prado, 126 parts, drawn pixel by pixel. More
+    are coming, and slowly on purpose: the parts list is the craft, and a
+    lazy one would show. If the car isn't your thing, the tagline is yours to
+    change — plenty of couples are really funding a honeymoon that happens to
+    be shaped like a Prado.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">bitibybit.com</a> —
+    small free tools for groups. No tracking, no ads.</p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is the Pixel Gift Registry free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup, and no fees on gifts. Guests pay you directly by PayID or bank transfer; the site never touches the money."}},
+    {"@type": "Question", "name": "Can wedding guests pay by card?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. Guests pay by PayID or bank transfer directly to the couple, which is exactly why there are no platform fees or card surcharges. After claiming a part, guests see the couple's payment details and a bank-friendly reference code."}},
+    {"@type": "Question", "name": "Does it work for overseas guests?",
+     "acceptedAnswer": {"@type": "Answer", "text": "PayID is domestic to Australia. Overseas guests can claim a part and pay by international transfer using the BSB and account number, though their bank may charge for it. Couples with many overseas guests can suggest a preferred route in the payment note."}},
+    {"@type": "Question", "name": "What happens if not every part gets claimed?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Every claim stands alone — there is no target and no all-or-nothing. The overflow patch also accepts any amount from $5 to $2,000, so latecomers are never turned away."}},
+    {"@type": "Question", "name": "Does the registry handle the money?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Never. It draws the pixel car, keeps the claim list and generates reference codes. Money moves directly from guest to couple."}}
+  ]
+}
+</script>
+<script src="/registry-make.js"></script>
+</body>
+</html>

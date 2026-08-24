@@ -18,8 +18,11 @@ import sweep from "./tools/sweep.js";
 import kringle from "./tools/kringle.js";
 import roles from "./tools/roles.js";
 import plate from "./tools/plate.js";
+import bracket from "./tools/bracket.js";
+import card from "./tools/card.js";
+import registry from "./tools/registry.js";
 
-const TOOLS = [sweep, kringle, roles, plate];
+const TOOLS = [sweep, kringle, roles, plate, bracket, card, registry];
 const BY_TYPE = Object.fromEntries(TOOLS.map((t) => [t.type, t]));
 
 
@@ -28,8 +31,12 @@ const BY_TYPE = Object.fromEntries(TOOLS.map((t) => [t.type, t]));
    drains the D1 write quota" into a non-event. Creates are the big
    write amplifiers (a kringle create is ~1 row per participant), so
    they get the tight budget. */
-const CREATE_RE = /^\/api\/(sweeps|kringle|roles|plate)$/;
+const CREATE_RE = /^\/api\/(sweeps|kringle|roles|plate|bracket|card|registry)$/;
 async function overLimit(request, path) {
+  // Local dev is exempt — the persisted miniflare cache otherwise
+  // locks you out of your own test loop for an hour at a time.
+  const devHost = new URL(request.url).hostname;
+  if (devHost === "localhost" || devHost === "127.0.0.1") return false;
   const limit = CREATE_RE.test(path) ? 20 : 240; // per IP per hour
   const ip = request.headers.get("cf-connecting-ip") || "unknown";
   const kind = CREATE_RE.test(path) ? "create" : "act";

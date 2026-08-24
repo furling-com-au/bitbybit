@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Team Picker — random team generator, free | bitibybit.com</title>
+<meta name="description" content="Split any list of names into fair random teams. Pick '3 teams' or 'teams of 5', hit shuffle — sizes stay within one, every time. Free, no signup, and the names never leave your browser.">
+<link rel="canonical" href="https://bitibybit.com/team-picker/">
+<meta property="og:title" content="Team Picker — fair random teams">
+<meta property="og:description" content="Paste the names, hit shuffle, get fair teams. Nothing stored — the names never leave your browser.">
+<meta property="og:image" content="https://bitibybit.com/art/og-teams.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="bitibybit.com — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    bitibybit.com
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no signup · nothing leaves your browser</p>
+    <h1>Team Picker</h1>
+    <p class="lede">Split any list of names into fair random teams. Paste the
+    list, say how many teams — or how big — and hit shuffle. Sides come out
+    within one player of each other, every time, and nobody gets picked last.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/teams-hero.png"
+           alt="Pixel art of two little teams in sage and terracotta jerseys facing off across the halfway line on grass"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="teamForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Who's playing? <em>(one name per line)</em></span>
+            <textarea id="names" rows="12" spellcheck="false" placeholder="Sam
+Priya
+Jordan
+Alex
+Mia
+Ravi"></textarea>
+          </label>
+        </div>
+        <div>
+          <fieldset class="tp-modes">
+            <legend>How do you want them split?</legend>
+            <label class="tp-mode">
+              <input type="radio" name="mode" id="modeCount" value="count" checked>
+              <span>Split into</span>
+              <input type="number" id="teamCount" min="2" max="12" step="1" value="2"
+                     inputmode="numeric" aria-label="Number of teams">
+              <span>teams</span>
+            </label>
+            <label class="tp-mode">
+              <input type="radio" name="mode" id="modeSize" value="size">
+              <span>Teams of</span>
+              <input type="number" id="teamSize" min="2" max="20" step="1" value="5"
+                     inputmode="numeric" aria-label="People per team">
+            </label>
+          </fieldset>
+          <label class="tp-check">
+            <input type="checkbox" id="funNames">
+            <span>Name the teams <em>(The Galahs vs The Esky Lifters, and so on)</em></span>
+          </label>
+          <p class="status-line" id="statusLine" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <button type="submit" class="btn primary big" id="shuffleBtn" disabled>Shuffle into teams →</button>
+    </form>
+
+    <p class="pixel-note tp-privacy"><strong>Names never leave your browser.</strong>
+    There's no server side to this one at all — the shuffle happens on your device,
+    and the list is only saved in this browser so next week's re-split is quick.</p>
+  </section>
+
+  <section id="results" hidden>
+    <h2>The teams</h2>
+    <ul class="draw-grid" id="teamGrid"></ul>
+    <div class="team-actions">
+      <button class="btn primary" id="copyBtn" type="button">Copy teams</button>
+      <button class="btn" id="againBtn" type="button">↻ Shuffle again</button>
+    </div>
+    <p class="fine">Don't like your draw? Shuffle again re-deals the whole lot.
+    Copy puts a plain-text breakdown on the clipboard, ready for the group chat.</p>
+  </section>
+
+  <section class="content">
+    <h2>How the split works</h2>
+    <h3>1. Paste the names</h3>
+    <p>One per line, straight out of the group chat or the roll. Duplicates are
+    allowed — two Sams happen, and this tool isn't going to make one of them
+    change. Your browser remembers the list, so Tuesday's squad is still there
+    next Tuesday.</p>
+    <h3>2. Pick the shape</h3>
+    <p>Either <strong>split into 3 teams</strong> or <strong>teams of 5</strong> —
+    whichever way you think about it. Teams-of works the team count out for you:
+    17 names in teams of 6 makes three teams of 6, 6 and 5.</p>
+    <h3>3. Shuffle</h3>
+    <p>The list is shuffled with your browser's cryptographic randomness — the
+    same unriggable shuffle our sweeps use — then dealt round-robin, one name to
+    each team in turn. That's what keeps the sizes within one of each other:
+    no stacked sides, no captains, no last-picked kid.</p>
+
+    <h2>No server, nothing stored</h2>
+    <p>Most random team generators send your list to a server, and some of them
+    keep it. This one has no server side at all: no database, no account, no
+    analytics event with your Year 4 reading group in it. The shuffle runs on
+    your device and nothing is sent anywhere — the only copy of the list is the
+    one your own browser keeps locally, and clearing the box clears it.</p>
+
+    <h2>Where it earns its keep</h2>
+    <p><strong>Training nights</strong> — bibs versus no bibs in ten seconds,
+    before someone suggests captains. <strong>Trivia</strong> — mix the tables
+    so the same four know-it-alls don't win again. <strong>Classrooms</strong> —
+    group work without the groan, and without anyone engineering their group.
+    <strong>Work</strong> — workshop breakouts, hackathon teams, who's-on-lunch
+    rosters. Anywhere you'd otherwise pull names out of an actual hat.</p>
+
+    <h2>FAQ</h2>
+    <h3>Is the shuffle actually fair?</h3>
+    <p>Yes. It uses your browser's cryptographic randomness (not the wobbly
+    kind), run through an unbiased Fisher–Yates shuffle. Every arrangement of
+    names is equally likely, and nobody can rig it — including us, since we're
+    not involved: it all happens on your device.</p>
+    <h3>Can teams come out uneven?</h3>
+    <p>Only by one. Dealing round-robin means 17 people into 3 teams gives
+    6, 6 and 5 — a bigger gap is impossible. Which team carries the extra body
+    is random every shuffle.</p>
+    <h3>Do you store the names?</h3>
+    <p>No — they never leave your browser. There's no server involved, so
+    there's nowhere for them to go. Your own browser keeps the list locally
+    so it's still there next week; delete it by clearing the box.</p>
+    <h3>Isn't this what the spinning wheel does?</h3>
+    <p>A picker wheel picks one name at a time, with suspense. This deals the
+    whole list into teams at once, without the theatre. If you want drama, spin
+    something; if you want fair sides before the siren goes, paste and shuffle.</p>
+    <h3>Is it actually free?</h3>
+    <p>Yes. No account, no trial, no card. It's a small tool, not a platform —
+    and this one doesn't even have a server to pay for. The shelf has
+    <a href="/#tools">the rest of them</a>.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">bitibybit.com</a> —
+    small free tools for groups. No tracking, no ads.</p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is the team picker's shuffle fair?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — names are shuffled with the browser's cryptographic randomness using an unbiased Fisher–Yates shuffle, then dealt round-robin into teams. Every arrangement is equally likely and nobody can rig it."}},
+    {"@type": "Question", "name": "Can the teams come out uneven?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Only by one person. Round-robin dealing means 17 names into 3 teams gives sizes of 6, 6 and 5 — a bigger gap is impossible. Which team gets the extra person is random each shuffle."}},
+    {"@type": "Question", "name": "Do you store the names?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. The names never leave your browser — the tool has no server side at all, so nothing is sent or stored anywhere. Your own browser keeps the list locally for convenience."}}
+  ]
+}
+</script>
+<script src="/team-picker.js"></script>
+</body>
+</html>
