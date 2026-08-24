@@ -59,28 +59,55 @@ function shelfScene(w, h) {
   return g;
 }
 
-/* ---------- the tumbleweed ---------- */
+/* ---------- the tumbleweed ----------
+   The trick is airiness: a real tumbleweed is mostly gaps. So this
+   draws thin, broken strands — an irregular outer ring with holes in
+   it, a smaller inner ring, a few chords straight through, and some
+   sprigs poking past the silhouette. Density is kept deliberately
+   low; fill it in and it just reads as a brown donut. */
 function tumbleweed(size) {
   const g = new Grid(size, size);
   const c = (size - 1) / 2;
-  const rng = mulberry(5);
-  // a scruffy ring of twigs
-  for (let a = 0; a < 60; a++) {
-    const ang = (a / 60) * Math.PI * 2;
-    const r = c * (0.55 + rng() * 0.45);
-    g.px(Math.round(c + Math.cos(ang) * r), Math.round(c + Math.sin(ang) * r),
-      rng() > 0.5 ? "#8a6d4f" : "#a98a68");
-  }
-  // a few spokes so it reads as a tangle, not a donut
-  for (let a = 0; a < 6; a++) {
-    const ang = (a / 6) * Math.PI * 2 + 0.4;
-    for (let t = 1; t < c; t++) {
-      if (rng() > 0.45) continue;
-      g.px(Math.round(c + Math.cos(ang) * t), Math.round(c + Math.sin(ang) * t), "#6b5c48");
+  const rng = mulberry(31);
+  const LIGHT = "#b39468", MID = "#8a6d4f", DARK = "#5d4832";
+  const tone = () => (rng() < 0.34 ? DARK : rng() < 0.6 ? MID : LIGHT);
+
+  // broken strands: ring-ish, but with real gaps
+  function strand(radius, from, to, keep) {
+    const steps = Math.ceil((to - from) * radius * 1.4);
+    for (let i = 0; i <= steps; i++) {
+      if (rng() > keep) continue;                 // the gaps do the work
+      const ang = from + ((to - from) * i) / steps;
+      const rr = radius * (0.9 + rng() * 0.2);    // wobble so it isn't a compass circle
+      g.px(Math.round(c + Math.cos(ang) * rr), Math.round(c + Math.sin(ang) * rr), tone());
     }
   }
+  const TAU = Math.PI * 2;
+  strand(c * 0.95, 0, TAU, 0.62);                 // outer snarl
+  strand(c * 0.62, 0.9, 0.9 + TAU * 0.8, 0.5);    // inner strand, not a full circle
+  strand(c * 0.78, 3.4, 3.4 + TAU * 0.45, 0.5);
+
+  // chords straight through the middle — reads as twigs, keeps it open
+  for (let k = 0; k < 4; k++) {
+    const ang = rng() * Math.PI;
+    const len = c * (0.6 + rng() * 0.45);
+    const col = rng() > 0.5 ? MID : DARK;
+    for (let t = -len; t <= len; t += 0.55) {
+      if (rng() > 0.75) continue;
+      g.px(Math.round(c + Math.cos(ang) * t), Math.round(c + Math.sin(ang) * t), col);
+    }
+  }
+
+  // stray sprigs breaking the outline so the silhouette isn't a circle
+  for (let k = 0; k < 5; k++) {
+    const ang = rng() * TAU;
+    for (let t = c * 0.8; t <= c + 1.2; t += 0.7) {
+      g.px(Math.round(c + Math.cos(ang) * t), Math.round(c + Math.sin(ang) * t), DARK);
+    }
+  }
+
   return g;
 }
 
 shelfScene(112, 34).toPng("public/art/404-shelf.png", 10);
-tumbleweed(15).toPng("public/art/404-tumbleweed.png", 10);
+tumbleweed(21).toPng("public/art/404-tumbleweed.png", 10);

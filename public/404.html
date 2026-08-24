@@ -16,12 +16,18 @@
   }
   .lost-scene img.shelf { display: block; width: 100%; height: auto; }
   .tumbleweed {
-    position: absolute; bottom: 12%; left: -8%; width: 7%; height: auto;
-    animation: roll 5s steps(50, end) .5s 1 both;
+    position: absolute; bottom: 11%; left: -12%; width: 11%; height: auto;
+    /* Rolls through, then waits offstage a while before coming back —
+       looping matters, because a one-shot animation means anyone who
+       glanced away never sees what the "tap to roll it" hint refers to.
+       1150% of its own width carries it right across; 1260deg is the
+       honest amount of spin for that distance (travel ÷ circumference). */
+    animation: roll 10s steps(56, end) 1s infinite;
   }
   @keyframes roll {
-    from { transform: translateX(0) rotate(0deg); }
-    to   { transform: translateX(1700%) rotate(1440deg); }
+    0%   { transform: translateX(0) rotate(0deg); }
+    50%  { transform: translateX(1150%) rotate(1260deg); }
+    100% { transform: translateX(1150%) rotate(1260deg); }
   }
   .scene-hint {
     position: absolute; right: .6rem; bottom: .5rem;
@@ -67,13 +73,13 @@
   is wrong, or the person who made it hit delete — and deleted things really
   are gone around here. That's the deal.</p>
 
-  <div class="lost-scene" id="scene" title="Go on, send it through again">
+  <div class="lost-scene" id="scene" title="Tap to roll the tumbleweed through again">
     <img class="pixel shelf" src="/art/404-shelf.png"
          alt="A pixel-art shelf with nothing on it but dust, a cobweb, one lonely bolt and a blank price tag"
          width="1120" height="340">
     <img class="pixel tumbleweed" id="weed" src="/art/404-tumbleweed.png"
-         alt="" aria-hidden="true" width="150" height="150">
-    <span class="scene-hint" aria-hidden="true">tap to send it again</span>
+         alt="" aria-hidden="true" width="210" height="210">
+    <span class="scene-hint" aria-hidden="true">tap to roll the tumbleweed again</span>
   </div>
 
   <section class="excuse-box">
