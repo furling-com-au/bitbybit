@@ -2,7 +2,7 @@
   "name": "bitbybit",
   "private": true,
   "version": "0.1.0",
-  "description": "Small free tools for groups — bitbybit.com",
+  "description": "Small free tools for groups — bitibybit.com",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
