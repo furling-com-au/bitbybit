@@ -16,18 +16,18 @@
   }
   .lost-scene img.shelf { display: block; width: 100%; height: auto; }
   .tumbleweed {
-    position: absolute; bottom: 11%; left: -12%; width: 11%; height: auto;
+    position: absolute; bottom: 12%; left: -10%; width: 8%; height: auto;
     /* Rolls through, then waits offstage a while before coming back —
        looping matters, because a one-shot animation means anyone who
        glanced away never sees what the "tap to roll it" hint refers to.
-       1150% of its own width carries it right across; 1260deg is the
-       honest amount of spin for that distance (travel ÷ circumference). */
+       1400% of its own width carries it right across the shelf; 1440deg
+       is roughly the honest spin for that distance. */
     animation: roll 10s steps(56, end) 1s infinite;
   }
   @keyframes roll {
     0%   { transform: translateX(0) rotate(0deg); }
-    50%  { transform: translateX(1150%) rotate(1260deg); }
-    100% { transform: translateX(1150%) rotate(1260deg); }
+    50%  { transform: translateX(1400%) rotate(1440deg); }
+    100% { transform: translateX(1400%) rotate(1440deg); }
   }
   .scene-hint {
     position: absolute; right: .6rem; bottom: .5rem;
@@ -75,22 +75,22 @@
 
   <div class="lost-scene" id="scene" title="Tap to roll the tumbleweed through again">
     <img class="pixel shelf" src="/art/404-shelf.png"
-         alt="A pixel-art shelf with nothing on it but dust, a cobweb, one lonely bolt and a blank price tag"
-         width="1120" height="340">
+         alt="A pixel-art shelf unit: the top and bottom shelves hold a footy, a present, a trophy, a pot, an envelope and some books, but the middle shelf is empty apart from a dusty outline where something used to sit"
+         width="1120" height="480">
     <img class="pixel tumbleweed" id="weed" src="/art/404-tumbleweed.png"
          alt="" aria-hidden="true" width="210" height="210">
     <span class="scene-hint" aria-hidden="true">tap to roll the tumbleweed again</span>
   </div>
 
   <section class="excuse-box">
-    <p class="excuse-label">We drew for what happened to it</p>
+    <p class="excuse-label">Why isn't it here?</p>
     <div class="draw-card excuse-card">
-      <span class="draw-outcome">The official ruling</span>
+      <span class="draw-outcome">Best guess</span>
       <span class="draw-arrow" aria-hidden="true">▼</span>
-      <span class="draw-name" id="excuse" aria-live="polite">Nobody's drawn yet.</span>
+      <span class="draw-name" id="excuse" aria-live="polite">The organiser deleted it. Deleted things really are gone — that's the deal.</span>
     </div>
     <div class="lost-actions">
-      <button class="btn primary" id="drawBtn" type="button">Draw an excuse →</button>
+      <button class="btn primary" id="drawBtn" type="button">Another excuse →</button>
       <a class="btn" href="/#tools">Back to the tools</a>
     </div>
     <p class="excuse-tally" id="tally"></p>
@@ -141,16 +141,21 @@
   var tally = document.getElementById("tally");
   var draws = 0, last = -1;
 
-  document.getElementById("drawBtn").addEventListener("click", function () {
+  function nextExcuse() {
     var i;
     do { i = pick(EXCUSES.length); } while (EXCUSES.length > 1 && i === last);
     last = i;
     out.textContent = EXCUSES[i];
+  }
+  nextExcuse();               // one on arrival, so the button explains itself
+
+  document.getElementById("drawBtn").addEventListener("click", function () {
+    nextExcuse();
     draws++;
-    if (draws === 3) tally.textContent = "Three draws. The page is still gone, for what it's worth.";
+    if (draws === 3) tally.textContent = "Three excuses in. The page is still gone, for what it's worth.";
     else if (draws === 7) tally.textContent = "Seven. Admirable persistence. Genuinely.";
-    else if (draws === 12) tally.textContent = "Twelve draws on a 404 — you'd run a good sweep. There's a tool for that.";
-    else if (draws > 12 && draws % 5 === 0) tally.textContent = draws + " draws. We're both invested now.";
+    else if (draws === 12) tally.textContent = "Twelve excuses. You'd be good at running an office sweep — there's a tool for that.";
+    else if (draws > 12 && draws % 5 === 0) tally.textContent = draws + " excuses. We're both invested now.";
   });
 })();
 </script>

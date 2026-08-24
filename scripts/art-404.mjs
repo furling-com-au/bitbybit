@@ -8,53 +8,100 @@ import { Grid, P, mulberry } from "./pixel-lib.mjs";
 
 mkdirSync("public/art", { recursive: true });
 
-/* ---------- the empty shelf ---------- */
+/* ---------- the shelf ----------
+   A lone plank reads as "a horizontal bar", not a shelf. So this is a
+   whole cabinet: uprights, a top, three compartments with actual
+   things on two of them — and one conspicuously empty gap where the
+   thing you came for should be. The gap only reads as a gap if the
+   other shelves are full. */
+
+function ball(g, x, base) {
+  g.ellipse(x, base - 3, 5, 3, "#a63a2b");
+  g.rect(x - 3, base - 3, x + 3, base - 3, "#f6f1e4");
+  for (const dx of [-2, 0, 2]) g.rect(x + dx, base - 4, x + dx, base - 2, "#f6f1e4");
+}
+function gift(g, x, base) {
+  g.rect(x - 4, base - 6, x + 4, base, P.terra);
+  g.rect(x - 5, base - 8, x + 5, base - 6, P.terraDark);
+  g.rect(x - 1, base - 8, x, base, P.gold);
+  g.rect(x - 4, base - 10, x - 2, base - 8, P.gold);
+  g.rect(x + 1, base - 10, x + 3, base - 8, P.gold);
+}
+function trophy(g, x, base) {
+  g.rect(x - 3, base - 9, x + 3, base - 4, P.gold);
+  g.rect(x - 5, base - 8, x - 4, base - 6, P.gold);
+  g.rect(x + 4, base - 8, x + 5, base - 6, P.gold);
+  g.rect(x - 1, base - 4, x, base - 2, "#b5852f");
+  g.rect(x - 3, base - 2, x + 3, base, P.brownDark);
+  g.px(x - 2, base - 8, P.white);
+}
+function pot(g, x, base) {
+  g.rect(x - 5, base - 5, x + 5, base, P.terraDark);
+  g.rect(x - 6, base - 7, x + 6, base - 5, P.terra);
+  g.rect(x - 1, base - 9, x, base - 7, P.ink);
+}
+function envelope(g, x, base) {
+  g.rect(x - 6, base - 7, x + 6, base, P.paper);
+  g.rect(x - 6, base - 7, x + 6, base - 7, P.ink);
+  g.rect(x - 6, base, x + 6, base, P.ink);
+  g.rect(x - 6, base - 7, x - 6, base, P.ink);
+  g.rect(x + 6, base - 7, x + 6, base, P.ink);
+  for (let i = 0; i <= 5; i++) { g.px(x - 6 + i, base - 7 + i, P.inkSoft); g.px(x + 6 - i, base - 7 + i, P.inkSoft); }
+}
+function books(g, x, base) {
+  g.rect(x - 5, base - 2, x + 5, base, P.sageDark);
+  g.rect(x - 4, base - 5, x + 4, base - 3, P.plum);
+  g.rect(x - 5, base - 8, x + 3, base - 6, P.sky);
+}
+
 function shelfScene(w, h) {
   const g = new Grid(w, h, P.paper);
   const rng = mulberry(11);
-  const shelfY = h - 10;
 
-  // dust motes drifting in the empty space
-  for (let i = 0; i < 26; i++) {
-    const x = Math.floor(rng() * w);
-    const y = Math.floor(rng() * (shelfY - 2));
-    g.px(x, y, P.line);
+  const L = 14, R = w - 15;          // cabinet outer edges
+  const TOP = 1, BOT = 38;
+  const iL = L + 3, iR = R - 3;      // interior
+
+  // back panel, so compartments read as recessed
+  g.rect(L, TOP, R, BOT, P.paper2);
+
+  // carcass: uprights, top rail, bottom rail
+  g.rect(L, TOP, L + 2, BOT, "#8a6d4f");
+  g.rect(R - 2, TOP, R, BOT, "#8a6d4f");
+  g.rect(L, TOP, R, TOP + 2, "#8a6d4f");
+  g.rect(L, BOT - 2, R, BOT, "#8a6d4f");
+  g.rect(L, TOP, R, TOP, "#a98a68");                 // lit top edge
+  g.rect(L, BOT, R, BOT, P.brownDark);               // shadow underneath
+
+  // two shelf planks -> three compartments
+  for (const y of [14, 25]) {
+    g.rect(iL - 3, y, iR + 3, y + 1, "#8a6d4f");
+    g.rect(iL - 3, y, iR + 3, y, "#a98a68");
+    g.rect(iL - 3, y + 2, iR + 3, y + 2, P.brownDark);
   }
 
-  // the plank
-  g.rect(3, shelfY, w - 4, shelfY + 2, "#8a6d4f");
-  g.rect(3, shelfY, w - 4, shelfY, "#a98a68");     // lit top edge
-  g.rect(3, shelfY + 3, w - 4, shelfY + 3, P.brownDark); // shadow lip
+  // top shelf: full of things
+  ball(g, iL + 12, 13);
+  gift(g, iL + 34, 13);
+  trophy(g, iL + 58, 13);
 
-  // brackets
-  for (const bx of [7, w - 10]) {
-    g.rect(bx, shelfY + 4, bx + 2, shelfY + 8, P.brownDark);
-    g.rect(bx, shelfY + 4, bx, shelfY + 8, "#6b5c48");
-  }
+  // bottom shelf: also full
+  pot(g, iL + 13, 35);
+  envelope(g, iL + 36, 35);
+  books(g, iL + 60, 35);
 
-  // cobweb, top-left corner — nobody's been here for a while
-  for (let i = 1; i <= 7; i++) {
-    g.px(i, 0, P.line);
-    g.px(0, i, P.line);
-    g.px(i, 7 - i, P.line);
-  }
-  g.px(2, 2, P.line); g.px(4, 4, P.line);
+  // MIDDLE SHELF: the gap. A dust outline where something used to sit,
+  // and the little blank label that says what should have been here.
+  const gx = iL + 26, gy = 24;
+  for (let x = gx - 11; x <= gx + 11; x += 2) { g.px(x, gy, P.line); g.px(x, gy - 8, P.line); }
+  for (let y = gy - 8; y <= gy; y += 2) { g.px(gx - 11, y, P.line); g.px(gx + 11, y, P.line); }
+  g.rect(gx - 5, gy - 4, gx + 5, gy, P.paper3);        // faint dust patch
+  // cobweb, top-left inside corner
+  for (let i = 1; i <= 6; i++) { g.px(iL + i - 3, TOP + 3, P.line); g.px(iL - 3, TOP + 2 + i, P.line); g.px(iL + i - 3, TOP + 9 - i, P.line); }
 
-  // one lonely bolt left behind on the shelf
-  const bx = Math.floor(w * 0.62);
-  g.rect(bx, shelfY - 2, bx + 3, shelfY - 1, "#9a9086");
-  g.rect(bx + 1, shelfY - 3, bx + 2, shelfY - 3, "#7d746b");
-  g.px(bx + 1, shelfY - 2, "#c9bda9");
-
-  // an empty price-tag label hanging off the front
-  const lx = Math.floor(w * 0.22);
-  g.rect(lx, shelfY + 4, lx + 8, shelfY + 8, P.paper2);
-  g.rect(lx, shelfY + 4, lx + 8, shelfY + 4, P.ink);
-  g.rect(lx, shelfY + 8, lx + 8, shelfY + 8, P.ink);
-  g.rect(lx, shelfY + 4, lx, shelfY + 8, P.ink);
-  g.rect(lx + 8, shelfY + 4, lx + 8, shelfY + 8, P.ink);
-  g.px(lx + 4, shelfY + 3, P.inkSoft);           // string
-  g.rect(lx + 2, shelfY + 6, lx + 6, shelfY + 6, P.line); // blank line
+  // floor line + dust motes drifting
+  g.rect(0, 40, w - 1, 40, P.line);
+  for (let i = 0; i < 18; i++) g.px(Math.floor(rng() * w), 41 + Math.floor(rng() * 6), P.paper3);
 
   return g;
 }
@@ -109,5 +156,5 @@ function tumbleweed(size) {
   return g;
 }
 
-shelfScene(112, 34).toPng("public/art/404-shelf.png", 10);
+shelfScene(112, 48).toPng("public/art/404-shelf.png", 10);
 tumbleweed(21).toPng("public/art/404-tumbleweed.png", 10);
