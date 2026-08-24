@@ -22,6 +22,29 @@ import plate from "./tools/plate.js";
 const TOOLS = [sweep, kringle, roles, plate];
 const BY_TYPE = Object.fromEntries(TOOLS.map((t) => [t.type, t]));
 
+
+/* Best-effort per-IP throttle via the colo cache. Not airtight — a
+   distributed attacker gets past it — but it turns "one curl loop
+   drains the D1 write quota" into a non-event. Creates are the big
+   write amplifiers (a kringle create is ~1 row per participant), so
+   they get the tight budget. */
+const CREATE_RE = /^\/api\/(sweeps|kringle|roles|plate)$/;
+async function overLimit(request, path) {
+  const limit = CREATE_RE.test(path) ? 20 : 240; // per IP per hour
+  const ip = request.headers.get("cf-connecting-ip") || "unknown";
+  const kind = CREATE_RE.test(path) ? "create" : "act";
+  const hour = Math.floor(Date.now() / 3600000);
+  const key = new Request(`https://ratelimit.internal/${kind}/${ip}/${hour}`);
+  const cache = caches.default;
+  const hit = await cache.match(key);
+  const n = hit ? parseInt(await hit.text(), 10) || 0 : 0;
+  if (n >= limit) return true;
+  await cache.put(key, new Response(String(n + 1), {
+    headers: { "cache-control": "max-age=3600" },
+  }));
+  return false;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -35,6 +58,8 @@ export default {
 
     try {
       if (path.startsWith("/api/")) {
+        if (request.method === "POST" && await overLimit(request, path))
+          return json({ error: "Steady on — too many requests from this connection. Give it a few minutes." }, 429);
         for (const tool of TOOLS) {
           const res = await tool.api(request, env, url);
           if (res) return res;

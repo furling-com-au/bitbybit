@@ -53,12 +53,12 @@
     },
   };
 
-  function applyPreset(name, reroll) {
+  function applyPreset(name, reroll, writeBack = true) {
     const p = PRESETS[name];
     let n = parseInt($("playerCount").value, 10);
     if (!Number.isFinite(n)) n = p.def;
     n = Math.max(p.min, Math.min(MAX_ROLES, n));
-    $("playerCount").value = n;
+    if (writeBack) $("playerCount").value = n; // never rewrite mid-typing
     if (name === "spyfall" && (reroll || !spyLocation))
       spyLocation = LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)];
     $("roles").value = p.build(n).join("\n");
@@ -161,6 +161,11 @@
     btn.addEventListener("click", () => applyPreset(btn.getAttribute("data-preset"), true));
   }
   $("playerCount").addEventListener("input", () => {
+    // Rebuild live only once the number is usable; let people finish typing.
+    const n = parseInt($("playerCount").value, 10);
+    if (lastPreset && Number.isFinite(n) && n >= PRESETS[lastPreset].min) applyPreset(lastPreset, false, false);
+  });
+  $("playerCount").addEventListener("change", () => {
     if (lastPreset) applyPreset(lastPreset, false);
   });
   $("roles").addEventListener("input", () => { lastPreset = null; updateStatus(); });

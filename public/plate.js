@@ -20,12 +20,13 @@
     return catLines().slice(0, MAX_CATS).map((line) => {
       const m = line.match(/^(.*?)\s*[xX]\s*(\d+)$/);
       let name = line;
-      let capacity = 4;
+      let capacity;
       if (m && m[1].trim()) {
         name = m[1].trim();
         capacity = parseInt(m[2], 10);
       }
-      capacity = Math.min(20, Math.max(1, capacity || 4));
+      if (!Number.isFinite(capacity)) capacity = 4; // no xN suffix given
+      capacity = Math.min(20, Math.max(1, capacity)); // "x0" clamps to 1
       return { name: name.slice(0, 40), capacity };
     });
   }

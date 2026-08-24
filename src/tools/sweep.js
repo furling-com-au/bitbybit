@@ -141,7 +141,7 @@ function publicPage(row) {
   <p class="page-sub">${subLine(data)}</p>
   ${grid(data, { reveal: true })}
   <footer class="page-foot">
-    <p><a class="quiet-link" href="${HOME_FOR(data.kind)}">made with bit by bit →</a></p>
+    <p><a class="quiet-link" href="${HOME_FOR(data.kind)}">made with bitibybit.com →</a></p>
   </footer>
 </main>`;
   return html(pageShell({ title: row.title || "Sweep", body }));
@@ -198,8 +198,8 @@ function editPage(row, origin) {
   function post(path, confirmMsg, after) {
     if (confirmMsg && !confirm(confirmMsg)) return;
     fetch("/api/sweeps/" + token + "/" + path, { method: "POST" })
-      .then(function (r) { if (!r.ok) throw new Error("failed"); after(); })
-      .catch(function () { alert("That didn't work — try again."); });
+      .then(function (r) { if (!r.ok) return r.json().catch(function () { return {}; }).then(function (d) { throw new Error(d.error || "That didn't work — try again."); }); after(); })
+      .catch(function (e) { alert((e && e.message) || "That didn't work — try again."); });
   }
   document.getElementById("redrawBtn").addEventListener("click", function () {
     post("redraw", "Re-draw the whole sweep? Everyone gets shuffled to a new outcome.",

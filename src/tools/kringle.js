@@ -225,6 +225,7 @@ async function publicPage(row, env) {
 
   <div class="kk-banner" id="kkBanner" hidden>
     You're already in — <a id="kkBannerLink" href="#">open your draw →</a>
+    <a class="kk-rejoin" id="kkRejoin" href="#">Link not working, or not you? Claim again</a>
   </div>
 
   <p class="lede">Find your name and claim it. You'll get a private page
@@ -237,7 +238,7 @@ async function publicPage(row, env) {
   <footer class="page-foot">
     <p class="fine">One claim per name. Grabbed the wrong one, or someone
     pinched yours? The organiser can reset it.</p>
-    <p><a class="quiet-link" href="${HOME}">made with bit by bit →</a></p>
+    <p><a class="quiet-link" href="${HOME}">made with bitibybit.com →</a></p>
   </footer>
 </main>
 
@@ -252,6 +253,11 @@ async function publicPage(row, env) {
   if (saved) {
     document.getElementById("kkBannerLink").href = "/p/" + saved;
     document.getElementById("kkBanner").hidden = false;
+    document.getElementById("kkRejoin").addEventListener("click", function (e) {
+      e.preventDefault();
+      try { localStorage.removeItem(lsKey); } catch (e2) { /* private mode */ }
+      location.reload();
+    });
     buttons.forEach(function (b) { b.disabled = true; });
     return;
   }
@@ -329,7 +335,7 @@ async function participantPage(prow, row, env) {
   <p class="fine">Whatever you write here shows up for exactly one person —
   whoever drew you. Sizes, colours, "no candles please".</p>
   <label class="field">
-    <textarea id="wishText" rows="5" maxlength="${MAX_WISHLIST}"
+    <textarea id="wishText" aria-label="Your wishlist" rows="5" maxlength="${MAX_WISHLIST}"
       placeholder="Book vouchers, dark chocolate, socks with a bit of personality…">${esc(pdata.wishlist || "")}</textarea>
   </label>
   <div class="kk-wishrow">
@@ -341,7 +347,7 @@ async function participantPage(prow, row, env) {
     <p class="fine">Keep this page to yourself. Bookmark it — it's the only
     way back in. Lost it? The organiser can reset your name so you can claim
     it again.</p>
-    <p><a class="quiet-link" href="${HOME}">made with bit by bit →</a></p>
+    <p><a class="quiet-link" href="${HOME}">made with bitibybit.com →</a></p>
   </footer>
 </main>
 
@@ -362,7 +368,7 @@ async function participantPage(prow, row, env) {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ text: document.getElementById("wishText").value }),
     }).then(function (r) {
-      if (!r.ok) throw new Error("failed");
+      if (!r.ok) return r.json().catch(function () { return {}; }).then(function (d) { throw new Error(d.error || "That didn't work — try again."); });
       btn.textContent = "Saved ✓";
       setTimeout(function () {
         btn.textContent = "Save wishlist";
@@ -402,7 +408,7 @@ async function editPage(row, env, url) {
 
   <p class="kicker">Organiser view</p>
   <h1>${esc(row.title || "Kris Kringle")}</h1>
-  <p class="page-sub">${parts.length} in the draw · ${claimed} claimed · drawn ${fmtDate(row.created_at)}</p>
+  <p class="page-sub">${parts.length} in the draw · ${claimed} claimed · drawn ${fmtDate(row.updated_at)}</p>
   ${chips(data)}
 
   <div class="share-box">
@@ -414,7 +420,7 @@ async function editPage(row, env, url) {
   </div>
 
   <p class="pixel-note">This page never shows who drew whom — we can't spoil
-  it for you either.</p>
+  it for you either. If someone claimed a name that wasn't theirs, a reset restores access — but they've already seen that draw, so the clean fix is a full re-draw.</p>
 
   <div class="status-wrap">
     <table class="status-table">
@@ -457,8 +463,8 @@ async function editPage(row, env, url) {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(payload || {}),
-    }).then(function (r) { if (!r.ok) throw new Error("failed"); after(); })
-      .catch(function () { alert("That didn't work — try again."); });
+    }).then(function (r) { if (!r.ok) return r.json().catch(function () { return {}; }).then(function (d) { throw new Error(d.error || "That didn't work — try again."); }); after(); })
+      .catch(function (e) { alert((e && e.message) || "That didn't work — try again."); });
   }
   document.querySelectorAll("[data-reset]").forEach(function (btn) {
     btn.addEventListener("click", function () {

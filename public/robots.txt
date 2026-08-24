@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /s/
 Disallow: /e/
+Disallow: /p/
 Disallow: /api/
 Sitemap: https://bitibybit.com/sitemap.xml

@@ -26,6 +26,11 @@
     el.classList.remove("warn");
 
     if (!n) { el.innerHTML = ""; return; }
+    if (o < 2) {
+      el.classList.add("warn");
+      el.innerHTML = "Add at least two horses (one per line) before drawing.";
+      return;
+    }
     if (n === o) {
       el.innerHTML = `<strong>${n} names, ${o} horses</strong> — one each. Tidy.`;
     } else if (n < o) {

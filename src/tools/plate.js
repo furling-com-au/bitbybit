@@ -171,8 +171,8 @@ function board(data, bySlot, organiser) {
       <li class="plate-slot open" data-slot="${sid}">
         <button class="btn plate-put" type="button">Put me down</button>
         <form class="plate-form" hidden>
-          <input type="text" name="name" maxlength="${MAX_NAME}" placeholder="Your name" autocomplete="name">
-          <input type="text" name="dish" maxlength="${MAX_DISH}" placeholder="What are you bringing?">
+          <input type="text" name="name" maxlength="${MAX_NAME}" placeholder="Your name" aria-label="Your name" autocomplete="name">
+          <input type="text" name="dish" maxlength="${MAX_DISH}" placeholder="What are you bringing?" aria-label="What are you bringing?">
           <div class="plate-form-row">
             <button class="btn primary plate-mini" type="submit">Lock it in</button>
             <button class="btn ghost plate-mini plate-cancel" type="button">Never mind</button>
@@ -223,7 +223,7 @@ async function publicPage(row, env) {
     <p class="fine">No accounts — this browser remembers which spots are yours,
     and your own cards get an undo. If you're on someone else's phone,
     just ask the organiser to shift things.</p>
-    <p><a class="quiet-link" href="${HOME}">made with bit by bit →</a></p>
+    <p><a class="quiet-link" href="${HOME}">made with bitibybit.com →</a></p>
   </footer>
 </main>
 
@@ -249,7 +249,10 @@ async function publicPage(row, env) {
     var card = cardFor(c.slotId);
     if (!card) return false; // spot is open again (organiser removed it)
     var dishEl = card.querySelector(".plate-slot-dish");
-    return dishEl && dishEl.textContent === c.dish; // stale if someone else holds it now
+    // Compare with the server's whitespace normalisation, or our own
+    // claims look stale the moment a dish has a double space in it.
+    var norm = function (t) { return String(t || "").trim().replace(/\s+/g, " ").slice(0, 80); };
+    return dishEl && norm(dishEl.textContent) === norm(c.dish); // stale if someone else holds it now
   });
   saveMine(list);
 
@@ -274,7 +277,7 @@ async function publicPage(row, env) {
         if (!r.ok && r.status !== 404) throw new Error("failed");
         saveMine(mine().filter(function (x) { return x.slotId !== c.slotId; }));
         location.reload();
-      }).catch(function () { alert("That didn't work — try again."); });
+      }).catch(function (e) { alert((e && e.message) || "That didn't work — try again."); });
     });
     card.appendChild(undo);
   });
@@ -408,15 +411,15 @@ async function editPage(row, env, origin) {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ slotId: btn.getAttribute("data-slot") }),
-      }).then(function (r) { if (!r.ok) throw new Error("failed"); location.reload(); })
-        .catch(function () { alert("That didn't work — try again."); });
+      }).then(function (r) { if (!r.ok) return r.json().catch(function () { return {}; }).then(function (d) { throw new Error(d.error || "That didn't work — try again."); }); location.reload(); })
+        .catch(function (e) { alert((e && e.message) || "That didn't work — try again."); });
     });
   });
   document.getElementById("deleteBtn").addEventListener("click", function () {
     if (!confirm("Delete this board for good? The shared link will stop working.")) return;
     fetch("/api/plate/" + token + "/delete", { method: "POST" })
-      .then(function (r) { if (!r.ok) throw new Error("failed"); location.href = ${JSON.stringify(HOME)}; })
-      .catch(function () { alert("That didn't work — try again."); });
+      .then(function (r) { if (!r.ok) return r.json().catch(function () { return {}; }).then(function (d) { throw new Error(d.error || "That didn't work — try again."); }); location.href = ${JSON.stringify(HOME)}; })
+      .catch(function (e) { alert((e && e.message) || "That didn't work — try again."); });
   });
 })();
 </script>`;

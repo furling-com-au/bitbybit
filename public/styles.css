@@ -556,3 +556,9 @@ button.kk-name:disabled { cursor: not-allowed; }
   .plate-slot { box-shadow: none; border-color: #000; break-inside: avoid; }
   .plate-you { display: none; }
 }
+
+.kk-rejoin {
+  display: block; margin-top: .35rem; font-size: .74rem;
+  color: inherit; opacity: .85; text-decoration: underline;
+  text-underline-offset: 3px;
+}
