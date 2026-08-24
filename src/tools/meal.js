@@ -91,7 +91,7 @@ function parseCreate(body) {
   let dates = [];
   if (Array.isArray(body.dates) && body.dates.length) {
     const seen = new Set();
-    for (const raw of body.dates) {
+    for (const raw of body.dates.slice(0, MAX_DAYS + 1)) { // cap before processing
       const dt = parseISO(raw);
       if (!dt) throw badInput("One of those days isn't a real calendar date.");
       const iso = toISO(dt);

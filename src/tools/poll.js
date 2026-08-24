@@ -33,6 +33,7 @@ const MAX_OPTION = 80;
 const MAX_NAME = 40;
 const MIN_OPTIONS = 2;
 const MAX_OPTIONS = 30;
+const MAX_VOTERS = 2000;
 
 const NOUNS = ["tally", "ballot", "quorum", "showhands", "verdict",
   "uptake", "motion", "aye", "shortlist", "pick"];
@@ -126,44 +127,77 @@ function sanitiseChoices(raw, validIds) {
   return [...new Set(arr.filter((c) => validIds.has(c)))];
 }
 
+
+/* Optimistic read-modify-write on instances.data. The whole poll
+   config lives in one JSON column, so a naive read-then-write lets a
+   voter's suggestion clobber an organiser's "close" (and vice versa).
+   This re-reads inside a guarded UPDATE and retries on a concurrent
+   writer — same pattern as bracket.js. `mutate(data)` returns the new
+   data object, or throws an Error (with optional .status) to abort. */
+async function mutateData(env, id, mutate) {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const cur = await env.DB.prepare(
+      "SELECT data, updated_at FROM instances WHERE id = ?"
+    ).bind(id).first();
+    if (!cur) { const e = new Error("not found"); e.status = 404; throw e; }
+    const data = JSON.parse(cur.data);
+    const next = mutate(data); // may throw a domain error to abort
+    const res = await env.DB.prepare(
+      "UPDATE instances SET data = ?, updated_at = ? WHERE id = ? AND updated_at = ?"
+    ).bind(JSON.stringify(next), new Date().toISOString(), id, cur.updated_at).run();
+    if (res.meta.changes) return next;
+  }
+  const e = new Error("Too many people editing this poll at once — try again in a moment.");
+  e.status = 409;
+  throw e;
+}
+
 async function vote(request, env) {
   const body = await request.json().catch(() => ({}));
   const row = await getBySlug(env, String(body.slug || ""));
   if (!row || row.tool_type !== "poll") return json({ error: "not found" }, 404);
 
-  const data = JSON.parse(row.data);
+  let data = JSON.parse(row.data);
   if (data.closed) return json({ error: "Voting's closed on this one." }, 409);
 
-  let options = data.options;
-  const validIds = new Set(options.map((o) => o.id));
-  let choices = sanitiseChoices(body.choices, validIds);
+  let choices = sanitiseChoices(body.choices, new Set(data.options.map((o) => o.id)));
 
   // Voter-suggested option: match an existing one case-insensitively,
-  // else append it (atomically-ish — read, append, write). A fresh
-  // random id keeps two near-simultaneous suggestions from colliding.
+  // else append it atomically (mutateData re-reads + CAS-retries, so a
+  // suggestion can never clobber a concurrent close or another suggestion).
   let addedOptionId = null;
   if (data.allowSuggestions) {
     const sug = String(body.suggestion || "").trim().replace(/\s+/g, " ").slice(0, MAX_OPTION);
     if (sug) {
-      const existing = options.find((o) => o.text.toLowerCase() === sug.toLowerCase());
+      const existing = data.options.find((o) => o.text.toLowerCase() === sug.toLowerCase());
       if (existing) {
         if (!choices.includes(existing.id)) choices.push(existing.id);
-      } else if (options.length >= MAX_OPTIONS) {
-        return json({ error: "This poll's hit the thirty-option limit — vote for one that's already there." }, 409);
       } else {
-        let nid;
-        const used = new Set(options.map((o) => o.id));
-        do { nid = optId(); } while (used.has(nid));
-        options = options.concat([{ id: nid, text: sug }]);
-        await updateInstanceData(env, row.id, JSON.stringify({ ...data, options }));
-        choices.push(nid);
-        addedOptionId = nid;
+        const nid = optId();
+        data = await mutateData(env, row.id, (d) => {
+          if (d.closed) { const e = new Error("Voting's closed on this one."); e.status = 409; throw e; }
+          if (d.options.some((o) => o.text.toLowerCase() === sug.toLowerCase())) return d; // someone added it first
+          if (d.options.length >= MAX_OPTIONS) { const e = new Error("This poll's hit the thirty-option limit — vote for one that's already there."); e.status = 409; throw e; }
+          return { ...d, options: d.options.concat([{ id: nid, text: sug }]) };
+        });
+        // resolve the id actually stored (a racing duplicate may have won)
+        const stored = data.options.find((o) => o.text.toLowerCase() === sug.toLowerCase());
+        addedOptionId = stored ? stored.id : nid;
+        choices.push(addedOptionId);
       }
     }
   }
 
-  if (data.mode !== "multi") choices = choices.slice(0, 1);
+  // Single-choice poll: a fresh suggestion IS the ballot; otherwise keep the first pick.
+  if (data.mode !== "multi") choices = addedOptionId ? [addedOptionId] : choices.slice(0, 1);
   if (!choices.length) throw badInput("Pick an option before you vote.");
+
+  // Cap the ballot box, like every other participants-based tool.
+  const count = await env.DB.prepare(
+    "SELECT COUNT(*) AS n FROM participants WHERE instance_id = ?"
+  ).bind(row.id).first();
+  if (((count && count.n) || 0) >= MAX_VOTERS)
+    return json({ error: "This poll's had two thousand votes — that's plenty for a group decision." }, 409);
 
   const voterName = String(body.voterName || "").trim().replace(/\s+/g, " ").slice(0, MAX_NAME);
   const token = randomString(22);
@@ -174,7 +208,7 @@ async function vote(request, env) {
   ).bind(row.id, token, JSON.stringify({ voterName, choices }), now, now).run();
 
   const parts = await allVotes(env, row.id);
-  return json({ token, choices, addedOptionId, tally: computeTally(options, parts) }, 201);
+  return json({ token, choices, addedOptionId, tally: computeTally(data.options, parts) }, 201);
 }
 
 async function changeVote(vtoken, request, env) {
@@ -205,42 +239,35 @@ async function setClosed(token, request, env) {
   if (!row || row.tool_type !== "poll") return json({ error: "not found" }, 404);
   const body = await request.json().catch(() => ({}));
   const closed = !!body.closed;
-  const data = JSON.parse(row.data);
-  await updateInstanceData(env, row.id, JSON.stringify({ ...data, closed }));
+  await mutateData(env, row.id, (d) => ({ ...d, closed }));
   return json({ ok: true, closed });
 }
 
 async function addOption(token, request, env) {
   const row = await getByToken(env, token);
   if (!row || row.tool_type !== "poll") return json({ error: "not found" }, 404);
-  const data = JSON.parse(row.data);
   const body = await request.json().catch(() => ({}));
   const text = String(body.text || "").trim().replace(/\s+/g, " ").slice(0, MAX_OPTION);
   if (!text) throw badInput("Type the option first.");
-  if (data.options.some((o) => o.text.toLowerCase() === text.toLowerCase()))
-    return json({ error: "That option's already on the list." }, 409);
-  if (data.options.length >= MAX_OPTIONS)
-    return json({ error: "Thirty options is the limit." }, 409);
-  let nid;
-  const used = new Set(data.options.map((o) => o.id));
-  do { nid = optId(); } while (used.has(nid));
-  const options = data.options.concat([{ id: nid, text }]);
-  await updateInstanceData(env, row.id, JSON.stringify({ ...data, options }));
+  await mutateData(env, row.id, (d) => {
+    if (d.options.some((o) => o.text.toLowerCase() === text.toLowerCase())) { const e = new Error("That option's already on the list."); e.status = 409; throw e; }
+    if (d.options.length >= MAX_OPTIONS) { const e = new Error("Thirty options is the limit."); e.status = 409; throw e; }
+    return { ...d, options: d.options.concat([{ id: optId(), text }]) };
+  });
   return json({ ok: true });
 }
 
 async function removeOption(token, request, env) {
   const row = await getByToken(env, token);
   if (!row || row.tool_type !== "poll") return json({ error: "not found" }, 404);
-  const data = JSON.parse(row.data);
   const body = await request.json().catch(() => ({}));
   const optionId = String(body.optionId || "");
-  if (data.options.length <= MIN_OPTIONS)
-    return json({ error: "A poll needs at least two options — add another before removing this one." }, 409);
-  const options = data.options.filter((o) => o.id !== optionId);
-  if (options.length === data.options.length)
-    return json({ error: "That option wasn't found." }, 404);
-  await updateInstanceData(env, row.id, JSON.stringify({ ...data, options }));
+  await mutateData(env, row.id, (d) => {
+    if (d.options.length <= MIN_OPTIONS) { const e = new Error("A poll needs at least two options — add another before removing this one."); e.status = 409; throw e; }
+    const options = d.options.filter((o) => o.id !== optionId);
+    if (options.length === d.options.length) { const e = new Error("That option wasn't found."); e.status = 404; throw e; }
+    return { ...d, options };
+  });
   return json({ ok: true });
 }
 
@@ -317,8 +344,11 @@ async function publicPage(row, env) {
 
   const ballot = closed ? "" : `
   <form id="ballot" class="poll-ballot panel" novalidate>
-    <ul class="poll-opts">${optionsHtml}</ul>
-    ${suggestField}
+    <fieldset class="poll-fieldset">
+      <legend class="poll-legend">${esc(data.question)}</legend>
+      <ul class="poll-opts">${optionsHtml}</ul>
+      ${suggestField}
+    </fieldset>
     <label class="field poll-name">
       <span>Your name <em>(optional)</em></span>
       <input type="text" id="voterName" maxlength="${MAX_NAME}" autocomplete="name"

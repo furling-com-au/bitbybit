@@ -1652,3 +1652,9 @@ button.fact-name:disabled { cursor: not-allowed; }
 @media print {
   .hens-kitty, .hens-agenda li { box-shadow: none; border-color: #000; break-inside: avoid; }
 }
+
+.poll-fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.poll-legend { /* question already shows as the h1; expose it to AT only */
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
