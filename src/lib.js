@@ -47,13 +47,18 @@ export function shuffle(arr) {
   return arr;
 }
 
-/* Readable slugs: friendly to paste in a group chat, random enough
-   not to be guessable in bulk. Tools pass their own noun list. */
+/* Slugs are capability URLs: whoever holds /s/:slug is treated as an
+   invited guest (the gift registry reveals payment details to anyone
+   with the slug, by design — the couple shares it). So the random
+   part MUST be long enough that the whole space can't be enumerated.
+   The two readable words are for humans; the 14-char random tail is
+   the security boundary — 31^14 ≈ 2^69, far past brute force even
+   with the read endpoints unthrottled. Do NOT shorten it. */
 const SLUG_ADJ = ["swift", "lucky", "plucky", "rowdy", "tidy", "bold", "spare",
   "handy", "keen", "solid", "bright", "cheeky", "quiet", "rapid", "wily"];
 
 export function newSlug(nouns) {
-  return `${SLUG_ADJ[rand(SLUG_ADJ.length)]}-${nouns[rand(nouns.length)]}-${randomString(4)}`;
+  return `${SLUG_ADJ[rand(SLUG_ADJ.length)]}-${nouns[rand(nouns.length)]}-${randomString(14)}`;
 }
 
 export function badInput(message) {
