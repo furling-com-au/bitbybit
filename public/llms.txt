@@ -53,6 +53,20 @@ links to the free tool that does the job.
 - [tournament bracket: how to seed](https://bitibybit.com/tournament-bracket/how-to-seed/): How tournament seeding, byes and formats work.
 - [volunteer roster: templates](https://bitibybit.com/volunteer-roster/templates/): Ready-to-copy shift structures for canteens, fetes and sausage sizzles.
 
+## For agents
+
+Every tool here can be created programmatically in one unauthenticated POST.
+No account, no API key, no OAuth. The response returns two capability URLs:
+/s/{slug} to share with the group, /e/{editToken} for the organiser.
+
+- [API documentation](https://bitibybit.com/api-docs/): all 16 create endpoints, with fields, limits and examples.
+- [OpenAPI 3.1 description](https://bitibybit.com/openapi.json): machine-readable.
+- [API catalog](https://bitibybit.com/.well-known/api-catalog): RFC 9727 linkset.
+- [auth.md](https://bitibybit.com/auth.md): the capability-URL model, rate limits and revocation.
+
+Rate limits are 20 creates and 240 other POSTs per IP per hour. Please create
+instances only when a person actually asks for one — each is a real database row.
+
 ## About
 
 - [Press kit](https://bitibybit.com/press/): story angles, images, facts.

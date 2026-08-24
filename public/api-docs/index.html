@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API — create any tool in one request | biti by bit</title>
+<meta name="description" content="A free, no-account API for creating group tools — sweeps, gift registries, meal trains, polls. One unauthenticated POST returns a share link and an organiser link.">
+<link rel="canonical" href="https://bitibybit.com/api-docs/">
+<meta property="og:title" content="biti by bit API — no account, one request">
+<meta property="og:description" content="Create a sweep, a registry, a meal train or a poll with a single unauthenticated POST. No API key, no OAuth.">
+<meta property="og:image" content="https://bitibybit.com/art/og-home.png">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://bitibybit.com/api-docs/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="biti by bit API — no account, one request">
+<meta name="twitter:description" content="Create a sweep, a registry, a meal train or a poll with a single unauthenticated POST.">
+<meta name="twitter:image" content="https://bitibybit.com/art/og-home.png">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<style>
+  .api-tool { margin: 2.4rem 0; padding-top: 1.4rem; border-top: 3px solid var(--line); }
+  .api-tool h3 { margin: 0 0 .3rem; }
+  .endpoint { margin: .8rem 0; font-size: .85rem; }
+  .verb { display: inline-block; background: var(--ink); color: var(--paper);
+    padding: .12rem .5rem; font-size: .7rem; letter-spacing: .1em; margin-right: .4rem; }
+  .table-scroll { overflow-x: auto; }
+  .api-table { width: 100%; border-collapse: collapse; font-size: .78rem; margin: .6rem 0 1rem; }
+  .api-table th { text-align: left; font-size: .68rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-faint); padding: .3rem .6rem .3rem 0; }
+  .api-table td { padding: .4rem .6rem .4rem 0; border-top: 1px solid var(--line);
+    vertical-align: top; color: var(--ink-soft); }
+  .api-table code { font-size: .76rem; color: var(--ink); }
+  .eg-label { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ink-faint); margin: 1rem 0 .3rem; }
+  pre.eg { background: var(--paper-2); border-left: 5px solid var(--gold);
+    padding: .7rem .9rem; overflow-x: auto; font-size: .78rem; line-height: 1.5; margin: 0 0 .6rem; }
+  .errs { font-size: .8rem; color: var(--ink-soft); margin: .2rem 0 1rem; }
+  .errs .msg { color: var(--ink-faint); }
+  .flow { font-size: .82rem; color: var(--ink-soft); }
+  .toc { columns: 2; column-gap: 2rem; font-size: .82rem; margin: 1rem 0 2rem; padding: 0; list-style: none; }
+  .toc li { margin: 0 0 .25rem; break-inside: avoid; }
+</style>
+</head>
+<body>
+<div class="scanlines" aria-hidden="true"></div>
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="biti by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    biti by bit
+    <span class="beta-badge">beta</span>
+  </a>
+  <nav class="site-nav"><a href="/#tools">the tools</a></nav>
+</header>
+
+<main class="wrap page">
+  <p class="kicker">For agents and developers</p>
+  <h1>The API</h1>
+  <p class="lede">Every tool on this site can be created in one HTTP request,
+  with no account, no API key and no OAuth. You get back two links: one to share
+  with the group, one for whoever is organising.</p>
+
+  <section class="content">
+    <h2>How it works</h2>
+    <p>POST to a tool's create endpoint. You get <code>201</code> and two
+    strings:</p>
+    <pre class="eg"><code>{ "slug": "lucky-wombat-4kq2m9xrbt7vec",
+  "editToken": "h3n8pquzr4wmd2fkjt6xayb95s" }</code></pre>
+    <ul>
+      <li><code>/s/{slug}</code> — the share link. This is the one that goes in
+      the group chat.</li>
+      <li><code>/e/{editToken}</code> — organiser control: edit, reset, redraw,
+      export, delete. Secret. Treat it like an API key.</li>
+    </ul>
+    <p>Possession of a URL is the whole authorisation — there is nothing to log
+    in to and no identity attached. If you are building against this, read
+    <a href="/auth.md">auth.md</a> for the full model, including revocation.</p>
+    <p>Machine-readable: <a href="/openapi.json">openapi.json</a> ·
+    <a href="/.well-known/api-catalog">API catalog</a> (RFC 9727) ·
+    <a href="/llms.txt">llms.txt</a></p>
+
+    <h2>Rate limits</h2>
+    <p>Per IP, per clock hour: <strong>20</strong> creates and
+    <strong>240</strong> other POSTs. Over the limit is a <code>429</code>.
+    There is no key that raises this. Please don't create instances
+    speculatively — each one is a real row in a real database.</p>
+
+    <h2>Errors</h2>
+    <p><code>400</code> validation failed (the <code>error</code> string is
+    written for a human — show it to them), <code>404</code> unknown link or
+    unknown resource, <code>409</code> someone took that slot first,
+    <code>429</code> rate limited. There is no <code>401</code> or
+    <code>403</code>, because there is no identity to reject.</p>
+
+    <h2>The tools</h2>
+    <ul class="toc">
+      <li><a href="#sweep">Office Sweep (Grand Final / Melbourne Cup)</a></li>
+      <li><a href="#kringle">Kris Kringle</a></li>
+      <li><a href="#roles">Secret Role Dealer</a></li>
+      <li><a href="#plate">Bring a Plate</a></li>
+      <li><a href="#bracket">Tournament Bracket</a></li>
+      <li><a href="#card">Group Card</a></li>
+      <li><a href="#registry">Pixel Gift Registry (Build the Prado)</a></li>
+      <li><a href="#fact">Fact Matcher</a></li>
+      <li><a href="#baby">Baby Guess Pool</a></li>
+      <li><a href="#roster">Volunteer Roster</a></li>
+      <li><a href="#meal">Meal Train</a></li>
+      <li><a href="#poll">Group Vote</a></li>
+      <li><a href="#recipe">Recipe Collection</a></li>
+      <li><a href="#giftidea">Gift Idea Board</a></li>
+      <li><a href="#hens">Hens &amp; Shower Planner</a></li>
+      <li><a href="#qotd">Question of the Day</a></li>
+    </ul>
+
+  <section class="api-tool" id="sweep">
+    <h3>Office Sweep (Grand Final / Melbourne Cup)</h3>
+    <p>Creates a random sweep for an office or group. Every outcome — a margin bucket, a horse, a barrier number — is assigned to a name at the moment the sweep is created, and the organiser shares the finished result. — <a href="/grand-final-sweep/ (kind=&quot;gf&quot;) or /melbourne-cup-sweep/ (kind=&quot;cup&quot;) — from the VIA map in worker.js and HOME in sweep.js">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/sweeps</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>title</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed and truncated to 80 characters; anything longer is cut without an error. Internal runs of whitespace are left as they are. Never rejected — if it is absent or empty it is stored as an empty string and the pages fall back to a default heading (&quot;The office sweep&quot;, or &quot;Sweep&quot;).</td>
+        </tr>
+        <tr>
+          <td><code>kind</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Only the exact lowercase string &quot;cup&quot; selects the Melbourne Cup version. Everything else — absent, &quot;Cup&quot;, &quot;GF&quot;, null, a number — gives the grand final version. Never returns an error.</td>
+        </tr>
+        <tr>
+          <td><code>outcomes</code></td>
+          <td><code>string[]</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Each entry is trimmed, internal whitespace is collapsed to single spaces, and the entry is truncated to 60 characters. Empty entries are dropped. The list is then silently capped at 64 entries — anything past the 64th is discarded without an error. What remains must hold at least 2 entries, and they must all be different ignoring case; either failure returns 400. A value that is not an array is treated as an empty list and fails the minimum.</td>
+        </tr>
+        <tr>
+          <td><code>names</code></td>
+          <td><code>string[]</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Each name is trimmed, internal whitespace is collapsed to single spaces, and the name is truncated to 40 characters. Empty entries are dropped. The list is silently capped at 300 names — extras are discarded without an error. At least 2 must remain, or the request returns 400. Duplicate names are accepted: unlike outcomes, names are not checked for repeats, and a name listed twice appears twice. The count does not have to match the number of outcomes. With fewer names than outcomes, the names come round again and some people are drawn more than once. With more names than outcomes, the surplus miss out and are listed separately.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;title&quot;: &quot;Level 3 Grand Final Sweep&quot;,
+  &quot;kind&quot;: &quot;gf&quot;,
+  &quot;outcomes&quot;: [
+    &quot;1-6 points&quot;,
+    &quot;7-12 points&quot;,
+    &quot;13-24 points&quot;,
+    &quot;25-39 points&quot;,
+    &quot;40+ points&quot;
+  ],
+  &quot;names&quot;: [
+    &quot;Sharni&quot;,
+    &quot;Dave K&quot;,
+    &quot;Priya&quot;,
+    &quot;Tom H&quot;,
+    &quot;Bec&quot;
+  ]
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — outcomes is absent, is not an array, or holds fewer than two usable entries once blanks are dropped. A request body that is not valid JSON lands here too, because it is read as an empty object. <span class="msg">“Add at least two outcomes.”</span></li><li><code>400</code> — Two or more outcomes are the same once case is ignored, such as &quot;Draw&quot; and &quot;draw&quot;. <span class="msg">“Outcomes contain a duplicate — each one must be different.”</span></li><li><code>400</code> — names is absent, is not an array, or holds fewer than two usable entries once blanks are dropped. <span class="msg">“Add at least two names.”</span></li><li><code>429</code> — More than 20 creation requests from the same connection within the current clock hour. The count is shared across every create endpoint on the site. The limit is not applied when the site is running in development mode. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> There is no participant step. The draw runs when the sweep is created and the result is fixed from that moment. The organiser shares the public page at /s/&lt;slug&gt;, where everyone reads the same grid of assignments; nobody claims anything and nobody needs a link of their own. The organiser keeps the page at /e/&lt;editToken&gt;, which can reshuffle the whole draw with POST /api/sweeps/&lt;editToken&gt;/redraw or remove it with POST /api/sweeps/&lt;editToken&gt;/delete. This tool has no private per-person page.</p>
+  </section>
+
+  <section class="api-tool" id="kringle">
+    <h3>Kris Kringle</h3>
+    <p>Creates a Kris Kringle draw. Everyone is matched into a single loop, so nobody draws themselves and nobody is left out. Each person claims their own name from the shared link and gets a private page naming who they are buying for. The organiser never sees the pairings. — <a href="/kris-kringle/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/kringle</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>title</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed and truncated to 80 characters. Internal whitespace is left as it is. Never rejected — an absent or empty title falls back to the default heading &quot;Kris Kringle&quot;.</td>
+        </tr>
+        <tr>
+          <td><code>names</code></td>
+          <td><code>string[]</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Each name is trimmed, internal whitespace is collapsed to single spaces, and the name is truncated to 40 characters. Empty entries are dropped. The count is not silently capped here: after cleaning there must be at least 3 names and no more than 100, and anything outside that returns 400. Names must all be different ignoring case; the first repeat returns 400 and the message quotes it. A value that is not an array is treated as an empty list and fails the minimum.</td>
+        </tr>
+        <tr>
+          <td><code>budget</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed and truncated to 40 characters. Free text: never validated and never parsed as a number, so &quot;$25&quot; and &quot;25 bucks, no more&quot; are both accepted. Absent or empty means the chip is left off.</td>
+        </tr>
+        <tr>
+          <td><code>exchangeDate</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed and truncated to 60 characters. Free text: it is not parsed or checked as a date, so &quot;Friday 19 December, 12pm&quot; is fine. Absent or empty means the chip is left off.</td>
+        </tr>
+        <tr>
+          <td><code>note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed at the ends and truncated to 300 characters. Internal whitespace and line breaks are kept. Never validated. Absent or empty means the note block is left off.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;title&quot;: &quot;Accounts Team Kris Kringle&quot;,
+  &quot;names&quot;: [
+    &quot;Sharni&quot;,
+    &quot;Dave K&quot;,
+    &quot;Priya&quot;,
+    &quot;Tom H&quot;,
+    &quot;Bec&quot;,
+    &quot;Jarrah&quot;
+  ],
+  &quot;budget&quot;: &quot;$25&quot;,
+  &quot;exchangeDate&quot;: &quot;Friday 19 December, 12pm&quot;,
+  &quot;note&quot;: &quot;Drop your present under the tree in the Level 3 kitchen before the lunch.&quot;
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — names is absent, is not an array, or holds fewer than three usable entries once blanks are dropped. A request body that is not valid JSON lands here too, because it is read as an empty object. <span class="msg">“Add at least three names — with two it&#39;s not a secret, it&#39;s a swap.”</span></li><li><code>400</code> — More than 100 names remain once blanks are dropped. The count is not trimmed down for you; the request is refused. <span class="msg">“That&#39;s more than 100 people — split it into two draws.”</span></li><li><code>400</code> — Two names match once case is ignored. The message quotes the offending name in its cleaned form. <span class="msg">“&quot;&lt;name&gt;&quot; is in the list twice — add a surname initial so the right one gets claimed.”</span></li><li><code>429</code> — More than 20 creation requests from the same connection within the current clock hour. The count is shared across every create endpoint on the site. The limit is not applied when the site is running in development mode. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> Everyone opens the shared page at /s/&lt;slug&gt;, finds their own name in the grid and taps &quot;That&#39;s me&quot;. That sends POST /api/kringle/claim with {slug, name}, where the name is trimmed, whitespace-collapsed and truncated to 40 characters. The first claim on a name wins and returns 200 {token}. A later claim on the same name returns 409 &quot;That name&#39;s already been claimed. If it&#39;s yours, ask the organiser to reset you.&quot; A name that is not in the draw returns 404 &quot;That name isn&#39;t in this draw.&quot; That token is the participant&#39;s only credential: the browser keeps it and opens the private page at /p/&lt;token&gt;, which reveals their giftee and lets them save a wishlist with POST /api/kringle/p/&lt;token&gt;/wishlist {text}, truncated to 500 characters. The organiser page at /e/&lt;editToken&gt; shows only who has claimed and who has opened their page — never who drew whom — and can reset one person with POST /api/kringle/&lt;editToken&gt;/reset {name}, redraw the whole thing, or delete it.</p>
+  </section>
+
+  <section class="api-tool" id="roles">
+    <h3>Secret Role Dealer</h3>
+    <p>Creates a pool of hidden party-game roles — Werewolf, Spy, and the like — behind one shared link. Players type their name, are dealt a random role from the ones still unclaimed, and read it on a private page nobody else can open, the organiser included. — <a href="/secret-role-dealer/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/roles</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>title</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed and truncated to 80 characters. Internal whitespace is left as it is. Never rejected — an absent or empty title falls back to &quot;Secret roles&quot; on the shared and organiser pages, and to &quot;The game&quot; on a player&#39;s role page.</td>
+        </tr>
+        <tr>
+          <td><code>note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed at the ends and truncated to 300 characters. Internal whitespace and line breaks are kept. Never validated. Absent or empty means both note blocks are left off.</td>
+        </tr>
+        <tr>
+          <td><code>roles</code></td>
+          <td><code>string[]</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. The number of entries is the number of players, so three &quot;Villager&quot; entries create three villager slots. Each entry is trimmed, internal whitespace is collapsed to single spaces, and the entry is truncated to 80 characters. Empty entries are dropped. The count is not silently capped: after cleaning there must be at least 2 entries and no more than 40, and anything outside that returns 400. Duplicates are expected and are never rejected. A value that is not an array is treated as an empty list and fails the minimum.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;title&quot;: &quot;Werewolf at the Christmas Party&quot;,
+  &quot;note&quot;: &quot;Keep your role to yourself until the first night. Phones face down at the table.&quot;,
+  &quot;roles&quot;: [
+    &quot;Werewolf&quot;,
+    &quot;Werewolf&quot;,
+    &quot;Seer&quot;,
+    &quot;Doctor&quot;,
+    &quot;Villager&quot;,
+    &quot;Villager&quot;,
+    &quot;Villager&quot;,
+    &quot;Villager&quot;
+  ]
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — roles is absent, is not an array, or holds fewer than two usable entries once blanks are dropped. A request body that is not valid JSON lands here too, because it is read as an empty object. <span class="msg">“Add at least two roles — one per line.”</span></li><li><code>400</code> — More than 40 roles remain once blanks are dropped. The message quotes the number that was received. <span class="msg">“That&#39;s &lt;n&gt; roles — this tool tops out at 40.”</span></li><li><code>429</code> — More than 20 creation requests from the same connection within the current clock hour. The count is shared across every create endpoint on the site. The limit is not applied when the site is running in development mode. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> Players open the shared page at /s/&lt;slug&gt;, type their name into the join form and submit. That sends POST /api/roles/claim with {slug, name}, where the name is trimmed, whitespace-collapsed and truncated to 40 characters; an empty name returns 400 &quot;Tell us your name first.&quot; The server picks one of the unclaimed slots at random and returns its token. If every role has gone, the response is 409 &quot;All the roles are dealt.&quot; If that name has already joined, 409 &quot;Someone already joined with that name — add a surname initial.&quot; If several people grab at the same instant and the chosen slot keeps being taken, the server retries up to three times and then returns 409 &quot;Everyone grabbed at once — try again.&quot;, and the player can submit again. The token is the player&#39;s only credential: the browser keeps it and the role is shown at /p/&lt;token&gt;. The organiser page at /e/&lt;editToken&gt; lists who has joined and who has looked, but not which role each person holds, unless ?reveal=1 is added to the address. From there the organiser can reset one player with POST /api/roles/&lt;editToken&gt;/reset {name}, redeal the whole pool, or delete the game.</p>
+  </section>
+
+  <section class="api-tool" id="plate">
+    <h3>Bring a Plate</h3>
+    <p>Creates a bring-a-plate signup board. You set up named categories, each with a fixed number of spots, and anyone with the link claims a spot with their name and what they are bringing. — <a href="/bring-a-plate/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/plate</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>title</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed to single spaces, truncated to 80 characters. Never rejected — absent or empty is stored as an empty string and the pages fall back to the default heading &quot;Bring a plate&quot;.</td>
+        </tr>
+        <tr>
+          <td><code>eventDate</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed to single spaces, truncated to 60 characters. Free text: never parsed or validated as a date. Absent or empty means the chip is left off.</td>
+        </tr>
+        <tr>
+          <td><code>note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed at the ends and truncated to 300 characters. Internal whitespace is not collapsed, unlike title and eventDate, so line breaks survive. Never validated.</td>
+        </tr>
+        <tr>
+          <td><code>categories</code></td>
+          <td><code>object[]</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Between 1 and 12 entries. A missing value, or anything that is not an array, is treated as an empty list and returns 400; more than 12 entries also returns 400 rather than being trimmed down. Category names must all be different ignoring case.</td>
+        </tr>
+        <tr>
+          <td><code>categories[].name</code></td>
+          <td><code>string</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Trimmed, internal whitespace collapsed to single spaces, truncated to 40 characters. Must not be empty once trimmed. The name is checked before the capacity, so a category that is wrong on both reports the name error. Uniqueness across the whole array is case-insensitive.</td>
+        </tr>
+        <tr>
+          <td><code>categories[].capacity</code></td>
+          <td><code>number</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. A whole number from 1 to 20. Numeric strings are converted, so &quot;4&quot; and 4 are the same. Missing, null, or a value with a fractional part such as 2.5 returns 400. Each spot gets its own id, numbered from 1 up to the capacity within that category.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;title&quot;: &quot;Friday Arvo Team Lunch&quot;,
+  &quot;eventDate&quot;: &quot;Friday 12 September, 12:30pm&quot;,
+  &quot;note&quot;: &quot;Level 3 kitchen from 12:30 — please label anything with nuts.&quot;,
+  &quot;categories&quot;: [
+    {
+      &quot;name&quot;: &quot;Mains&quot;,
+      &quot;capacity&quot;: 4
+    },
+    {
+      &quot;name&quot;: &quot;Salads&quot;,
+      &quot;capacity&quot;: 3
+    },
+    {
+      &quot;name&quot;: &quot;Desserts&quot;,
+      &quot;capacity&quot;: 2
+    },
+    {
+      &quot;name&quot;: &quot;Drinks and ice&quot;,
+      &quot;capacity&quot;: 2
+    }
+  ]
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — categories is absent, is not an array, or is an empty array. A request body that is not valid JSON lands here too, because it is read as an empty object. <span class="msg">“Add at least one category.”</span></li><li><code>400</code> — categories holds more than 12 entries. <span class="msg">“Twelve categories is the limit — combine a couple.”</span></li><li><code>400</code> — A category&#39;s name is empty or whitespace only once trimmed. <span class="msg">“Every category needs a name.”</span></li><li><code>400</code> — A category&#39;s capacity is not a whole number, or is below 1 or above 20. <span class="msg">“Spots per category must be a whole number from 1 to 20.”</span></li><li><code>400</code> — Two categories have the same name once case is ignored. <span class="msg">“Two categories share a name — make each one different.”</span></li><li><code>429</code> — More than 20 creation requests from the same connection within the current clock hour. The count is shared across every create endpoint on the site. The limit is not applied when the site is running in development mode. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> Guests open the shared page at /s/&lt;slug&gt; and take an open spot with POST /api/plate/claim {slug, slotId, name, dish}. The slot id is positional and has the form &quot;c&lt;categoryIndex&gt;-&lt;n&gt;&quot;, where categoryIndex is the position of the category in the list you supplied, counting from 0, and n runs from 1 to that category&#39;s capacity. Both name and dish are required: the name is trimmed, whitespace-collapsed and truncated to 40 characters, the dish to 80. A successful claim returns 201 with a 16-character secret. The guest&#39;s browser keeps that secret, and it is the only way to hand the spot back later, with POST /api/plate/unclaim {slug, slotId, secret}. If someone else takes the same spot first, the claim returns 409 &quot;Someone snapped that spot up seconds ago — pick another.&quot; The organiser uses the edit token to free a spot with POST /api/plate/&lt;editToken&gt;/remove {slotId}, or to remove the board with POST /api/plate/&lt;editToken&gt;/delete.</p>
+  </section>
+
+  <section class="api-tool" id="bracket">
+    <h3>Tournament Bracket</h3>
+    <p>Creates a single-elimination tournament bracket from a list of entrants. The field is padded out to the next power of two with byes, and the whole bracket is drawn at the moment you create it. — <a href="/tournament-bracket/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/bracket</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>title</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Whitespace at the ends is trimmed and runs of internal whitespace collapse to single spaces. Anything past 80 characters is silently truncated, so a long title is never an error. Absent or empty is accepted, and the pages then show &quot;Tournament bracket&quot;.</td>
+        </tr>
+        <tr>
+          <td><code>entrants</code></td>
+          <td><code>string[]</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Anything that is not an array is treated as an empty list and fails the minimum below. Entries that are not strings are converted to text before cleaning, so values such as null or false arrive as the literal words &quot;null&quot; and &quot;false&quot; and survive as names rather than being dropped. Each entry is trimmed, has internal whitespace collapsed to single spaces, and is silently truncated to 40 characters. Blank entries are dropped before the count is checked, so padding the list with empty strings does not raise the total. What is left must hold at least 2 and no more than 64 entrants; outside that range returns an error. All entrants must differ once case is ignored — a case-insensitive duplicate returns an error rather than being quietly dropped.</td>
+        </tr>
+        <tr>
+          <td><code>seeding</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. The only value with an effect is the exact string &quot;listed&quot;, which keeps the order you supplied as the seeding. Anything else — absent, null, &quot;Listed&quot;, a typo — falls back to a random shuffle. It never returns an error, so a misspelling shows up as an unexpected draw rather than a rejected request.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;title&quot;: &quot;Office Table Tennis Cup&quot;,
+  &quot;entrants&quot;: [
+    &quot;Jess Nguyen&quot;,
+    &quot;Tom Baker&quot;,
+    &quot;Priya Sharma&quot;,
+    &quot;Liam O&#39;Connor&quot;,
+    &quot;Chloe Watts&quot;,
+    &quot;Dave Mackenzie&quot;
+  ],
+  &quot;seeding&quot;: &quot;random&quot;
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — Fewer than 2 usable entrants once blanks are dropped. This also covers entrants being absent or not an array, and a request body that is not valid JSON. <span class="msg">“Add at least two names — one person is just practice.”</span></li><li><code>400</code> — More than 64 usable entrants once blanks are dropped. <span class="msg">“64 is the limit — run two brackets and stage a grand final.”</span></li><li><code>400</code> — Two entrants match once case is ignored. The message quotes the offending name as it was cleaned — trimmed, collapsed and cut to 40 characters — not as you sent it. <span class="msg">“&quot;&lt;name&gt;&quot; is in the list twice — add a surname initial to tell them apart.”</span></li><li><code>429</code> — More than 20 creation requests in the current clock hour from the same connection. The count is shared across the creation endpoints of every tool on the site. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> Creating a bracket returns two links: a public one to share and an organiser one to keep. There is no participant step. Everyone else reads the public page, which shows the state of the bracket as at each refresh. Only the organiser records results, by sending the round index, the match index within that round, and the winner. The winner must be exactly one of the two names in that match, or null to clear a result already recorded. Leaving the winner out is not the same as sending null, and is rejected with &quot;The winner has to be one of the two names in that match.&quot; A first-round match with an empty side is a bye and is rejected with &quot;That one&#39;s a bye — it sorted itself out.&quot; A later match still missing a name is rejected with &quot;Both spots in that match need filling first — decide the earlier games.&quot; If two results land at once, one of them fails with 409 &quot;Two results landed at once — refresh and tap again.&quot; The organiser can also delete the bracket.</p>
+  </section>
+
+  <section class="api-tool" id="card">
+    <h3>Group Card</h3>
+    <p>Creates one shared digital card for a named recipient, which colleagues sign with their name and a message. — <a href="/group-card/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/card</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>recipient</code></td>
+          <td><code>string</code></td>
+          <td><strong>required</strong></td>
+          <td>Required, and the only required field. Trimmed, internal whitespace collapsed to single spaces, and silently truncated to 60 characters. Absent, empty or whitespace-only returns an error.</td>
+        </tr>
+        <tr>
+          <td><code>title</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed to single spaces, silently truncated to 80 characters. Never rejected. If it is absent, empty or whitespace-only, the card falls back to &quot;A card for &lt;recipient&gt;&quot;, itself cut to 80 characters. When the title you send matches that default, ignoring case, the sub-line drops it rather than repeat it.</td>
+        </tr>
+        <tr>
+          <td><code>note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed at the ends only — internal whitespace is left alone, so line breaks survive. Silently truncated to 300 characters. Read but never validated, so it is never rejected; absent leaves it empty.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;title&quot;: &quot;Farewell to Marcus&quot;,
+  &quot;recipient&quot;: &quot;Marcus Fielding&quot;,
+  &quot;note&quot;: &quot;Marcus is off to the Perth office after nine years. We&#39;re handing this over at Friday drinks, so get your message in before then.&quot;
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — recipient is absent, empty, or whitespace-only once trimmed. This also covers a request body that is not valid JSON. <span class="msg">“Who&#39;s the card for? Add their name.”</span></li><li><code>429</code> — More than 20 creation requests in the current clock hour from the same connection. The count is shared across the creation endpoints of every tool on the site. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> Creating a card returns two links: a public one to share and an organiser one to keep. Signers open the public link and add a name and a message. Both are required. The name is trimmed, has internal whitespace collapsed, and is cut to 40 characters. The message is trimmed at the ends only, so line breaks survive, and is cut to 400 characters. A card holds 400 messages; a signer arriving after that gets 409 &quot;This card is chockers — 400 messages is the limit.&quot; Two people with the same name can both sign. A successful signature returns a 22-character token, which is the signer&#39;s only handle on their own message and the only way to remove it. The browser keeps that token on the signer&#39;s device, so someone signing again from another device cannot remove the earlier message themselves. The organiser can remove any message and delete the card.</p>
+  </section>
+
+  <section class="api-tool" id="registry">
+    <h3>Pixel Gift Registry (Build the Prado)</h3>
+    <p>Creates a wedding gift registry drawn as a pixel-art Toyota Prado. It has 126 parts, and guests claim them one at a time instead of buying a toaster. — <a href="/gift-registry/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/registry</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>coupleNames</code></td>
+          <td><code>string</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Trimmed, internal whitespace collapsed to single spaces, silently truncated to 80 characters. Absent, empty or whitespace-only returns an error. Values that are not strings are converted to text, so anything with content in it passes.</td>
+        </tr>
+        <tr>
+          <td><code>tagline</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed to single spaces, silently truncated to 140 characters. Absent or blank leaves it empty and the tagline is not rendered. No other checks.</td>
+        </tr>
+        <tr>
+          <td><code>weddingDate</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed to single spaces, silently truncated to 60 characters. Absent or blank leaves it empty. It is free text and is never parsed or validated as a date, so &quot;Saturday 14 March 2026&quot; and &quot;Some time in autumn&quot; are equally acceptable.</td>
+        </tr>
+        <tr>
+          <td><code>payment</code></td>
+          <td><code>object</code></td>
+          <td>optional</td>
+          <td>Optional. Must be an object; anything else is treated as absent and silently becomes empty. The block is only kept when at least one of payId, accountName, bsb or accountNumber has content after trimming. If none of them do, the whole block is stored empty and any method or note you sent is discarded — method and note alone are not enough to keep it. Nothing here is format-checked. These details are kept off the public page: a guest sees them in the response when they claim a part, and the organiser sees them on the organiser page.</td>
+        </tr>
+        <tr>
+          <td><code>payment.method</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed, silently truncated to 40 characters. Only kept when the block also carries at least one of payId, accountName, bsb or accountNumber. Not checked against any list of methods.</td>
+        </tr>
+        <tr>
+          <td><code>payment.payId</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed, silently truncated to 80 characters. Supplying it is enough to keep the whole payment block. Never format-checked — any text is accepted, whether or not it looks like an email address or a mobile number.</td>
+        </tr>
+        <tr>
+          <td><code>payment.accountName</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed, silently truncated to 80 characters. Supplying it is enough to keep the whole payment block. No other validation.</td>
+        </tr>
+        <tr>
+          <td><code>payment.bsb</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed, silently truncated to 10 characters, which leaves room for the hyphenated form such as &quot;083-004&quot;. Supplying it is enough to keep the whole payment block. Not checked for digits or for any particular format.</td>
+        </tr>
+        <tr>
+          <td><code>payment.accountNumber</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed, silently truncated to 20 characters. Supplying it is enough to keep the whole payment block. Not checked for digits.</td>
+        </tr>
+        <tr>
+          <td><code>payment.note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed, silently truncated to 200 characters. Only kept when the block also carries at least one of payId, accountName, bsb or accountNumber. No other validation.</td>
+        </tr>
+        <tr>
+          <td><code>overflowTitle</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed, silently truncated to 60 characters. Absent or blank falls back to &quot;Fuel &amp; rego for the first year&quot;.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;coupleNames&quot;: &quot;Sam &amp; Alex Nguyen&quot;,
+  &quot;tagline&quot;: &quot;Skip the toaster — help us build the Prado for our honeymoon lap&quot;,
+  &quot;weddingDate&quot;: &quot;Saturday 14 March 2026&quot;,
+  &quot;overflowTitle&quot;: &quot;Fuel &amp; rego for the first year&quot;,
+  &quot;payment&quot;: {
+    &quot;method&quot;: &quot;PayID&quot;,
+    &quot;payId&quot;: &quot;sam.nguyen@example.com&quot;,
+    &quot;accountName&quot;: &quot;S &amp; A Nguyen&quot;,
+    &quot;bsb&quot;: &quot;083-004&quot;,
+    &quot;accountNumber&quot;: &quot;123456789&quot;,
+    &quot;note&quot;: &quot;Pop the reference in so we know who it&#39;s from.&quot;
+  }
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — coupleNames is absent, empty, or whitespace-only once trimmed. This also covers a request body that is not valid JSON. A non-string value with content in it is converted to text and passes. <span class="msg">“Add your names — it&#39;s your registry.”</span></li><li><code>429</code> — More than 20 creation requests in the current clock hour from the same connection. That count is shared across the creation endpoints of every tool on the site. Requests to the other endpoints draw on a separate allowance of 240 an hour. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> Creating a registry returns two links: a public one to share and an organiser one to keep. There are no per-guest accounts or tokens — the public link is the only thing a guest needs. A guest picks a part and claims it with their name and an optional message cut to 240 characters. The name is required, is cleaned the same way as the creation fields and cut to 60 characters, and a missing one returns 400 &quot;Add your name — it goes on the build crew wall.&quot; The part must be one of the 126 ids on the build sheet; anything else returns 400 &quot;That part isn&#39;t on this build sheet.&quot; A part&#39;s price is fixed on the server and is never taken from the request. A successful claim returns a reference, the amount in cents, and the couple&#39;s payment details — that response is the only place a guest sees those details. If someone claimed the same part moments earlier, the second claim returns 409 &quot;Someone beat you to that one by a whisker.&quot; Latecomers can chip into the overflow item instead, with a whole number of cents from 500 to 200000, that is $5 to $2,000, plus a name and an optional message; an amount outside that range returns 400 &quot;Pick an amount between $5 and $2,000.&quot; The overflow holds 400 contributions, after which it returns 409 &quot;The overflow patch is chockers — give your gift to the couple directly.&quot; An unknown public link returns 404 &quot;not found&quot;. The public list of claims leaves out the references and whether a claim has been paid. The organiser link gives the full list, and lets the organiser mark a part paid, release a claim back to the board, or delete the registry.</p>
+  </section>
+
+  <section class="api-tool" id="fact">
+    <h3>Fact Matcher</h3>
+    <p>Creates an office icebreaker. Each person on a set list privately submits one fact about themselves, the room guesses who is who, and the organiser reveals the answer key when they are ready. — <a href="/fact-matcher/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/fact</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>title</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed to single spaces, silently truncated to 80 characters. Absent or blank is accepted and stored empty, and every page then shows &quot;Fact Matcher&quot;. No other checks.</td>
+        </tr>
+        <tr>
+          <td><code>prompt</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed to single spaces, silently truncated to 140 characters. Absent or blank falls back to &quot;Share a fun fact about yourself&quot;.</td>
+        </tr>
+        <tr>
+          <td><code>note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed at the ends only — unlike title and prompt, internal whitespace is left alone, so line breaks survive. Silently truncated to 300 characters. Absent or blank leaves it empty and the note block is not rendered.</td>
+        </tr>
+        <tr>
+          <td><code>names</code></td>
+          <td><code>string[]</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Supply an array of strings; anything that is not an array — a bare string, an object, null — is treated as an empty list and fails the minimum below. Entries that are not strings are converted to text before cleaning, so values such as null or false arrive as the literal words &quot;null&quot; and &quot;false&quot; and survive as names. Each name is trimmed, has internal whitespace collapsed to single spaces, and is silently truncated to 40 characters. Blank entries are dropped before the count is checked, so blanks in the list do not raise the total. What is left must hold at least 3 names and no more than 60; outside that range returns an error. All names must differ once case is ignored — a case-insensitive duplicate returns an error rather than being merged away, since each name has to be claimable by exactly one person.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;title&quot;: &quot;Friday arvo icebreaker — Ops team&quot;,
+  &quot;prompt&quot;: &quot;Share a fun fact about yourself&quot;,
+  &quot;note&quot;: &quot;We&#39;ll read these out over pizza in the boardroom at 4pm — keep it clean.&quot;,
+  &quot;names&quot;: [
+    &quot;Sam Nguyen&quot;,
+    &quot;Priya Sharma&quot;,
+    &quot;Jack O&#39;Brien&quot;,
+    &quot;Chloe Tran&quot;,
+    &quot;Dave Katsoulis&quot;,
+    &quot;Mel Robertson&quot;
+  ]
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — Fewer than 3 usable names once blanks are dropped. This also covers names being absent or not an array, and a request body that is not valid JSON. <span class="msg">“Add at least three names — a guessing game needs a few people.”</span></li><li><code>400</code> — More than 60 usable names once blanks are dropped. <span class="msg">“Sixty names is the limit — split a big group into two rounds.”</span></li><li><code>400</code> — Two names match once case is ignored, such as &quot;Sam&quot; and &quot;sam&quot;. The message quotes the second of the pair as it was cleaned — trimmed, collapsed and cut to 40 characters. <span class="msg">“&quot;&lt;name&gt;&quot; is on the list twice — add a surname initial so the right person claims it.”</span></li><li><code>429</code> — More than 20 creation requests in the current clock hour from the same connection. The count is shared across the creation endpoints of every tool on the site. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> Creating a game returns two links: a public one to share and an organiser one to keep. Every endpoint on this tool is POST-only. The public page shows a grid of the names supplied at creation. A person taps their own name and is handed a private link of their own. The name sent when claiming is cleaned the same way as at creation: trimmed, whitespace collapsed, cut to 40 characters. Claiming is one-shot — the first person to take a name gets the private link, and anyone tapping it afterwards gets 409 &quot;That name&#39;s already been taken. If it&#39;s you, ask the organiser to reset it.&quot; A name that is not on the list, a blank name, or an unknown public link all return 404 &quot;That name isn&#39;t on this list.&quot; On the private page a person writes their fact, up to 280 characters, and can save it again to change it. The organiser can reset one person, which issues them a fresh private link and wipes their fact; can turn the reveal on or off, which flips the shared page between the guessing grid and the answer key; and can delete the game. A reset for a name that is not on the list returns 404 &quot;That name isn&#39;t on this list.&quot;</p>
+  </section>
+
+  <section class="api-tool" id="baby">
+    <h3>Baby Guess Pool</h3>
+    <p>Creates a baby-shower guessing pool: anyone with the link guesses the arrival date and birth weight, and once the organiser records the real birth the closest guess wins. — <a href="/baby-guess-pool/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/baby</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>parents</code></td>
+          <td><code>string</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Trimmed, runs of internal whitespace collapsed to single spaces, then truncated to 80 characters. A value that is missing, empty, or whitespace-only is rejected with 400, as is any falsy value such as null, false or 0. A truthy non-string value is converted to text and accepted.</td>
+        </tr>
+        <tr>
+          <td><code>dueDate</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed, truncated to 60 characters. Never rejected. Not parsed or checked as a date, so &quot;Early September, all going well&quot; is fine. Absent or blank means no chip is shown.</td>
+        </tr>
+        <tr>
+          <td><code>note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed at both ends only — internal spacing and line breaks survive, unlike parents and dueDate. Truncated to 300 characters. Never rejected. Absent or blank means no note is shown.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;parents&quot;: &quot;Emma &amp; Josh Whitfield&quot;,
+  &quot;dueDate&quot;: &quot;Late September, all going well&quot;,
+  &quot;note&quot;: &quot;Shower&#39;s at the Brunswick Bowls Club — get your guess in before the sausage rolls come out.&quot;
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — parents is missing, empty, or whitespace-only once trimmed, or is any other falsy value such as null, false or 0. A request body that is not valid JSON is treated as an empty body, so it fails here too. <span class="msg">“Whose bub is it? Add the parents&#39; names.”</span></li><li><code>429</code> — More than 20 pools created in the current clock hour from the same connection. The budget is shared across every tool&#39;s create endpoint on the site, not counted per tool. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> There are no pre-seeded participants. Anyone with the public link /s/&lt;slug&gt; can enter. A guest POSTs /api/baby/guess with slug, guesser, date, weightGrams and an optional message. An unknown slug returns 404. guesser is required, trimmed and whitespace-collapsed to 40 characters, otherwise 400 &quot;Add your name so we know whose guess it is.&quot;. date must be written as YYYY-MM-DD, must be a real calendar day, and must fall within 400 days before or 550 days after the time of the request: a blank date returns &quot;Pick a date for your guess.&quot;, a malformed one &quot;That date doesn&#39;t look right — use the date picker.&quot;, an impossible day &quot;That date doesn&#39;t look right — check the day and month.&quot;, and one outside the window &quot;Keep the date within a year or so — it&#39;s a guess, not a prophecy.&quot;. weightGrams is rounded to the nearest whole number and must be between 500 and 7000, otherwise 400 &quot;Give a weight between 0.5 and 7 kg.&quot;. message is trimmed to 200 characters. A successful guess returns 201 with a token and an id. That token is the guest&#39;s only handle on their own guess and is what POST /api/baby/g/&lt;token&gt;/remove needs. Two guests may use the same name. A pool holds 300 guesses; past that, entries are refused with 409 &quot;This pool&#39;s chockers — that&#39;s the limit on guesses.&quot;. Once a result has been recorded, guessing closes with 409 &quot;Bub&#39;s already here — the guessing&#39;s closed.&quot;. The organiser works from /e/&lt;editToken&gt;: POST /api/baby/&lt;editToken&gt;/result with date, weightGrams and an optional free-text arrivedAt (max 40 characters) closes the pool and reveals the leaderboard, and posting a null result reopens it. The organiser can also remove a single guess and delete the pool. Every endpoint on this tool takes POST.</p>
+  </section>
+
+  <section class="api-tool" id="roster">
+    <h3>Volunteer Roster</h3>
+    <p>Creates a shareable sign-up roster of timed shifts, each with a fixed number of spots, for a school fete, canteen, working bee or sausage sizzle. — <a href="/volunteer-roster/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/roster</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>title</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed to single spaces, truncated to 80 characters. Never rejected. When absent or empty, the pages show &quot;Volunteer roster&quot;.</td>
+        </tr>
+        <tr>
+          <td><code>eventDate</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed, truncated to 60 characters. Never rejected — any text is accepted. When absent or empty, no chip is shown.</td>
+        </tr>
+        <tr>
+          <td><code>note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed at both ends only — internal spacing and line breaks survive, unlike title and eventDate. Truncated to 300 characters. Never rejected. Defaults to empty.</td>
+        </tr>
+        <tr>
+          <td><code>shifts</code></td>
+          <td><code>object[]</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. An array of 1 to 20 entries, each an object with a label and a capacity. A missing value, a value that is not an array, and an empty array are all rejected with 400, as is an array of more than 20 entries — nothing is silently dropped. Labels are not deduplicated, so two shifts may share the same label.</td>
+        </tr>
+        <tr>
+          <td><code>shifts[].label</code></td>
+          <td><code>string</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Trimmed, internal whitespace collapsed, truncated to 50 characters. Must still have content after trimming, or the request is rejected with 400. The label is checked before the capacity, so a shift missing both reports the label error.</td>
+        </tr>
+        <tr>
+          <td><code>shifts[].capacity</code></td>
+          <td><code>number</code></td>
+          <td><strong>required</strong></td>
+          <td>Required, with no default. Must be a whole number from 1 to 30, inclusive. A numeric string such as &quot;3&quot; is accepted. Missing, fractional, non-numeric, or out-of-range values are rejected with 400.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;title&quot;: &quot;Warrnambool Primary Fete - Sausage Sizzle&quot;,
+  &quot;eventDate&quot;: &quot;Saturday 14 March, 9am-2pm&quot;,
+  &quot;note&quot;: &quot;Park behind the hall and check in with Deb at the canteen door.&quot;,
+  &quot;shifts&quot;: [
+    {
+      &quot;label&quot;: &quot;Grill 9:00-11:00am&quot;,
+      &quot;capacity&quot;: 3
+    },
+    {
+      &quot;label&quot;: &quot;Drinks stall 11:00am-1:00pm&quot;,
+      &quot;capacity&quot;: 2
+    },
+    {
+      &quot;label&quot;: &quot;Pack down 1:00-2:00pm&quot;,
+      &quot;capacity&quot;: 4
+    }
+  ]
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — shifts is missing, is not an array, or is an empty array. A request body that is not valid JSON is treated as an empty body, so it fails here too. <span class="msg">“Add at least one shift.”</span></li><li><code>400</code> — shifts contains more than 20 entries. <span class="msg">“Twenty shifts is the limit — split the day if you need more.”</span></li><li><code>400</code> — A shift&#39;s label is missing, or is empty once trimmed. <span class="msg">“Every shift needs a label — a job and a time.”</span></li><li><code>400</code> — A shift&#39;s capacity is missing, is not a whole number, or falls outside 1 to 30. <span class="msg">“Spots per shift must be a whole number from 1 to 30.”</span></li><li><code>429</code> — More than 20 rosters created in the current clock hour from the same connection. The budget is shared across every tool&#39;s create endpoint on the site, not counted per tool. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> The creator lands on the coordinator page at /e/&lt;editToken&gt; and shares the public link /s/&lt;slug&gt;. Volunteers POST /api/roster/claim with slug, slotId, name and an optional message. slotId names one spot in one shift and takes the form s&lt;shift position&gt;-&lt;n&gt;, where n runs from 1 to that shift&#39;s capacity; anything else returns 400 &quot;That shift spot doesn&#39;t exist on this roster.&quot;. name is required, whitespace-collapsed to 40 characters, otherwise 400 &quot;Add your name so the coordinator knows who&#39;s on.&quot;. message is optional, whitespace-collapsed to 120 characters, and only the coordinator sees it. A successful claim returns 201 with a 16-character secret. That secret is the volunteer&#39;s only way back: POST /api/roster/unclaim with slug, slotId and secret hands the spot in. If someone takes the spot first, the claim returns 409 &quot;Someone just grabbed that shift — pick another.&quot;. The edit token gates the coordinator&#39;s endpoints: POST /api/roster/&lt;editToken&gt;/remove, POST /api/roster/&lt;editToken&gt;/delete, and GET /api/roster/&lt;editToken&gt;/admin, which returns the roster as CSV and is served no-store and non-indexable.</p>
+  </section>
+
+  <section class="api-tool" id="meal">
+    <h3>Meal Train</h3>
+    <p>Creates a date-keyed meal roster so friends and neighbours can each claim a day to cook for a new parent, someone home from surgery, or a grieving family. — <a href="/meal-train/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/meal</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>forWhom</code></td>
+          <td><code>string</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Trimmed, internal whitespace collapsed to single spaces, truncated to 80 characters. A missing or whitespace-only value is rejected with 400. The stored title is &quot;Meals for &quot; followed by this value, truncated to 120 characters.</td>
+        </tr>
+        <tr>
+          <td><code>note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed at both ends only — internal spacing and line breaks survive. Truncated to 400 characters. Never rejected. Defaults to empty, in which case the block is not shown.</td>
+        </tr>
+        <tr>
+          <td><code>allergies</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed, truncated to 200 characters. Never rejected. Defaults to empty, in which case the banner is not shown.</td>
+        </tr>
+        <tr>
+          <td><code>dropoff</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, internal whitespace collapsed, truncated to 120 characters. Never rejected. When empty, the coordinator page says no drop-off address is saved.</td>
+        </tr>
+        <tr>
+          <td><code>dates</code></td>
+          <td><code>string[]</code></td>
+          <td>optional</td>
+          <td>Optional. Used only when supplied as a non-empty array, and supplying one makes startDate and days irrelevant. Only the first 61 entries are read; anything past that is ignored. Every entry read must be exactly YYYY-MM-DD and a real calendar day — 2026-02-30 is rejected with 400. Repeated days are silently de-duplicated and the list is sorted into ascending order. If more than 60 unique days remain, the request is rejected with 400. All days are interpreted in UTC.</td>
+        </tr>
+        <tr>
+          <td><code>startDate</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Read only when no non-empty dates array is supplied, and required in that case. Must be exactly YYYY-MM-DD and a real calendar day; surrounding whitespace is trimmed first. Anything else is rejected with 400. Interpreted in UTC.</td>
+        </tr>
+        <tr>
+          <td><code>days</code></td>
+          <td><code>number</code></td>
+          <td>optional</td>
+          <td>Read only when no non-empty dates array is supplied, and required in that case. Must be a whole number of at least 1; a numeric string is accepted. Missing, fractional, zero or negative values are rejected with 400. A value above 60 is silently reduced to 60 rather than rejected.</td>
+        </tr>
+        <tr>
+          <td><code>capacityPerDay</code></td>
+          <td><code>number</code></td>
+          <td>optional</td>
+          <td>Optional, and it never returns an error. Must be a whole number of at least 1; anything else — missing, zero, negative, fractional, or not a number — silently becomes 1. A value above 3 is silently reduced to 3.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;forWhom&quot;: &quot;the Nguyen family&quot;,
+  &quot;allergies&quot;: &quot;No peanuts - eldest is anaphylactic. Dad is coeliac, so gluten-free please.&quot;,
+  &quot;note&quot;: &quot;Bub arrived early, so anything freezer-friendly is a godsend.&quot;,
+  &quot;dropoff&quot;: &quot;Leave meals in the esky on the front porch, 14 Rosella Street, Coburg&quot;,
+  &quot;dates&quot;: [
+    &quot;2026-09-01&quot;,
+    &quot;2026-09-03&quot;,
+    &quot;2026-09-05&quot;,
+    &quot;2026-09-08&quot;
+  ],
+  &quot;capacityPerDay&quot;: 1
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — forWhom is missing or empty once trimmed. A request body that is not valid JSON is treated as an empty body, so it fails here too. <span class="msg">“Who are the meals for? Add a name — a family, a person, whoever.”</span></li><li><code>400</code> — An entry in the dates array is not exactly YYYY-MM-DD, or is not a real calendar day — &quot;2026-02-30&quot; or &quot;1 Sep 2026&quot;, for instance. <span class="msg">“One of those days isn&#39;t a real calendar date.”</span></li><li><code>400</code> — No non-empty dates array was supplied, and startDate is missing or is not a valid YYYY-MM-DD calendar day. <span class="msg">“Pick a valid first day.”</span></li><li><code>400</code> — No non-empty dates array was supplied, and days is missing, is not a whole number, or is less than 1. <span class="msg">“How many days need a meal? At least one.”</span></li><li><code>400</code> — No days at all came out of either route. This is a defensive guard only and is unreachable in practice: the dates route requires a non-empty array whose entries either throw or are kept, and the startDate route guarantees at least one day. <span class="msg">“Add at least one day that needs a meal.”</span></li><li><code>400</code> — More than 60 unique valid days remain in the dates array. Because only the first 61 entries are read, this is reachable only when exactly 61 unique valid days are read. The startDate and days route cannot reach it — that route reduces to 60 silently instead. <span class="msg">“Sixty days is the limit — start a second roster if it runs longer.”</span></li><li><code>429</code> — More than 20 rosters created in the current clock hour from the same connection. The budget is shared across every tool&#39;s create endpoint on the site, not counted per tool. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> The creator lands on the coordinator page at /e/&lt;editToken&gt; — the only place the drop-off details appear — and shares the public link /s/&lt;slug&gt;. Cooks POST /api/meal/claim with slug, slotId, name and an optional dish. slotId names one slot on one day and takes the form d&lt;day position&gt;-&lt;n&gt;, where n runs from 1 to capacityPerDay; anything else returns 400 &quot;That day isn&#39;t on this roster.&quot;. name is required, whitespace-collapsed to 40 characters, otherwise 400 &quot;Add your name so the family knows who&#39;s cooking.&quot;. dish is optional, whitespace-collapsed to 120 characters, and shows on both the public board and the coordinator page. A successful claim returns 201 with a 16-character secret, which is the cook&#39;s only way to hand the day back: POST /api/meal/uncook with slug, slotId and secret. If two people claim the same slot at once, the second gets 409 &quot;Someone&#39;s already got that day — pick another.&quot;. The edit token gates POST /api/meal/&lt;editToken&gt;/remove, POST /api/meal/&lt;editToken&gt;/delete and GET /api/meal/&lt;editToken&gt;/admin, which returns the roster as CSV and is served no-store and non-indexable. Drop-off details are never published, so the coordinator passes them to each cook directly.</p>
+  </section>
+
+  <section class="api-tool" id="poll">
+    <h3>Group Vote</h3>
+    <p>Creates a group poll with no accounts and no sign-in: a question, a list of options, single or multiple choice, and optionally the ability for voters to add their own option. — <a href="/group-vote/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/poll</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>question</code></td>
+          <td><code>string</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Trimmed, internal whitespace collapsed to single spaces, truncated to 140 characters. A missing or whitespace-only value is rejected with 400. The cleaned value is used as the poll title as-is, with no further truncation.</td>
+        </tr>
+        <tr>
+          <td><code>options</code></td>
+          <td><code>string[]</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Only the first 200 elements are read; the rest are ignored. Each option is trimmed, whitespace-collapsed, and truncated to 80 characters. Entries that are empty after trimming are silently skipped, and an option matching an earlier one case-insensitively is silently dropped, first occurrence winning. After that cleaning, fewer than 2 options is rejected with 400, and more than 30 is rejected with 400. A poll therefore needs 2 to 30 distinct, non-empty options.</td>
+        </tr>
+        <tr>
+          <td><code>mode</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional, and it never returns an error. Defaults to &quot;single&quot;. The only value with an effect is &quot;multi&quot;, matched exactly; anything else — &quot;Multi&quot;, &quot;MULTI&quot;, true, or the field being absent — becomes &quot;single&quot;.</td>
+        </tr>
+        <tr>
+          <td><code>allowSuggestions</code></td>
+          <td><code>boolean</code></td>
+          <td>optional</td>
+          <td>Optional, and it never returns an error. Defaults to false. Treated as a plain true/false test: any truthy value turns it on, any falsy value — including the field being absent — turns it off.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;question&quot;: &quot;Where should we do the team Christmas lunch this year?&quot;,
+  &quot;options&quot;: [
+    &quot;The Lord Nelson Brewery Hotel&quot;,
+    &quot;Chin Chin on Flinders Lane&quot;,
+    &quot;Bondi Icebergs Dining Room&quot;,
+    &quot;Backyard barbie at Sharon&#39;s&quot;
+  ],
+  &quot;mode&quot;: &quot;single&quot;,
+  &quot;allowSuggestions&quot;: true
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — question is missing or empty once trimmed. A request body that is not valid JSON is treated as an empty body, so it fails here too. <span class="msg">“Add a question — what&#39;s the group deciding?”</span></li><li><code>400</code> — Fewer than 2 usable options remain after cleaning. That covers options being missing, not an array, all blank, or collapsing to a single option through the case-insensitive de-duplication. <span class="msg">“Give people at least two options to choose between.”</span></li><li><code>400</code> — More than 30 usable options remain after cleaning and de-duplication. <span class="msg">“Thirty options is the limit — trim the list a bit.”</span></li><li><code>429</code> — More than 20 polls created in the current clock hour from the same connection. The budget is shared across every tool&#39;s create endpoint on the site, not counted per tool. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> The creator lands on the organiser page at /e/&lt;editToken&gt; — the only view that shows who voted for what — and shares the public link /s/&lt;slug&gt;. Voters POST /api/poll/vote with slug, choices (an array of option ids), an optional voterName and an optional suggestion. Ids that do not match a real option are dropped, and repeats are ignored. voterName is optional, whitespace-collapsed to 40 characters. suggestion is whitespace-collapsed to 80 characters and only counts when the poll allows suggestions: if it matches an existing option case-insensitively it is treated as that option, otherwise it is added to the poll. On a single-choice poll a fresh suggestion becomes the whole ballot; otherwise only the first pick is kept. An empty ballot is refused with 400 &quot;Pick an option before you vote.&quot;. A successful vote returns 201 with a 22-character token, the recorded choices, the id of any option that was added, and the current tally. That token lets the voter change their mind: POST /api/poll/v/&lt;token&gt; with a new choices array. Voting is refused with 409 once the organiser closes the poll, and once the poll has 2000 votes. The edit token gates POST /api/poll/&lt;editToken&gt;/close, /addOption, /removeOption and /delete. Nothing stops one person voting twice from another browser — it runs on the honour system.</p>
+  </section>
+
+  <section class="api-tool" id="recipe">
+    <h3>Recipe Collection</h3>
+    <p>Creates a shared recipe book. The organiser sets it up, then anyone with the share link adds a recipe of their own. — <a href="/recipe-collection/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/recipe</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>title</code></td>
+          <td><code>string</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. The value is trimmed, runs of internal whitespace are collapsed to single spaces, and it is truncated to 80 characters. It must still be non-empty after that, or the request is rejected with 400. This is the first field checked — forWhom and note are not even read until the title passes.</td>
+        </tr>
+        <tr>
+          <td><code>forWhom</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional and never rejected — there is no error path for it. Trimmed, internal whitespace collapsed to single spaces, truncated to 80 characters, silently, with no error on overflow. Absent, null or empty gives an empty value and the line is simply left off the page.</td>
+        </tr>
+        <tr>
+          <td><code>note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional and never rejected. Windows-style line endings are normalised to plain newlines, then the text is trimmed at the ends and truncated to 300 characters, silently. Internal whitespace is not collapsed and line breaks are kept, so a multi-line note stays multi-line. Absent or null gives an empty value.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;title&quot;: &quot;Sharon&#39;s Farewell Recipe Book&quot;,
+  &quot;forWhom&quot;: &quot;Sharon from Accounts&quot;,
+  &quot;note&quot;: &quot;Sharon is off to Byron after 14 years. Chuck in the dish you always bring to the office Christmas do.&quot;
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — The title is missing, null, empty, or only whitespace once trimmed and collapsed. A body that is not valid JSON also lands here, because it is treated as an empty body. <span class="msg">“Give the book a name — like “Grandma Rosa&#39;s Recipe Book”.”</span></li><li><code>429</code> — More than 20 creates from the same connection within one clock hour. The budget is shared across every tool&#39;s create endpoint on the site rather than counted per tool, so the 21st create in the hour is refused whichever tool it was for. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> A successful create returns 201 with {slug, editToken}. The organiser shares the public page at /s/&lt;slug&gt; and keeps the organiser page at /e/&lt;editToken&gt;. Anyone who opens the share page can add one recipe with POST /api/recipe/add and a body of {slug, cook, dish, ingredients, method, serves?, story?}. cook (max 40), dish (max 80), ingredients (max 1500) and method (max 2500) are all required. serves (max 40) and story (max 500) are optional and are dropped when empty. A successful add returns 201 with {token, id}. That 22-character token is the contributor&#39;s private key to their own recipe. It is held in their browser, deliberately never rendered on the public page (it appears only on the gated organiser page), and is used for POST /api/recipe/r/&lt;token&gt;/save and POST /api/recipe/r/&lt;token&gt;/remove. A book holds at most 200 recipes; past that, adds return 409 &quot;This book&#39;s full — 200 recipes is the limit.&quot; The organiser works from /e/&lt;editToken&gt;: POST /api/recipe/&lt;editToken&gt;/remove with {rtoken} takes one recipe down, and POST /api/recipe/&lt;editToken&gt;/delete removes the whole book.</p>
+  </section>
+
+  <section class="api-tool" id="giftidea">
+    <h3>Gift Idea Board</h3>
+    <p>Creates a board for organising a group gift. Anyone with the link suggests ideas, upvotes them, and claims the one they will buy so nobody doubles up. — <a href="/gift-ideas/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/giftidea</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>recipient</code></td>
+          <td><code>string</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Trimmed, internal whitespace collapsed to single spaces, truncated to 80 characters. It must still be non-empty after that, or the request is rejected with 400. This is the first field checked — occasion, budget and note are not read until it passes. The board&#39;s title is built from this name as &quot;Gift ideas for &lt;recipient&gt;&quot;; there is no separate title field on this endpoint.</td>
+        </tr>
+        <tr>
+          <td><code>occasion</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional and never rejected — there is no error path for it. Trimmed, internal whitespace collapsed to single spaces, truncated to 80 characters, silently. Absent or empty leaves the chip off the board.</td>
+        </tr>
+        <tr>
+          <td><code>budget</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional and never rejected. Trimmed, internal whitespace collapsed to single spaces, truncated to 40 characters, silently. Free text — it is not parsed as an amount. Absent or empty leaves the chip off the board.</td>
+        </tr>
+        <tr>
+          <td><code>note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional and never rejected. Trimmed at the ends and truncated to 300 characters, silently. Internal whitespace is not collapsed and line breaks are kept exactly as supplied — unlike the recipe book&#39;s note, Windows-style line endings are not converted either. Absent or null gives an empty value.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;recipient&quot;: &quot;Dave from the warehouse&quot;,
+  &quot;occasion&quot;: &quot;His 50th and 20 years on the floor&quot;,
+  &quot;budget&quot;: &quot;$25 a head, about $400 all up&quot;,
+  &quot;note&quot;: &quot;Whip-round closes Friday arvo. Do not mention any of this to Dave.&quot;
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — The recipient is missing, null, empty, or only whitespace once trimmed and collapsed. A body that is not valid JSON also lands here, because it is treated as an empty body. <span class="msg">“Who&#39;s the gift for? Add their name.”</span></li><li><code>429</code> — More than 20 creates from the same connection within one clock hour. The budget is shared across every tool&#39;s create endpoint on the site rather than counted per tool, so the 21st create in the hour is refused whichever tool it was for. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> A successful create returns 201 with {slug, editToken}. The organiser shares /s/&lt;slug&gt; with everyone except the recipient — the board is meant to stay a surprise. Guests suggest an idea with POST /api/giftidea/suggest and a body of {slug, idea, link?, suggestedBy?}. idea is required and truncated to 120 characters, suggestedBy is optional and truncated to 40. link is optional but strictly checked: an address that cannot be parsed returns 400 &quot;That link doesn&#39;t look right — paste the full web address, or leave it blank.&quot;, anything that is not http or https returns 400 &quot;Links need to start with http:// or https://.&quot;, and the maximum length is 300 characters. A successful suggestion returns 201 with {token, id}; that 22-character token is held in the suggester&#39;s browser and lets them take their own idea down with POST /api/giftidea/i/&lt;token&gt;/remove, which also clears any claim on it. Upvotes are POST /api/giftidea/upvote with {slug, ideaId} and return {ok, votes}; the count is incremented atomically, but the vote itself is deliberately soft — deduplicated only in the voter&#39;s own browser, so a determined person can vote twice. Claiming an idea to buy is POST /api/giftidea/claim with {slug, ideaId, name}, which returns 201 with a 16-character {secret}. name is required, maximum 40 characters, and 400 &quot;Add your name so nobody else buys it too.&quot; comes back without it. Only one person can claim a given idea; the second gets 409 &quot;Someone&#39;s already getting that one.&quot; The claimer undoes it with POST /api/giftidea/unclaim and {slug, ideaId, secret}. A board holds at most 200 ideas; past that, suggestions return 409. The organiser works from /e/&lt;editToken&gt;: POST /api/giftidea/&lt;editToken&gt;/removeIdea with {itoken} removes one idea, and POST /api/giftidea/&lt;editToken&gt;/delete removes the board.</p>
+  </section>
+
+  <section class="api-tool" id="hens">
+    <h3>Hens &amp; Shower Planner</h3>
+    <p>Creates a planning board for a hens, bridal shower or baby shower — the details, an optional running order, and a &quot;who brings what&quot; board of named lists with a fixed number of spots each. — <a href="/hens-planner/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/hens</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>title</code></td>
+          <td><code>string</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Trimmed, internal whitespace collapsed to single spaces, truncated to 80 characters. It must still be non-empty after that, or the request is rejected with 400. This is checked before the categories.</td>
+        </tr>
+        <tr>
+          <td><code>forWhom</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional and never rejected — there is no error path for it. Trimmed, internal whitespace collapsed to single spaces, truncated to 80 characters, silently. Absent gives an empty value and the line is left off.</td>
+        </tr>
+        <tr>
+          <td><code>when</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional and never rejected. Trimmed, internal whitespace collapsed to single spaces, truncated to 80 characters, silently. Free text — it is never parsed or checked as a date, so &quot;Saturday arvo, some time after 2&quot; is fine. Absent leaves the chip off.</td>
+        </tr>
+        <tr>
+          <td><code>where</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional and never rejected. Trimmed, internal whitespace collapsed to single spaces, truncated to 120 characters, silently. Absent leaves the chip off. Treat it as semi-private: it appears on the share page, but never in link-preview metadata, and the share page is not indexed or cached by search engines.</td>
+        </tr>
+        <tr>
+          <td><code>note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional and never rejected. Trimmed at the ends and truncated to 400 characters, silently. Internal whitespace is not collapsed and line breaks are kept exactly as supplied; Windows-style line endings are not converted. Absent gives an empty value.</td>
+        </tr>
+        <tr>
+          <td><code>kitty</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional and never rejected. Trimmed at the ends and truncated to 200 characters, silently. Internal whitespace is not collapsed. Absent gives an empty value.</td>
+        </tr>
+        <tr>
+          <td><code>categories</code></td>
+          <td><code>object[]</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Must be an array of 1 to 12 entries; anything that is not an array — a string, an object, null, or a missing value — is quietly treated as empty and then fails the first check. Each entry is an object of {name, capacity}; any other keys on an entry are silently dropped. Names must be unique ignoring case. Checks run in this order: the array is present and non-empty, then the count of 12, then each entry&#39;s name and capacity in turn, then the duplicate-name check. Name and capacity are checked together per entry, so an early entry&#39;s capacity error is reported before a later entry&#39;s name error.</td>
+        </tr>
+        <tr>
+          <td><code>categories[].name</code></td>
+          <td><code>string</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Trimmed, internal whitespace collapsed to single spaces, truncated to 40 characters. It must still be non-empty after that, or the request is rejected with 400; a null or non-object entry collapses to empty and fails here too. Compared in lower case against the other names for the duplicate check.</td>
+        </tr>
+        <tr>
+          <td><code>categories[].capacity</code></td>
+          <td><code>number</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Must be a whole number from 1 to 20. The value is converted to a number first, so a numeric string such as &quot;4&quot; is accepted (and a boolean true converts to 1). A missing capacity, null, an empty string, or a fraction such as 2.5 is rejected with 400 — null and an empty string both convert to 0 and fail the lower bound.</td>
+        </tr>
+        <tr>
+          <td><code>activities</code></td>
+          <td><code>string[]</code></td>
+          <td>optional</td>
+          <td>Optional and never rejected — there is no error path for this field at all. Anything that is not an array is treated as empty. Each entry is trimmed, has internal whitespace collapsed to single spaces, and is truncated to 100 characters. Entries that are empty or only whitespace are silently dropped, and anything past the first 20 entries is silently discarded rather than returning an error.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;title&quot;: &quot;Mia&#39;s Hens Weekend&quot;,
+  &quot;forWhom&quot;: &quot;Mia&quot;,
+  &quot;when&quot;: &quot;Saturday 18 October, from 2pm&quot;,
+  &quot;where&quot;: &quot;The Boathouse, Balmoral Beach, Mosman&quot;,
+  &quot;note&quot;: &quot;Wear something you can actually dance in. Mia&#39;s mum is joining us for the first hour only.&quot;,
+  &quot;kitty&quot;: &quot;$60 each covers the boat and the grazing platters. Square up with Steph on the day, cash or transfer.&quot;,
+  &quot;categories&quot;: [
+    {
+      &quot;name&quot;: &quot;Grazing platters&quot;,
+      &quot;capacity&quot;: 3
+    },
+    {
+      &quot;name&quot;: &quot;Bubbles and mixers&quot;,
+      &quot;capacity&quot;: 4
+    },
+    {
+      &quot;name&quot;: &quot;Decorations and sashes&quot;,
+      &quot;capacity&quot;: 2
+    }
+  ],
+  &quot;activities&quot;: [
+    &quot;2pm - bubbles on the deck&quot;,
+    &quot;3pm - cocktail making class&quot;,
+    &quot;6pm - dinner at the pub&quot;,
+    &quot;8pm - karaoke, non-negotiable&quot;
+  ]
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — The title is missing, empty, or only whitespace once trimmed and collapsed. A body that is not valid JSON also lands here, because it is treated as an empty body. <span class="msg">“Give the do a name — even just &quot;Mia&#39;s Hens&quot;.”</span></li><li><code>400</code> — categories is missing, is not an array, or is an empty array. <span class="msg">“Add at least one thing to bring or sort.”</span></li><li><code>400</code> — More than 12 categories were supplied. <span class="msg">“Twelve lists is the limit — combine a couple.”</span></li><li><code>400</code> — A category&#39;s name is missing, empty, or only whitespace once trimmed and collapsed to 40 characters. A null entry or an entry that is not an object fails the same way. <span class="msg">“Every list needs a name.”</span></li><li><code>400</code> — A category&#39;s capacity is not a whole number once converted, or is below 1 or above 20. A missing capacity, null, and an empty string all fail this check. <span class="msg">“Spots per list must be a whole number from 1 to 20.”</span></li><li><code>400</code> — Two categories have the same name ignoring case, for example &quot;Drinks&quot; and &quot;drinks&quot;. <span class="msg">“Two lists share a name — make each one different.”</span></li><li><code>429</code> — More than 20 creates from the same connection within one clock hour. The budget is shared across every tool&#39;s create endpoint on the site rather than counted per tool, so the 21st create in the hour is refused whichever tool it was for. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> A successful create returns 201 with {slug, editToken}. The organiser shares /s/&lt;slug&gt;. Guests claim a spot with POST /api/hens/claim and a body of {slug, slotId, name, message?}. slotId is a positional id of the form &quot;c&lt;categoryIndex&gt;-&lt;n&gt;&quot;, where the category index starts at 0 and n runs from 1 to that category&#39;s capacity. An id that does not exist on the board returns 400 &quot;That spot doesn&#39;t exist on this board.&quot; and a missing name returns 400 &quot;Add your name so people know who&#39;s got it.&quot; name is limited to 40 characters and the optional message to 120; both are trimmed and have internal whitespace collapsed. A successful claim returns 201 with a 16-character {secret}. Each spot can only be claimed once, so a second person claiming the same spot gets 409 &quot;Someone grabbed that spot seconds ago — pick another.&quot; The secret lives only in the claimant&#39;s browser and is what lets them let the spot go again with POST /api/hens/unclaim and {slug, slotId, secret}. The organiser works from /e/&lt;editToken&gt;: POST /api/hens/&lt;editToken&gt;/remove with {slotId} force-clears anyone&#39;s claim, and POST /api/hens/&lt;editToken&gt;/delete removes the board.</p>
+  </section>
+
+  <section class="api-tool" id="qotd">
+    <h3>Question of the Day</h3>
+    <p>Creates a recurring question of the day for a team. One share link that never changes, with a two-option question that rotates on its own at midnight, Sydney time. — <a href="/question-of-the-day/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/qotd</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>teamName</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional and never rejected — there is no emptiness check, no character check, and no branch that can refuse it. Trimmed, internal whitespace collapsed to single spaces, then truncated to 60 characters; overflow is truncated silently rather than returning an error. Absent, null or empty stores an empty label and the board falls back to a generic title. Non-string values, including numbers and objects, are converted to text rather than rejected. A create with no teamName at all still returns 201. This is the only field the create endpoint reads; anything else in the body is ignored.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;teamName&quot;: &quot;Level 3 Finance&quot;
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>429</code> — More than 20 creates from the same connection within one clock hour. The budget is shared across every tool&#39;s create endpoint on the site rather than counted per tool, so the 21st create in the hour is refused whichever tool it was for. Only POST requests are counted, and only creates draw on the 20-per-hour budget; every other endpoint shares a larger allowance of 240 per connection per hour. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    <p class="flow"><strong>How people take part:</strong> There are no invitations and no per-person setup. The creator gets back {slug, editToken}: they bookmark the organiser page at /e/&lt;editToken&gt; and share the single public page at /s/&lt;slug&gt;. That link stays the same forever, because the question is worked out from the calendar. Anyone who opens the share page votes with POST /api/qotd/vote and a body of {slug, choice, day, qi, voterName}, where choice is &quot;a&quot; or &quot;b&quot; and qi identifies the question being answered. The slug is the only credential — no account or token is needed to vote. The response is 201 with {token, day, qi, choice, tally}. That vote token is kept in the voter&#39;s browser and lets them change their mind with POST /api/qotd/v/&lt;token&gt; and {choice, day, qi}. GET /api/qotd/&lt;slug&gt;/tally returns the current day&#39;s split; the page loads with its bars empty on purpose so early votes are not swayed. Organiser-only actions all use the edit token: POST /api/qotd/&lt;editToken&gt;/skip, /add, /remove and /delete.</p>
+  </section>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
+    small free tools for groups. No ads, no accounts.</p>
+    <p class="foot-links">
+      <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
+    </p>
+  </footer>
+</main>
+<!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
+     Public pages ONLY — never on /s/, /e/ or /p/. -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "7df4259a0571411390aec9252ecc4f3e"}'></script>
+</body>
+</html>
