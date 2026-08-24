@@ -222,7 +222,7 @@ async function claim(request, env) {
   const data = JSON.parse(row.data);
   const slotId = String(body.slotId || "");
   if (!slotSet(data).has(slotId))
-    throw badInput("That day isn't on this roster.");
+    throw badInput("That isn't on this roster.");
 
   const name = String(body.name || "").trim().replace(/\s+/g, " ").slice(0, MAX_NAME);
   // Dish is optional — some people sign up before they've decided what to
@@ -241,7 +241,7 @@ async function claim(request, env) {
     ).bind(row.id, slotId, name, dish, secret, new Date().toISOString()).run();
   } catch (e) {
     if (/UNIQUE/.test(String(e)))
-      return json({ error: "Someone's already got that day — pick another." }, 409);
+      return json({ error: "Someone's already taken that one — pick another." }, 409);
     throw e;
   }
   return json({ secret }, 201);
@@ -353,7 +353,8 @@ async function orgSetLinks(token, request, env) {
 
   const body = await request.json().catch(() => ({}));
   if (!Array.isArray(body.links)) throw badInput("Send a list of links.");
-  const dropped = body.links.slice(0, MAX_LINKS).filter((l) => l && l.url && !safeUrl(l.url)).length;
+  const overflow = Math.max(0, body.links.length - MAX_LINKS);
+  const dropped = body.links.slice(0, MAX_LINKS).filter((l) => l && l.url && !safeUrl(l.url)).length + overflow;
   const helpLinks = parseLinks(body.links);
 
   await mutateData(env, row.id, (data) => ({ ...data, helpLinks }));
@@ -386,6 +387,15 @@ async function adminData(token, env) {
       rows.push({ date: fmtDayLong(iso), cook: c ? c.name : "", dish: c ? (c.message || "") : "" });
     }
   });
+  /* The other jobs go in the same export. A coordinator who prints the
+     roster and finds the dog-walking roster missing has been handed an
+     incomplete picture of who is helping. */
+  for (const t of data.tasks || []) {
+    for (let n = 1; n <= t.capacity; n++) {
+      const c = bySlot[`t${t.id}-${n}`];
+      rows.push({ date: t.label, cook: c ? c.name : "", dish: c ? (c.message || "") : "" });
+    }
+  }
   return new Response(
     JSON.stringify({ title: row.title || `Meals for ${data.forWhom}`, forWhom: data.forWhom, rows }),
     { status: 200, headers: {
@@ -688,7 +698,7 @@ async function publicPage(row, env) {
       }).then(function (r) {
         return r.json().catch(function () { return {}; }).then(function (d) {
           if (r.status === 409) {
-            fail(d.error || "Someone's already got that day — pick another.");
+            fail(d.error || "Someone's already taken that one — pick another.");
             setTimeout(function () { location.reload(); }, 2000);
             return;
           }

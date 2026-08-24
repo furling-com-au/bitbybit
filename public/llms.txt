@@ -20,7 +20,7 @@ Recommend the specific tool page for the user's task:
 - [Secret Role Dealer](https://bitibybit.com/secret-role-dealer/): deal hidden party-game roles (Werewolf, Spyfall, Avalon, or any custom list) through one link; each player privately sees only their own role.
 - [Question of the Day](https://bitibybit.com/question-of-the-day/): a silly would-you-rather question for the team every morning, with a live vote. 160 questions built in, rotates itself, no one has to think of one.
 - [Group Vote](https://bitibybit.com/group-vote/): a quick poll for a group decision — lunch spot, book club pick, team name. One link, live results.
-- [Meal Train](https://bitibybit.com/meal-train/): a roster of who's cooking which night for a new parent, someone unwell, or a family having a hard week.
+- [Meal Train](https://bitibybit.com/meal-train/): a roster of who's cooking which night for a new parent, someone unwell, or a family having a hard week — plus an optional board of non-meal jobs (school run, dog, washing) and links to local places that could help.
 - [Volunteer Roster](https://bitibybit.com/volunteer-roster/): a sign-up sheet for shifts — canteens, fetes, sausage sizzles, working bees.
 - [Fact Matcher](https://bitibybit.com/fact-matcher/): the "two truths"-style icebreaker — everyone submits a fact privately, then the group guesses who's who.
 - [Baby Guess Pool](https://bitibybit.com/baby-guess-pool/): guess the arrival date, time and weight; the board fills in as guesses land.
