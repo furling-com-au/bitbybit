@@ -1058,3 +1058,165 @@ button.fact-name:disabled { cursor: not-allowed; }
 @media print {
   .fact-key-item { box-shadow: none; border-color: #000; break-inside: avoid; }
 }
+
+/* ------------------------------------------------------------
+   baby guess pool
+   ------------------------------------------------------------ */
+.bb-chips { display: flex; flex-wrap: wrap; gap: .5rem; list-style: none; margin: 0 0 1.2rem; padding: 0; }
+.bb-chip {
+  font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink-soft); background: var(--paper-2);
+  border: 2px solid var(--line); padding: .22rem .6rem;
+}
+.bb-chip strong { color: var(--ink); }
+.bb-note { margin: 0 0 1.2rem; white-space: pre-wrap; }
+.bb-scoring { margin-top: .8rem; }
+
+/* the wall of guesses (before the birth) */
+.bb-wall {
+  list-style: none; margin: 1.4rem 0 0; padding: 0;
+  display: grid; gap: .7rem;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+.bb-guess {
+  display: flex; flex-direction: column; gap: .22rem;
+  background: var(--paper-2); border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,.10);
+  padding: .7rem .8rem .65rem;
+}
+.bb-guess-name { font-weight: 700; line-height: 1.3; word-break: break-word; }
+.bb-guess-meta { font-size: .78rem; color: var(--ink-soft); letter-spacing: .02em; }
+.bb-guess-msg {
+  font-size: .78rem; color: var(--ink-soft); line-height: 1.45;
+  white-space: pre-wrap; word-break: break-word; margin-top: .1rem;
+}
+.bb-mini {
+  font-size: .7rem; padding: .35rem .6rem; box-shadow: 2px 2px 0 0 var(--ink);
+  align-self: flex-start; margin-top: .35rem;
+}
+.bb-you {
+  display: inline-block; font-size: .6rem; letter-spacing: .18em;
+  text-transform: uppercase; background: var(--gold); color: #2b2216;
+  padding: .14rem .45rem;
+}
+.bb-empty {
+  margin: 1.6rem 0 0; padding: 1.2rem 1rem; text-align: center;
+  color: var(--ink-soft); font-size: .88rem; border: 3px dashed var(--line);
+}
+
+/* add-a-guess form */
+.bb-add { margin-top: 2.4rem; }
+.bb-add .panel { margin-bottom: .8rem; }
+.bb-form-row { display: flex; gap: .8rem; flex-wrap: wrap; }
+.bb-form-row .field { flex: 1 1 8rem; margin: 0 0 1rem; }
+
+/* the arrival banner (bub has landed) */
+.bb-arrival {
+  margin: 1.4rem 0; padding: 1.2rem 1.1rem 1.3rem; text-align: center;
+  background: var(--paper-2); border: 4px solid var(--ink);
+  border-top: 9px solid var(--gold);
+  box-shadow: 6px 6px 0 0 rgba(0,0,0,.12);
+}
+.bb-arrival-kicker {
+  display: block; font-size: .72rem; letter-spacing: .24em;
+  text-transform: uppercase; color: var(--ink-faint); margin-bottom: .5rem;
+}
+.bb-arrival-line { margin: 0; font-size: clamp(1rem, 3.5vw, 1.25rem); line-height: 1.4; color: var(--ink); }
+.bb-arrival-line strong { color: var(--terra-dark); }
+@media (prefers-color-scheme: dark) { .bb-arrival-line strong { color: var(--terra); } }
+
+/* leaderboard (after the birth) — builds on .status-table */
+.bb-board .bb-rank { color: var(--ink-faint); width: 1.6rem; }
+.bb-board .bb-score { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.bb-board .bb-sub { display: block; font-size: .72rem; color: var(--ink-faint); }
+.bb-tag {
+  display: inline-block; font-size: .58rem; letter-spacing: .16em;
+  text-transform: uppercase; background: var(--gold); color: #2b2216;
+  padding: .12rem .4rem; vertical-align: middle;
+}
+.bb-winner-row td { background: rgba(217,164,65,.18); }
+
+/* organiser: record-the-arrival block */
+.bb-record { margin-top: 2rem; }
+.bb-record .panel { margin-bottom: .8rem; }
+.bb-record-actions { display: flex; gap: .7rem; flex-wrap: wrap; align-items: center; }
+
+@media print {
+  .bb-add, .bb-record, .bb-you, .bb-mini, .bb-org-remove { display: none !important; }
+  .bb-guess { box-shadow: none; border-color: #000; break-inside: avoid; }
+  .bb-arrival { box-shadow: none; border-color: #000; }
+}
+
+/* ------------------------------------------------------------
+   volunteer roster — the shift board (claims-table sibling of
+   bring a plate; mirrors the .plate-* families)
+   ------------------------------------------------------------ */
+.rost-meta { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: 0 0 .6rem; }
+.rost-chip {
+  display: inline-block; font-size: .74rem; letter-spacing: .06em;
+  background: var(--paper-2); border: 3px solid var(--line);
+  padding: .28rem .65rem; color: var(--ink-soft);
+}
+.rost-note {
+  max-width: 62ch; color: var(--ink-soft); font-size: .84rem;
+  margin: .2rem 0 0; white-space: pre-line;
+}
+
+.rost-tools { display: flex; flex-wrap: wrap; gap: .7rem; margin: 1.4rem 0 .4rem; }
+
+.rost-shift-head { gap: .55rem; flex-wrap: wrap; }
+.rost-shift-head .rost-count {
+  text-transform: none; letter-spacing: .04em; font-weight: 400;
+  color: var(--ink-faint); white-space: nowrap;
+}
+.rost-shift-head .rost-tick { color: var(--grass-dark); font-size: .95rem; }
+@media (prefers-color-scheme: dark) { .rost-shift-head .rost-tick { color: var(--grass); } }
+
+.rost-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: .7rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+@media (max-width: 480px) { .rost-grid { grid-template-columns: 1fr; } }
+
+.rost-slot {
+  background: var(--paper-2); border: 4px solid var(--ink);
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,.10);
+  padding: .75rem .8rem .85rem;
+  display: flex; flex-direction: column; gap: .35rem; align-items: flex-start;
+}
+.rost-slot.open {
+  background: var(--paper); border-color: var(--line); box-shadow: none;
+  justify-content: center;
+}
+.rost-slot [hidden] { display: none !important; }
+.rost-slot-name { font-weight: 700; line-height: 1.3; word-break: break-word; }
+.rost-slot-note { font-size: .8rem; color: var(--ink-soft); line-height: 1.45; word-break: break-word; }
+.rost-open-label {
+  font-size: .68rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.rost-you {
+  display: inline-block; font-size: .6rem; letter-spacing: .18em;
+  text-transform: uppercase; background: var(--gold); color: #2b2216;
+  padding: .14rem .45rem;
+}
+.rost-put { width: 100%; }
+.rost-mini { font-size: .7rem; padding: .35rem .6rem; box-shadow: 2px 2px 0 0 var(--ink); }
+.rost-form { display: flex; flex-direction: column; gap: .45rem; width: 100%; }
+.rost-form input {
+  width: 100%; font: inherit; font-size: .84rem;
+  padding: .45rem .55rem; background: var(--paper); color: var(--ink);
+  border: 3px solid var(--line);
+}
+.rost-form input:focus { outline: none; border-color: var(--sage-dark); }
+.rost-form-row { display: flex; gap: .5rem; flex-wrap: wrap; }
+.rost-form-err { margin: 0; font-size: .72rem; color: var(--terra-dark); }
+@media (prefers-color-scheme: dark) { .rost-form-err { color: var(--terra); } }
+
+@media print {
+  .rost-tools { display: none !important; }
+  .rost-slot { box-shadow: none; border-color: #000; break-inside: avoid; }
+  .rost-shift { break-inside: avoid; }
+  .rost-you { display: none; }
+}

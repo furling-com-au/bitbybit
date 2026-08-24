@@ -163,7 +163,16 @@ async function adminData(token, env) {
       if (c) rows.push({ shift: s.label, name: c.name, note: c.message || "" });
     }
   });
-  return json({ title: row.title || "Volunteer roster", eventDate: data.eventDate || "", rows });
+  // Volunteer names + notes, gated by the edit token. Never let a shared
+  // cache or search crawler hold onto them — this only answers the live
+  // organiser link.
+  return new Response(
+    JSON.stringify({ title: row.title || "Volunteer roster", eventDate: data.eventDate || "", rows }),
+    { status: 200, headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store",
+      "x-robots-tag": "noindex",
+    } });
 }
 
 /* ---------- rendering --------------------------------------- */
