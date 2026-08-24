@@ -3,26 +3,150 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Not found — biti by bit</title>
+<title>Nothing on this shelf — biti by bit</title>
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#f4ead8">
 <link rel="icon" href="/favicon.svg">
 <link rel="stylesheet" href="/styles.css">
+<style>
+  .lost-scene {
+    position: relative; overflow: hidden; margin: 1.6rem 0 1.8rem;
+    border: 4px solid var(--ink); box-shadow: 6px 6px 0 0 rgba(0,0,0,.12);
+    background: var(--paper); cursor: pointer;
+  }
+  .lost-scene img.shelf { display: block; width: 100%; height: auto; }
+  .tumbleweed {
+    position: absolute; bottom: 12%; left: -8%; width: 7%; height: auto;
+    animation: roll 5s steps(50, end) .5s 1 both;
+  }
+  @keyframes roll {
+    from { transform: translateX(0) rotate(0deg); }
+    to   { transform: translateX(1700%) rotate(1440deg); }
+  }
+  .scene-hint {
+    position: absolute; right: .6rem; bottom: .5rem;
+    font-size: .62rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-faint); pointer-events: none;
+  }
+
+  .excuse-box { margin: 0 0 2rem; }
+  .excuse-label {
+    font-size: .7rem; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--ink-faint); margin: 0 0 .6rem;
+  }
+  .excuse-card {
+    max-width: 34rem; margin: 0 0 1rem; min-height: 6.5rem; justify-content: center;
+  }
+  .excuse-card .draw-name { font-size: .95rem; line-height: 1.45; }
+  .excuse-tally { font-size: .74rem; color: var(--ink-faint); margin: .8rem 0 0; min-height: 1.2em; }
+  .lost-actions { display: flex; gap: .7rem; flex-wrap: wrap; align-items: center; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tumbleweed { display: none; }
+    .lost-scene { cursor: default; }
+    .scene-hint { display: none; }
+  }
+</style>
 </head>
 <body>
 <div class="scanlines" aria-hidden="true"></div>
+
 <header class="site-head wrap">
   <a class="wordmark" href="/" aria-label="biti by bit — home">
     <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
     biti by bit
     <span class="beta-badge">beta</span>
   </a>
+  <nav class="site-nav"><a href="/#tools">the tools</a></nav>
 </header>
+
 <main class="wrap page">
-  <p class="kicker">404</p>
-  <h1>Nothing on this shelf</h1>
-  <p class="lede">Either the link is wrong, or whatever lived here has been
-  deleted by its organiser. Deleted things really are gone — that's the deal.</p>
-  <p><a class="btn primary" href="/">Back to the tools</a></p>
+  <p class="kicker">404 · nothing here</p>
+  <h1>This shelf is empty</h1>
+  <p class="lede">Whatever you're after isn't at this address. Either the link
+  is wrong, or the person who made it hit delete — and deleted things really
+  are gone around here. That's the deal.</p>
+
+  <div class="lost-scene" id="scene" title="Go on, send it through again">
+    <img class="pixel shelf" src="/art/404-shelf.png"
+         alt="A pixel-art shelf with nothing on it but dust, a cobweb, one lonely bolt and a blank price tag"
+         width="1120" height="340">
+    <img class="pixel tumbleweed" id="weed" src="/art/404-tumbleweed.png"
+         alt="" aria-hidden="true" width="150" height="150">
+    <span class="scene-hint" aria-hidden="true">tap to send it again</span>
+  </div>
+
+  <section class="excuse-box">
+    <p class="excuse-label">We drew for what happened to it</p>
+    <div class="draw-card excuse-card">
+      <span class="draw-outcome">The official ruling</span>
+      <span class="draw-arrow" aria-hidden="true">▼</span>
+      <span class="draw-name" id="excuse" aria-live="polite">Nobody's drawn yet.</span>
+    </div>
+    <div class="lost-actions">
+      <button class="btn primary" id="drawBtn" type="button">Draw an excuse →</button>
+      <a class="btn" href="/#tools">Back to the tools</a>
+    </div>
+    <p class="excuse-tally" id="tally"></p>
+  </section>
 </main>
+
+<footer class="site-foot wrap">
+  <p class="fine">Lost link aside, everything on
+  <a class="quiet-link" href="/">biti by bit</a> is free and needs no account.</p>
+</footer>
+
+<script>
+(function () {
+  /* --- the tumbleweed: re-roll on tap --- */
+  var scene = document.getElementById("scene");
+  var weed = document.getElementById("weed");
+  scene.addEventListener("click", function () {
+    weed.style.animation = "none";
+    void weed.offsetWidth;            // force a reflow so it restarts
+    weed.style.animation = "";
+  });
+
+  /* --- draw an excuse, with the same crypto shuffle the sweeps use --- */
+  var EXCUSES = [
+    "The organiser deleted it. Deleted things really are gone — that's the deal.",
+    "Someone typo'd the link into a group chat, and now forty of you are here.",
+    "It's in your other tab. It's always in your other tab.",
+    "Last seen heading up the coast with the esky.",
+    "A link shortener ate one character. It does that.",
+    "It fell behind the couch, with the remote and $4 in coins.",
+    "Autocorrect had a go at the address.",
+    "Retired quietly to a farm upstate with the other broken links.",
+    "It never existed. Bold of you to assume otherwise.",
+    "A dog got it. Not our dog. Someone's dog.",
+    "Gone bush. No forwarding address.",
+    "Blame the WiFi. Everyone else does.",
+    "Someone hit delete at 11pm and felt very decisive about it.",
+    "Copied out of a screenshot, wasn't it. Be honest."
+  ];
+
+  function pick(n) {                  // unbiased, same as the draw tools
+    var max = Math.floor(0xffffffff / n) * n, buf = new Uint32Array(1), x;
+    do { crypto.getRandomValues(buf); x = buf[0]; } while (x >= max);
+    return x % n;
+  }
+
+  var out = document.getElementById("excuse");
+  var tally = document.getElementById("tally");
+  var draws = 0, last = -1;
+
+  document.getElementById("drawBtn").addEventListener("click", function () {
+    var i;
+    do { i = pick(EXCUSES.length); } while (EXCUSES.length > 1 && i === last);
+    last = i;
+    out.textContent = EXCUSES[i];
+    draws++;
+    if (draws === 3) tally.textContent = "Three draws. The page is still gone, for what it's worth.";
+    else if (draws === 7) tally.textContent = "Seven. Admirable persistence. Genuinely.";
+    else if (draws === 12) tally.textContent = "Twelve draws on a 404 — you'd run a good sweep. There's a tool for that.";
+    else if (draws > 12 && draws % 5 === 0) tally.textContent = draws + " draws. We're both invested now.";
+  });
+})();
+</script>
 </body>
 </html>
