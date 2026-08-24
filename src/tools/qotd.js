@@ -1041,6 +1041,7 @@ ${dailyScript(row, today, qi, q)}`;
   return html(pageShell({
     title: team ? `${team} — question of the day` : "Question of the day",
     body,
+    shareType: "qotd", shareSlug: row.slug,
   }));
 }
 

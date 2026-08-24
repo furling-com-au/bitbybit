@@ -489,7 +489,7 @@ async function publicPage(row, env) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: row.title || "Recipe Collection", body }));
+  return html(pageShell({ title: row.title || "Recipe Collection", body, shareType: "recipe", shareSlug: row.slug }));
 }
 
 /* ---------- organiser page (/e/:token) ---------------------- */

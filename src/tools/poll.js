@@ -522,7 +522,7 @@ async function publicPage(row, env) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: data.question || "Group vote", body }));
+  return html(pageShell({ title: data.question || "Group vote", body, shareType: "poll", shareSlug: row.slug }));
 }
 
 /* ---------- organiser page (/e/:token) ---------------------- */

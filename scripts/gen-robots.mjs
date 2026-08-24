@@ -18,6 +18,35 @@ import { writeFileSync } from "node:fs";
    forever. /api/ is POST-only in practice and pointless to crawl. */
 const DISALLOW = ["/s/", "/e/", "/p/", "/api/"];
 
+/* Link-preview fetchers are a different animal from crawlers. They
+   don't index and they don't follow links — they fetch one URL, once,
+   because a human just pasted it into a chat, and render a card for
+   the people already in that room. Pasting the shared link into the
+   group chat is how this whole site is meant to be used, so those
+   fetchers get /s/ and only /s/.
+        Discord obeys robots.txt, so without this its previews are
+   simply blocked. Slack states plainly that it does NOT obey
+   robots.txt, so its entry here changes nothing in practice and is
+   written down for the next person who wonders.
+        /e/ and /p/ stay disallowed for these too, and that matters
+   more than the rest of this file: an organiser page or somebody's
+   private draw must never be rendered into a channel. */
+const PREVIEW_BOTS = [
+  ["Slackbot-LinkExpanding", "Slack link previews (ignores robots.txt regardless)"],
+  ["Slack-ImgProxy", "Slack fetches the card image with a second agent"],
+  ["Slackbot", "Slack"],
+  ["Discordbot", "Discord — obeys robots.txt, so this line is load-bearing"],
+  ["Twitterbot", "X/Twitter cards"],
+  ["facebookexternalhit", "Facebook and Messenger"],
+  ["WhatsApp", "WhatsApp link previews"],
+  ["TelegramBot", "Telegram"],
+  ["Iframely", "used by several chat clients"],
+  ["SkypeUriPreview", "Skype and some Microsoft surfaces"],
+  ["LinkedInBot", "LinkedIn"],
+];
+
+const PREVIEW_DISALLOW = DISALLOW.filter((p) => p !== "/s/");
+
 /* Policy: everything public is open to everyone, including AI training.
    That is a deliberate choice, not an oversight. The whole point of the
    site is that a person asking an assistant "how do I run an office
@@ -134,6 +163,27 @@ Sitemap: https://bitibybit.com/sitemap.xml
 # ------------------------------------------------------------------
 
 ${BOTS.map(([ua, allow, note]) => block(ua, allow, note)).join("\n\n")}
+
+# ------------------------------------------------------------------
+# Link-preview fetchers.
+#
+# These are not crawlers. Each one fetches a single URL because a
+# person just pasted it into a chat, and draws a card for the people
+# already in that conversation. They get /s/ so a shared link looks
+# like something when it lands in the group chat.
+#
+# They do NOT get /e/ or /p/. An organiser page or someone's private
+# draw must never be rendered into a channel.
+# ------------------------------------------------------------------
+
+${PREVIEW_BOTS.map(([ua, note]) => [
+  `# ${note}`,
+  `User-agent: ${ua}`,
+  SIGNAL,
+  "Allow: /s/",
+  "Allow: /",
+  ...PREVIEW_DISALLOW.map((p) => `Disallow: ${p}`),
+].join("\n")).join("\n\n")}
 `;
 
 writeFileSync("public/robots.txt", out, "utf8");

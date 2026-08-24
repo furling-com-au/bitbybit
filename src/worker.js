@@ -13,7 +13,7 @@
    contract below, import it, add it to TOOLS.
    ============================================================ */
 
-import { json, getBySlug, getByToken, getParticipant, getInstanceById, notFoundPage, logEvent } from "./lib.js";
+import { json, getBySlug, getByToken, getParticipant, getInstanceById, notFoundPage, logEvent, markViewed } from "./lib.js";
 import sweep from "./tools/sweep.js";
 import kringle from "./tools/kringle.js";
 import roles from "./tools/roles.js";
@@ -90,6 +90,15 @@ export default {
       if (path.startsWith("/api/")) {
         if (request.method === "POST" && await overLimit(request, path, env))
           return json({ error: "Steady on — too many requests from this connection. Give it a few minutes." }, 429);
+
+        /* Shared by every tool that shows a "viewed" tick. Kept off the
+           GET of /p/:token, where link-preview fetchers would trigger
+           it the moment someone pastes their own private link into a
+           chat. See markViewed in lib.js. */
+        let mv;
+        if (request.method === "POST" && (mv = path.match(/^\/api\/viewed\/([a-z0-9]+)$/)))
+          return markViewed(env, mv[1]);
+
         for (const tool of TOOLS) {
           const res = await tool.api(request, env, url);
           if (res) return res;

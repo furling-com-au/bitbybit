@@ -631,7 +631,7 @@ async function publicPage(row, env) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: `Gift ideas for ${data.recipient}`, body }));
+  return html(pageShell({ title: `Gift ideas for ${data.recipient}`, body, shareType: "giftidea", shareSlug: row.slug }));
 }
 
 /* ---------- organiser page (/e/:token) ---------------------- */

@@ -284,3 +284,114 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+
+# ------------------------------------------------------------------
+# Link-preview fetchers.
+#
+# These are not crawlers. Each one fetches a single URL because a
+# person just pasted it into a chat, and draws a card for the people
+# already in that conversation. They get /s/ so a shared link looks
+# like something when it lands in the group chat.
+#
+# They do NOT get /e/ or /p/. An organiser page or someone's private
+# draw must never be rendered into a channel.
+# ------------------------------------------------------------------
+
+# Slack link previews (ignores robots.txt regardless)
+User-agent: Slackbot-LinkExpanding
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Allow: /s/
+Allow: /
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+# Slack fetches the card image with a second agent
+User-agent: Slack-ImgProxy
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Allow: /s/
+Allow: /
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+# Slack
+User-agent: Slackbot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Allow: /s/
+Allow: /
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+# Discord — obeys robots.txt, so this line is load-bearing
+User-agent: Discordbot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Allow: /s/
+Allow: /
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+# X/Twitter cards
+User-agent: Twitterbot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Allow: /s/
+Allow: /
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+# Facebook and Messenger
+User-agent: facebookexternalhit
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Allow: /s/
+Allow: /
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+# WhatsApp link previews
+User-agent: WhatsApp
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Allow: /s/
+Allow: /
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+# Telegram
+User-agent: TelegramBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Allow: /s/
+Allow: /
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+# used by several chat clients
+User-agent: Iframely
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Allow: /s/
+Allow: /
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+# Skype and some Microsoft surfaces
+User-agent: SkypeUriPreview
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Allow: /s/
+Allow: /
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/
+
+# LinkedIn
+User-agent: LinkedInBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Allow: /s/
+Allow: /
+Disallow: /e/
+Disallow: /p/
+Disallow: /api/

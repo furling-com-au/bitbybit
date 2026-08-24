@@ -713,7 +713,7 @@ async function publicPage(row, env) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: `Meals for ${data.forWhom}`, body }));
+  return html(pageShell({ title: `Meals for ${data.forWhom}`, body, shareType: "meal", shareSlug: row.slug }));
 }
 
 /* ---------- organiser page (/e/:token) ---------------------- */

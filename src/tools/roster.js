@@ -377,7 +377,7 @@ async function publicPage(row, env) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: row.title || "Volunteer roster", body }));
+  return html(pageShell({ title: row.title || "Volunteer roster", body, shareType: "roster", shareSlug: row.slug }));
 }
 
 async function editPage(row, env, origin) {

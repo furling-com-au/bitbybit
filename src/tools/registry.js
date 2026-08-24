@@ -583,6 +583,7 @@ function publicPage(row, env, url) {
   return html(pageShell({
     title: `${data.coupleNames} — build the Prado`,
     body: shellBody(row, data, { organiser: false, origin: url.origin }),
+    shareType: "registry", shareSlug: row.slug,
   }));
 }
 

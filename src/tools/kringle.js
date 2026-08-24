@@ -10,8 +10,7 @@
 import {
   esc, json, html, rand, randomString, badInput, pageShell,
   getBySlug, getByToken, getParticipant, getInstanceById,
-  createInstance, deleteInstance, logEvent, fmtDate, shareNudge,
-} from "../lib.js";
+  createInstance, deleteInstance, logEvent, fmtDate, shareNudge, viewedBeacon} from "../lib.js";
 
 const MAX_TITLE = 80;
 const MIN_NAMES = 3;
@@ -296,15 +295,10 @@ async function publicPage(row, env) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: row.title || "Kris Kringle", body }));
+  return html(pageShell({ title: row.title || "Kris Kringle", body, shareType: "kringle", shareSlug: row.slug }));
 }
 
 async function participantPage(prow, row, env) {
-  if (!prow.viewed_at) {
-    await env.DB.prepare(
-      "UPDATE participants SET viewed_at = ? WHERE id = ? AND viewed_at IS NULL"
-    ).bind(new Date().toISOString(), prow.id).run();
-  }
   const data = JSON.parse(row.data);
   const pdata = JSON.parse(prow.data);
 
@@ -382,7 +376,7 @@ async function participantPage(prow, row, env) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: `${row.title || "Kris Kringle"} — your draw`, body }));
+  return html(pageShell({ title: `${row.title || "Kris Kringle"} — your draw`, body: body + viewedBeacon(prow.token) }));
 }
 
 async function editPage(row, env, url) {

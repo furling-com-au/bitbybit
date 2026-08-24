@@ -286,7 +286,7 @@ async function publicPage(row, env) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: row.title || `A card for ${data.recipient}`, body }));
+  return html(pageShell({ title: row.title || `A card for ${data.recipient}`, body, shareType: "card", shareSlug: row.slug }));
 }
 
 async function editPage(row, env, origin) {

@@ -161,7 +161,12 @@ function publicPage(row) {
     <p><a class="quiet-link" href="/via/${data.kind === "cup" ? "cup" : "gf"}">made with biti by bit →</a></p>
   </footer>
 </main>`;
-  return html(pageShell({ title: row.title || "Sweep", body }));
+  return html(pageShell({
+    title: row.title || "Sweep", body,
+    // one module, two products: the Cup gets its own artwork
+    shareType: "sweep", shareSlug: row.slug,
+    shareImg: data.kind === "cup" ? "og-cup" : "og-sweep",
+  }));
 }
 
 function editPage(row, origin) {
