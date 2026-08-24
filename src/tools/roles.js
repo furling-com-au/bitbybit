@@ -163,7 +163,7 @@ async function publicPage(row, env) {
   </div>
 
   <footer class="page-foot">
-    <p><a class="quiet-link" href="/via/roles">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/roles">made with biti by bit →</a></p>
   </footer>
 </main>
 
@@ -248,7 +248,7 @@ async function participantPage(prow, row, env) {
   <p class="fine">The page stays here — bookmark it if the game runs long.</p>
 
   <footer class="page-foot">
-    <p><a class="quiet-link" href="/via/roles">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/roles">made with biti by bit →</a></p>
   </footer>
 </main>`;
   return html(pageShell({ title: "Your role", body }));

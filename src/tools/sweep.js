@@ -158,7 +158,7 @@ function publicPage(row) {
   ${grid(data, { reveal: true })}
   ${seasonBanner(data.kind)}
   <footer class="page-foot">
-    <p><a class="quiet-link" href="/via/${data.kind === "cup" ? "cup" : "gf"}">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/${data.kind === "cup" ? "cup" : "gf"}">made with biti by bit →</a></p>
   </footer>
 </main>`;
   return html(pageShell({ title: row.title || "Sweep", body }));

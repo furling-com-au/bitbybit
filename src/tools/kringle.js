@@ -238,7 +238,7 @@ async function publicPage(row, env) {
   <footer class="page-foot">
     <p class="fine">One claim per name. Grabbed the wrong one, or someone
     pinched yours? The organiser can reset it.</p>
-    <p><a class="quiet-link" href="/via/kringle">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/kringle">made with biti by bit →</a></p>
   </footer>
 </main>
 
@@ -347,7 +347,7 @@ async function participantPage(prow, row, env) {
     <p class="fine">Keep this page to yourself. Bookmark it — it's the only
     way back in. Lost it? The organiser can reset your name so you can claim
     it again.</p>
-    <p><a class="quiet-link" href="/via/kringle">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/kringle">made with biti by bit →</a></p>
   </footer>
 </main>
 

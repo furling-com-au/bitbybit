@@ -254,7 +254,7 @@ function publicPage(row) {
   <footer class="page-foot">
     <p class="fine">Results land as the organiser taps them in — refresh for
     the latest. Reckon a score's wrong? Bail up the organiser, not us.</p>
-    <p><a class="quiet-link" href="/via/bracket">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/bracket">made with biti by bit →</a></p>
   </footer>
 </main>`;
   return html(pageShell({ title: row.title || "Tournament bracket", body }));

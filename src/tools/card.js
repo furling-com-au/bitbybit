@@ -192,7 +192,7 @@ async function publicPage(row, env) {
   </section>
 
   <footer class="page-foot">
-    <p><a class="quiet-link" href="/via/card">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/card">made with biti by bit →</a></p>
   </footer>
 </main>
 

@@ -242,7 +242,7 @@ function revealedPage(row, data, parts) {
   <footer class="page-foot">
     <p class="fine">Played it already? The organiser can start a fresh round
     any time — new names, new facts.</p>
-    <p><a class="quiet-link" href="/via/fact">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/fact">made with biti by bit →</a></p>
   </footer>
 </main>`;
   return html(pageShell({ title: row.title || "Fact Matcher", body }));
@@ -289,7 +289,7 @@ function collectionPage(row, data, parts) {
     <p class="fine">One claim per name. Grabbed the wrong one, or someone took
     yours? The organiser can reset it. The answers stay hidden until the
     organiser reveals them.</p>
-    <p><a class="quiet-link" href="/via/fact">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/fact">made with biti by bit →</a></p>
   </footer>
 </main>
 
@@ -384,7 +384,7 @@ async function participantPage(prow, row, env) {
   Lost it? The organiser can reset your name so you can claim it again.</p>
 
   <footer class="page-foot">
-    <p><a class="quiet-link" href="/via/fact">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/fact">made with biti by bit →</a></p>
   </footer>
 </main>
 

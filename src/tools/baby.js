@@ -337,7 +337,7 @@ async function publicPage(row, env) {
   <footer class="page-foot">
     <p class="fine">No accounts here — this browser remembers which guesses are
     yours. On someone else's phone? Just ask the organiser to shift things.</p>
-    <p><a class="quiet-link" href="/via/baby">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/baby">made with biti by bit →</a></p>
   </footer>
 </main>
 

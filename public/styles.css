@@ -1220,3 +1220,12 @@ button.fact-name:disabled { cursor: not-allowed; }
   .rost-shift { break-inside: avoid; }
   .rost-you { display: none; }
 }
+
+.beta-badge {
+  font-size: .58rem; letter-spacing: .12em; text-transform: uppercase;
+  background: var(--terra); color: #f6f1e4; padding: .1rem .4rem;
+  border: 2px solid var(--ink); align-self: center; font-weight: 700;
+}
+.foot-links { display: flex; gap: 1.4rem; flex-wrap: wrap; margin-top: 1.1rem; }
+.foot-link { color: var(--ink-soft); text-decoration: none; font-size: .82rem; letter-spacing: .02em; }
+.foot-link:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }

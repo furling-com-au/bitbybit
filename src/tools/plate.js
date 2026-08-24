@@ -223,7 +223,7 @@ async function publicPage(row, env) {
     <p class="fine">No accounts — this browser remembers which spots are yours,
     and your own cards get an undo. If you're on someone else's phone,
     just ask the organiser to shift things.</p>
-    <p><a class="quiet-link" href="/via/plate">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/plate">made with biti by bit →</a></p>
   </footer>
 </main>
 

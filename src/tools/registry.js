@@ -518,7 +518,7 @@ function shellBody(row, data, { organiser, origin }) {
     <p class="fine">No accounts — this browser remembers which parts are yours.
     Payments happen directly between you and the couple; this site never
     touches the money.</p>
-    <p><a class="quiet-link" href="/via/registry">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/registry">made with biti by bit →</a></p>
   </footer>
 </main>
 
