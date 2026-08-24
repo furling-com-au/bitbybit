@@ -1,0 +1,60 @@
+# bit by bit
+
+**Small free tools for getting a group of people to do something.**
+
+A shelf of tiny, no-signup utilities — make a thing, share a link, done.
+The first tool on the shelf is the **Grand Final Sweep**: run an office
+margin sweep in under a minute, share one link, print it for the fridge.
+
+Cosy pixel aesthetic throughout: every icon and scene is generated from
+declarative shapes by `scripts/gen-art.mjs` — no image editor involved.
+
+## How it's built
+
+| Layer | Choice |
+|---|---|
+| Hosting | Cloudflare Workers + Static Assets |
+| Data | Cloudflare D1 (SQLite) |
+| Frontend | Plain HTML/CSS/JS — no framework, no build step |
+| Accounts | None. A secret organiser URL is the only credential |
+
+One Worker, one database, every tool is a path. The `instances` table is
+tool-agnostic (`tool_type` discriminates), so each new tool is a template
+plus a handler, not a new stack.
+
+```
+public/                 static pages (the shelf, tool pages)
+src/worker.js           dynamic routes: create/redraw/delete + share pages
+migrations/             D1 schema
+scripts/gen-art.mjs     generates all pixel art (icons, hero, OG images)
+```
+
+## Run it locally
+
+```bash
+npm install
+npx wrangler d1 migrations apply bitbybit --local
+npx wrangler dev
+```
+
+Regenerate the art after editing shapes: `npm run art`.
+
+## Deploy
+
+```bash
+npx wrangler d1 create bitbybit        # paste the id into wrangler.jsonc
+npx wrangler d1 migrations apply bitbybit --remote
+npx wrangler deploy
+```
+
+## Principles
+
+- Free, no accounts, no tracking, no ads.
+- The tool page *is* the tool — it works above the fold.
+- Participants never hit friction; organisers get the extras.
+- Shared pages are `noindex` — names in a sweep are nobody's SEO.
+- If a tool ever retires, there'll be an export and fair warning.
+
+## Licence
+
+MIT — see [LICENSE](LICENSE).

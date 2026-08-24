@@ -1,0 +1,16 @@
+{
+  "name": "bitbybit",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Small free tools for groups — bitbybit.com",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "art": "node scripts/gen-art.mjs",
+    "migrate:local": "wrangler d1 migrations apply bitbybit --local",
+    "migrate:remote": "wrangler d1 migrations apply bitbybit --remote"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

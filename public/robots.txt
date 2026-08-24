@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /s/
+Disallow: /e/
+Disallow: /api/
+Sitemap: https://bitbybit.com/sitemap.xml
