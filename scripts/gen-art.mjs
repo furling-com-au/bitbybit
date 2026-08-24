@@ -150,15 +150,15 @@ fieldScene(112, 32).toPng("public/art/sweep-hero.png", 10);
   drawText(g, Math.floor((120 - textWidth(t2, 1)) / 2), 26, t2, P.inkSoft, 1);
   // wordmark blocks bottom-left
   g.rect(3, 57, 4, 58, P.sageDark); g.rect(6, 57, 7, 58, P.terra); g.rect(3, 60, 4, 61, P.gold);
-  drawText(g, 10, 57, "BIT BY BIT", P.inkSoft, 1);
+  drawText(g, 10, 57, "BITIBYBIT.COM", P.inkSoft, 1);
   g.toPng("public/art/og-sweep.png", 10);
 }
 
 /* og-home: wordmark + icon row */
 {
   const g = new Grid(120, 63, P.paper);
-  const t1 = "BIT BY BIT";
-  drawText(g, Math.floor((120 - textWidth(t1, 3)) / 2), 8, t1, P.ink, 3);
+  const t1 = "BITIBYBIT.COM";
+  drawText(g, Math.floor((120 - textWidth(t1, 2)) / 2), 9, t1, P.ink, 2);
   const t2 = "SMALL FREE TOOLS FOR GROUPS";
   drawText(g, Math.floor((120 - textWidth(t2, 1)) / 2), 26, t2, P.inkSoft, 1);
   const row = ["footy", "gift", "car", "wolf", "pot", "card"];

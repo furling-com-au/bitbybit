@@ -97,7 +97,7 @@ nightScene(112, 32).toPng("public/art/roles-hero.png", 10);
   drawText(g, Math.floor((120 - textWidth(t2, 1)) / 2), 26, t2, P.inkSoft, 1);
   // wordmark blocks bottom-left, over the night scene
   g.rect(3, 57, 4, 58, P.sage); g.rect(6, 57, 7, 58, P.terra); g.rect(3, 60, 4, 61, P.gold);
-  drawText(g, 10, 57, "BIT BY BIT", P.line, 1);
+  drawText(g, 10, 57, "BITIBYBIT.COM", P.line, 1);
   g.toPng("public/art/og-roles.png", 10);
 }
 

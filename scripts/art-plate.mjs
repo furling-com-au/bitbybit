@@ -171,7 +171,7 @@ tableScene(112, 32, 15, { bunting: true }).toPng("public/art/plate-hero.png", 10
   g.blit(tableScene(120, 34, 14), 0, 29, 1);
   // wordmark blocks bottom-left, on the clear stretch of floor
   g.rect(3, 57, 4, 58, P.sageDark); g.rect(6, 57, 7, 58, P.terra); g.rect(3, 60, 4, 61, P.gold);
-  drawText(g, 10, 57, "BIT BY BIT", P.inkSoft, 1);
+  drawText(g, 10, 57, "BITIBYBIT.COM", P.inkSoft, 1);
   g.toPng("public/art/og-plate.png", 10);
 }
 

@@ -126,7 +126,7 @@ export function pageShell({ title, body }) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(title)} — bit by bit</title>
+<title>${esc(title)} — bitibybit.com</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#f4ead8">
 <link rel="icon" href="/favicon.svg">
@@ -135,9 +135,9 @@ export function pageShell({ title, body }) {
 <body>
 <div class="scanlines" aria-hidden="true"></div>
 <header class="site-head wrap">
-  <a class="wordmark" href="/" aria-label="bit by bit — home">
+  <a class="wordmark" href="/" aria-label="bitibybit.com — home">
     <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
-    bit&nbsp;by&nbsp;bit
+    bitibybit.com
   </a>
 </header>
 ${body}
