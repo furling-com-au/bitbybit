@@ -2,13 +2,18 @@
   "name": "bitbybit",
   "private": true,
   "version": "0.1.0",
-  "description": "Small free tools for groups — bitibybit.com",
+  "description": "Small free tools for groups \u2014 bitibybit.com",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "art": "node scripts/gen-art.mjs && node scripts/art-cup.mjs && node scripts/art-kringle.mjs && node scripts/art-roles.mjs && node scripts/art-plate.mjs && node scripts/art-bracket.mjs && node scripts/art-card.mjs && node scripts/art-registry.mjs && node scripts/art-teams.mjs && node scripts/art-fact.mjs && node scripts/art-baby.mjs && node scripts/art-roster.mjs && node scripts/art-meal.mjs && node scripts/art-404.mjs",
     "migrate:local": "wrangler d1 migrations apply bitbybit --local",
-    "migrate:remote": "wrangler d1 migrations apply bitbybit --remote"
+    "migrate:remote": "wrangler d1 migrations apply bitbybit --remote",
+    "templates": "node scripts/gen-roster-templates.mjs",
+    "robots": "node scripts/gen-robots.mjs",
+    "apidocs": "node scripts/gen-api-docs.mjs",
+    "faq": "node scripts/sync-faq-schema.mjs",
+    "build": "npm run robots && npm run apidocs && npm run templates && npm run faq"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

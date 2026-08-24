@@ -1828,3 +1828,36 @@ h1.qotd-q {
 .guide-list a:hover { color: var(--ink); border-bottom-color: var(--ink); }
 .section-note { font-size: .84rem; color: var(--ink-faint); margin: .2rem 0 0; max-width: 46ch; }
 @media (max-width: 34rem) { .guide-list { columns: 1; } }
+
+/* ------------------------------------------------------------
+   downloadable template links
+   Search intent for "roster template" is a file, not an app —
+   so the file gets a real, visible affordance next to each
+   roster rather than being buried in a sentence.
+   ------------------------------------------------------------ */
+.dl-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .5rem;
+  margin: .7rem 0 1.4rem;
+}
+.dl-label {
+  font-size: .68rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-faint); margin-right: .2rem;
+}
+.dl {
+  display: inline-block; font-size: .78rem; text-decoration: none;
+  color: var(--ink); background: var(--paper-2);
+  border: 2px solid var(--ink); padding: .3rem .7rem;
+  box-shadow: 3px 3px 0 0 var(--ink);
+}
+.dl:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 0 var(--ink); background: var(--paper); }
+.dl:active { transform: translate(2px,2px); box-shadow: 0 0 0 0 var(--ink); }
+.dl:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+@media print { .dl-row { display: none; } }
+
+.tpl-list { list-style: none; margin: 1rem 0 1.2rem; padding: 0; }
+.tpl-list li {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .5rem;
+  padding: .55rem 0; border-top: 1px solid var(--line); font-size: .85rem;
+}
+.tpl-list li:last-child { border-bottom: 1px solid var(--line); }
+.tpl-list strong { flex: 1 1 15rem; font-weight: 700; }
