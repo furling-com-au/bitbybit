@@ -1768,3 +1768,46 @@ h1.qotd-q {
   .qotd-archive { border-color: #000; }
   .qotd-archive-item { break-inside: avoid; }
 }
+
+/* ------------------------------------------------------------
+   meal train — "other ways to help" and local places
+   The non-meal jobs reuse .meal-day / .meal-slot wholesale, so
+   there is nothing to style for the board itself; these are the
+   section headings, the coordinator's add-a-job form, and the
+   outbound link list.
+   ------------------------------------------------------------ */
+.meal-section-h {
+  margin: 2.4rem 0 .2rem; font-size: 1rem; letter-spacing: .02em;
+  padding-top: 1.2rem; border-top: 3px solid var(--line);
+}
+.meal-links { margin: 0 0 1rem; }
+.meal-link-list { list-style: none; margin: 1rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
+.meal-link-list li { margin: 0; }
+.meal-link {
+  display: inline-block; background: var(--paper-2); border-left: 5px solid var(--gold);
+  padding: .55rem .85rem; font-size: .85rem; color: var(--ink); text-decoration: none;
+  width: 100%; word-break: break-word;
+}
+.meal-link:hover { background: var(--paper); text-decoration: underline; }
+
+.meal-admin { margin: 0 0 1.4rem; }
+.meal-admin-form {
+  display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .9rem 0 0;
+}
+.meal-admin-form input[type="text"],
+.meal-admin-form input[type="url"] {
+  flex: 1 1 14rem; min-width: 0; font: inherit; font-size: .85rem;
+  padding: .55rem .7rem; border: 3px solid var(--ink); background: var(--paper);
+  color: var(--ink);
+}
+.meal-admin-cap { font-size: .78rem; color: var(--ink-soft); display: flex; align-items: center; gap: .4rem; }
+.meal-admin-cap input {
+  width: 4.2rem; font: inherit; font-size: .85rem; padding: .55rem .5rem;
+  border: 3px solid var(--ink); background: var(--paper); color: var(--ink);
+}
+.meal-link-row { margin: 0 0 .5rem; }
+
+@media print {
+  .meal-admin { display: none; }
+  .meal-link { border-color: #000; }
+}

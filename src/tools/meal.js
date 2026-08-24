@@ -30,6 +30,32 @@ const MAX_DISH = 120;
 const MAX_DAYS = 60;
 const MAX_CAP = 3;
 
+/* "Other ways to help" — the jobs that aren't meals. A meal train is
+   really a special case of a help roster: when something awful
+   happens, the people around a family want to walk the dog, do the
+   school run, take the washing. Meals are just the socially legible
+   version, and the coordinator ends up running the rest by text.
+
+   These reuse the claims table and the same UNIQUE(instance_id,
+   slot_id) race protection as the days. Only the slot-id prefix
+   differs: t… instead of d….
+
+   Task ids are STABLE and monotonic, never positional. Removing the
+   second of four tasks must not silently re-point the third task's
+   claims at the fourth — the same index-shifting trap the question
+   bank carries a warning about. */
+const MAX_TASKS = 12;
+const MAX_TASK_LABEL = 70;
+const MAX_TASK_CAP = 20;
+
+/* Organiser-supplied links to local places: "can't cook? they love
+   the Thai place on High St". Plain outbound links — the site takes
+   no cut, brokers nothing and handles no money, which is the same
+   line the gift registry holds. */
+const MAX_LINKS = 8;
+const MAX_LINK_LABEL = 70;
+const MAX_LINK_URL = 300;
+
 const NOUNS = ["casserole", "lasagne", "soup", "roast", "curry", "bake",
   "stew", "pie", "hotpot", "ladle"];
 
@@ -66,20 +92,72 @@ const fmtDayLong = (iso) => {
   return d ? `${WD[d.getUTCDay()]} ${d.getUTCDate()} ${MO[d.getUTCMonth()]} ${d.getUTCFullYear()}` : iso;
 };
 
-/* Slot ids are positional and stable: d<dayIndex>-<n>, n from 1. */
+/* Slot ids: d<dayIndex>-<n> for meals, t<taskId>-<n> for the other
+   jobs. Day indexes are positional because the date list is fixed at
+   creation and never reordered; task ids are explicit because tasks
+   can be added and removed while the roster is live. */
 function slotSet(data) {
   const set = new Set();
   data.dates.forEach((_, i) => {
     for (let n = 1; n <= data.capacityPerDay; n++) set.add(`d${i}-${n}`);
   });
+  for (const t of data.tasks || []) {
+    for (let n = 1; n <= t.capacity; n++) set.add(`t${t.id}-${n}`);
+  }
   return set;
 }
+
+/* The meal tally must count meal slots only. Task claims live in the
+   same table, so counting rows would report "9 of 6 meals covered"
+   the moment anyone offers to walk the dog. */
+const mealClaimCount = (claims) =>
+  claims.filter((c) => String(c.slot_id).startsWith("d")).length;
 
 const getClaims = async (env, instanceId) =>
   (await env.DB.prepare("SELECT * FROM claims WHERE instance_id = ?")
     .bind(instanceId).all()).results;
 
 /* ---------- validation -------------------------------------- */
+
+/* Tasks arrive as {label, capacity} and leave with a stable id. */
+function parseTasks(raw, startId = 1) {
+  if (!Array.isArray(raw)) return { tasks: [], nextTaskId: startId };
+  const tasks = [];
+  let id = startId;
+  for (const t of raw.slice(0, MAX_TASKS)) {
+    const label = String((t && t.label) || "").trim().replace(/\s+/g, " ").slice(0, MAX_TASK_LABEL);
+    if (!label) continue;
+    let capacity = Number(t && t.capacity);
+    if (!Number.isInteger(capacity) || capacity < 1) capacity = 1;
+    capacity = Math.min(capacity, MAX_TASK_CAP);
+    tasks.push({ id: id++, label, capacity });
+  }
+  return { tasks, nextTaskId: id };
+}
+
+/* Only http(s) survives. An organiser link is rendered on a page that
+   gets forwarded round a school group, so a javascript: or data: URL
+   sitting in there would be an XSS vector handed to whoever opens it. */
+function safeUrl(raw) {
+  const s = String(raw || "").trim().slice(0, MAX_LINK_URL);
+  if (!s) return "";
+  let u;
+  try { u = new URL(s); } catch { return ""; }
+  if (u.protocol !== "http:" && u.protocol !== "https:") return "";
+  return u.href.slice(0, MAX_LINK_URL);
+}
+
+function parseLinks(raw) {
+  if (!Array.isArray(raw)) return [];
+  const out = [];
+  for (const l of raw.slice(0, MAX_LINKS)) {
+    const url = safeUrl(l && l.url);
+    if (!url) continue;
+    const label = String((l && l.label) || "").trim().replace(/\s+/g, " ").slice(0, MAX_LINK_LABEL);
+    out.push({ label: label || new URL(url).hostname.replace(/^www\./, ""), url });
+  }
+  return out;
+}
 
 function parseCreate(body) {
   const forWhom = String(body.forWhom || "").trim().replace(/\s+/g, " ").slice(0, MAX_FORWHOM);
@@ -117,15 +195,18 @@ function parseCreate(body) {
   if (!Number.isInteger(capacityPerDay) || capacityPerDay < 1) capacityPerDay = 1;
   capacityPerDay = Math.min(capacityPerDay, MAX_CAP);
 
-  return { forWhom, note, allergies, dropoff, dates, capacityPerDay };
+  const { tasks, nextTaskId } = parseTasks(body.tasks);
+  const helpLinks = parseLinks(body.helpLinks);
+
+  return { forWhom, note, allergies, dropoff, dates, capacityPerDay, tasks, nextTaskId, helpLinks };
 }
 
 /* ---------- api --------------------------------------------- */
 
 async function create(request, env) {
-  const { forWhom, note, allergies, dropoff, dates, capacityPerDay } =
-    parseCreate(await request.json().catch(() => ({})));
-  const data = JSON.stringify({ forWhom, note, allergies, dropoff, dates, capacityPerDay });
+  const parsed = parseCreate(await request.json().catch(() => ({})));
+  const { forWhom } = parsed;
+  const data = JSON.stringify(parsed);
   const { id, slug, editToken } = await createInstance(env, {
     toolType: "meal", title: `Meals for ${forWhom}`.slice(0, 120), data, nouns: NOUNS,
   });
@@ -195,6 +276,90 @@ async function orgRemove(token, request, env) {
   return json({ ok: true });
 }
 
+/* Compare-and-swap on instances.data. Two coordinator tabs adding a
+   job at the same time would otherwise silently lose one of them:
+   both read, both write, last write wins. Same helper the poll and
+   bracket tools use. */
+async function mutateData(env, id, mutate) {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const cur = await env.DB.prepare(
+      "SELECT data, updated_at FROM instances WHERE id = ?"
+    ).bind(id).first();
+    if (!cur) { const e = new Error("not found"); e.status = 404; throw e; }
+    const data = JSON.parse(cur.data);
+    const next = mutate(data); // may throw a domain error to abort
+    const res = await env.DB.prepare(
+      "UPDATE instances SET data = ?, updated_at = ? WHERE id = ? AND updated_at = ?"
+    ).bind(JSON.stringify(next), new Date().toISOString(), id, cur.updated_at).run();
+    if (res.meta.changes) return next;
+  }
+  const e = new Error("Two people edited this roster at once — try again in a moment.");
+  e.status = 409;
+  throw e;
+}
+
+async function orgAddTask(token, request, env) {
+  const row = await getByToken(env, token);
+  if (!row || row.tool_type !== "meal") return json({ error: "not found" }, 404);
+
+  const body = await request.json().catch(() => ({}));
+  const label = String(body.label || "").trim().replace(/\s+/g, " ").slice(0, MAX_TASK_LABEL);
+  if (!label) throw badInput("What's the job? Give it a short name.");
+  let capacity = Number(body.capacity);
+  if (!Number.isInteger(capacity) || capacity < 1) capacity = 1;
+  capacity = Math.min(capacity, MAX_TASK_CAP);
+
+  const next = await mutateData(env, row.id, (data) => {
+    const tasks = data.tasks || [];
+    if (tasks.length >= MAX_TASKS)
+      throw badInput(`That's ${MAX_TASKS} jobs already — plenty to be going on with.`);
+    const id = data.nextTaskId || tasks.reduce((m, t) => Math.max(m, t.id), 0) + 1;
+    return { ...data, tasks: [...tasks, { id, label, capacity }], nextTaskId: id + 1 };
+  });
+  const added = next.tasks[next.tasks.length - 1];
+  return json({ ok: true, id: added.id });
+}
+
+/* Removing a job takes its claims with it. The people who signed up
+   lose their slot, which is why the organiser page confirms first. */
+async function orgRemoveTask(token, request, env) {
+  const row = await getByToken(env, token);
+  if (!row || row.tool_type !== "meal") return json({ error: "not found" }, 404);
+
+  const body = await request.json().catch(() => ({}));
+  const id = Number(body.id);
+  if (!Number.isInteger(id)) throw badInput("Which job?");
+
+  let found = false;
+  await mutateData(env, row.id, (data) => {
+    const tasks = data.tasks || [];
+    if (!tasks.some((t) => t.id === id)) return data; // already gone
+    found = true;
+    return { ...data, tasks: tasks.filter((t) => t.id !== id) };
+  });
+  if (!found) return json({ error: "That job isn't on this roster." }, 404);
+
+  await env.DB.prepare(
+    "DELETE FROM claims WHERE instance_id = ? AND (slot_id = ? OR slot_id LIKE ?)"
+  ).bind(row.id, `t${id}`, `t${id}-%`).run();
+  return json({ ok: true });
+}
+
+/* The whole list is replaced in one go — simpler than add/remove for
+   a handful of links, and it keeps the organiser UI a single form. */
+async function orgSetLinks(token, request, env) {
+  const row = await getByToken(env, token);
+  if (!row || row.tool_type !== "meal") return json({ error: "not found" }, 404);
+
+  const body = await request.json().catch(() => ({}));
+  if (!Array.isArray(body.links)) throw badInput("Send a list of links.");
+  const dropped = body.links.slice(0, MAX_LINKS).filter((l) => l && l.url && !safeUrl(l.url)).length;
+  const helpLinks = parseLinks(body.links);
+
+  await mutateData(env, row.id, (data) => ({ ...data, helpLinks }));
+  return json({ ok: true, saved: helpLinks.length, dropped });
+}
+
 async function orgDelete(token, env) {
   const row = await getByToken(env, token);
   if (!row || row.tool_type !== "meal") return json({ error: "not found" }, 404);
@@ -246,10 +411,96 @@ function allergiesBanner(data) {
 const noteBlock = (data) =>
   data.note ? `<div class="pixel-note meal-note">${esc(data.note)}</div>` : "";
 
-function subLine(data, claimCount) {
+function subLine(data, mealsCovered) {
   const total = data.dates.length * data.capacityPerDay;
   const n = data.dates.length;
-  return `${claimCount} of ${total} meals covered · ${n} ${n === 1 ? "day" : "days"}`;
+  return `${mealsCovered} of ${total} meals covered · ${n} ${n === 1 ? "day" : "days"}`;
+}
+
+/* The non-meal jobs. Same claim mechanics as a day, different
+   framing: a job can be a one-off ("mow the lawn") or a standing
+   thing ("school run, Tuesdays"), so the label carries the when and
+   the capacity is just how many people are needed. */
+function taskBoard(data, bySlot, organiser) {
+  const tasks = data.tasks || [];
+  if (!tasks.length) return "";
+
+  const items = tasks.map((t) => {
+    let filled = 0;
+    const slots = [];
+    for (let n = 1; n <= t.capacity; n++) {
+      const sid = `t${t.id}-${n}`;
+      const c = bySlot[sid];
+      if (c) {
+        filled++;
+        slots.push(`
+        <li class="meal-slot claimed" data-slot="${sid}">
+          <span class="meal-cook">${esc(c.name)}</span>${c.message ? `
+          <span class="meal-dish">${esc(c.message)}</span>` : ""}${organiser ? `
+          <button class="btn ghost meal-mini meal-remove" type="button" data-slot="${sid}">Remove</button>` : ""}
+        </li>`);
+      } else if (organiser) {
+        slots.push(`
+        <li class="meal-slot open" data-slot="${sid}">
+          <span class="meal-open-label">Open</span>
+        </li>`);
+      } else {
+        slots.push(`
+        <li class="meal-slot open" data-slot="${sid}">
+          <button class="btn meal-put" type="button">I can do this</button>
+          <form class="meal-form" hidden>
+            <input type="text" name="name" maxlength="${MAX_NAME}" placeholder="Your name" aria-label="Your name" autocomplete="name">
+            <input type="text" name="dish" maxlength="${MAX_DISH}" placeholder="Anything the coordinator should know — optional" aria-label="Note (optional)">
+            <div class="meal-form-row">
+              <button class="btn primary meal-mini" type="submit">Put me down</button>
+              <button class="btn ghost meal-mini meal-cancel" type="button">Never mind</button>
+            </div>
+            <p class="meal-form-err" hidden></p>
+          </form>
+        </li>`);
+      }
+    }
+    const full = filled >= t.capacity;
+    const status = full
+      ? `<span class="meal-day-status covered">sorted ✓</span>`
+      : `<span class="meal-day-status open">${filled > 0 ? `${filled} of ${t.capacity}` : "open"}</span>`;
+    return `
+    <li class="meal-day${full ? " is-covered" : ""}">
+      <div class="meal-day-head">
+        <span class="meal-day-date">${esc(t.label)}</span>
+        ${status}
+        ${organiser ? `<button class="btn ghost meal-mini meal-task-del" type="button" data-task="${t.id}">Delete job</button>` : ""}
+      </div>
+      <ul class="meal-day-slots">${slots.join("")}
+      </ul>
+    </li>`;
+  }).join("");
+
+  return `
+  <h2 class="meal-section-h">Other ways to help</h2>
+  <p class="meal-intro">Not everyone can cook, and a meal isn't always what's
+  needed most. These are the other jobs going.</p>
+  <ol class="meal-days">${items}
+  </ol>`;
+}
+
+/* Local places the coordinator has pointed at. Deliberately dumb
+   outbound links: no affiliate codes, no commission, no basket. The
+   site doesn't broker any of it and never sees the money. */
+function linksBlock(data) {
+  const links = data.helpLinks || [];
+  if (!links.length) return "";
+  const items = links.map((l) => `
+      <li><a class="meal-link" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer nofollow">${esc(l.label)} <span aria-hidden="true">↗</span></a></li>`).join("");
+  return `
+  <section class="meal-links">
+    <h2 class="meal-section-h">Can't cook? These might help</h2>
+    <p class="meal-intro">Places the coordinator has suggested — a delivered
+    meal, a voucher, a hand from someone local. You arrange it with them
+    directly.</p>
+    <ul class="meal-link-list">${items}
+    </ul>
+  </section>`;
 }
 
 /* The calendar-ish list of days. Empty days read simply as "open" —
@@ -320,7 +571,7 @@ async function publicPage(row, env) {
 <main class="wrap page">
   <p class="kicker">A meal roster</p>
   <h1>Meals for ${esc(data.forWhom)}</h1>
-  <p class="page-sub">${subLine(data, claims.length)}</p>
+  <p class="page-sub">${subLine(data, mealClaimCount(claims))}</p>
   ${allergiesBanner(data)}
   ${noteBlock(data)}
 
@@ -329,6 +580,10 @@ async function publicPage(row, env) {
   sure what to make? Leave the dish blank and decide closer to the day.</p>
 
   ${board(data, bySlot, false)}
+
+  ${taskBoard(data, bySlot, false)}
+
+  ${linksBlock(data)}
 
   <footer class="page-foot">
     <p class="fine">No accounts — this browser remembers the days you took, and
@@ -352,7 +607,7 @@ async function publicPage(row, env) {
     try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) { /* private mode */ }
   }
   function cardFor(slotId) {
-    if (!/^d\\d+-\\d+$/.test(slotId)) return null;
+    if (!/^[dt]\\d+-\\d+$/.test(slotId)) return null;
     return document.querySelector('.meal-slot.claimed[data-slot="' + slotId + '"]');
   }
   var norm = function (t) { return String(t || "").trim().replace(/\\s+/g, " ").slice(0, 40); };
@@ -492,7 +747,7 @@ async function editPage(row, env, origin) {
 
   <p class="kicker">Coordinator view</p>
   <h1>Meals for ${esc(data.forWhom)}</h1>
-  <p class="page-sub">${subLine(data, claims.length)}</p>
+  <p class="page-sub">${subLine(data, mealClaimCount(claims))}</p>
   ${allergiesBanner(data)}
   ${noteBlock(data)}
   ${dropoffBlock}
@@ -512,6 +767,38 @@ async function editPage(row, env, origin) {
   </div>
 
   ${board(data, bySlot, true)}
+
+  ${taskBoard(data, bySlot, true)}
+
+  <section class="meal-admin">
+    <h2 class="meal-section-h">Add another way to help</h2>
+    <p class="meal-intro">Not everyone cooks. Add the other jobs that would
+    actually take weight off — a school run, the dog, a load of washing, the
+    lawn. Say when it is in the name: “School pickup, Tuesdays”.</p>
+    <form id="taskForm" class="meal-admin-form">
+      <input type="text" id="taskLabel" maxlength="${MAX_TASK_LABEL}" placeholder="e.g. Walk Ruby — weekday evenings" aria-label="What's the job?" required>
+      <label class="meal-admin-cap">How many people?
+        <input type="number" id="taskCap" min="1" max="${MAX_TASK_CAP}" value="1" aria-label="How many people are needed">
+      </label>
+      <button class="btn primary" type="submit">Add the job</button>
+      <p class="meal-form-err" id="taskErr" hidden></p>
+    </form>
+  </section>
+
+  <section class="meal-admin">
+    <h2 class="meal-section-h">Local places that could help</h2>
+    <p class="meal-intro">Somewhere that delivers, does vouchers, or would drop
+    a hamper round. People who can't cook still want to do something. You
+    arrange it with the business directly — this is just a list of links, and
+    nothing here goes through us.</p>
+    <div id="linkRows"></div>
+    <div class="meal-admin-form">
+      <button class="btn" id="addLinkRow" type="button">Add a place</button>
+      <button class="btn primary" id="saveLinks" type="button">Save the list</button>
+      <p class="meal-form-err" id="linkErr" hidden></p>
+      <p class="fine" id="linkOk" hidden>Saved.</p>
+    </div>
+  </section>
 
   <div class="organiser-actions">
     <a class="btn" href="/s/${esc(row.slug)}">Open the shared board</a>
@@ -542,6 +829,88 @@ async function editPage(row, env, origin) {
   });
 
   document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
+
+  /* ---- other ways to help: add a job ---- */
+  function post(path, body) {
+    return fetch("/api/meal/" + token + "/" + path, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body || {}),
+    }).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (d) {
+        if (!r.ok) throw new Error(d.error || "That didn't work — try again.");
+        return d;
+      });
+    });
+  }
+  function showErr(el, e) {
+    el.textContent = (e && e.message) || "That didn't work — try again.";
+    el.hidden = false;
+  }
+
+  document.getElementById("taskForm").addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var err = document.getElementById("taskErr");
+    err.hidden = true;
+    var label = document.getElementById("taskLabel").value;
+    var cap = parseInt(document.getElementById("taskCap").value, 10) || 1;
+    post("addTask", { label: label, capacity: cap })
+      .then(function () { location.reload(); })
+      .catch(function (e) { showErr(err, e); });
+  });
+
+  document.querySelectorAll(".meal-task-del").forEach(function (b) {
+    b.addEventListener("click", function () {
+      if (!confirm("Delete this job? Anyone who signed up for it loses their spot.")) return;
+      post("removeTask", { id: parseInt(b.getAttribute("data-task"), 10) })
+        .then(function () { location.reload(); })
+        .catch(function (e) { alert((e && e.message) || "That didn't work — try again."); });
+    });
+  });
+
+  /* ---- local places: edit the whole list, save in one go ---- */
+  var LINKS = ${JSON.stringify((JSON.parse(row.data).helpLinks) || [])};
+  var rows = document.getElementById("linkRows");
+
+  function addRow(label, url) {
+    var wrap = document.createElement("div");
+    wrap.className = "meal-admin-form meal-link-row";
+    var l = document.createElement("input");
+    l.type = "text"; l.maxLength = ${MAX_LINK_LABEL}; l.placeholder = "Name — e.g. Thai place on High St";
+    l.setAttribute("aria-label", "Name of the place"); l.value = label || "";
+    var u = document.createElement("input");
+    u.type = "url"; u.maxLength = ${MAX_LINK_URL}; u.placeholder = "https://…";
+    u.setAttribute("aria-label", "Link"); u.value = url || "";
+    var x = document.createElement("button");
+    x.type = "button"; x.className = "btn ghost meal-mini"; x.textContent = "Remove";
+    x.addEventListener("click", function () { wrap.remove(); });
+    wrap.appendChild(l); wrap.appendChild(u); wrap.appendChild(x);
+    rows.appendChild(wrap);
+  }
+  LINKS.forEach(function (l) { addRow(l.label, l.url); });
+  if (!LINKS.length) addRow("", "");
+
+  document.getElementById("addLinkRow").addEventListener("click", function () { addRow("", ""); });
+
+  document.getElementById("saveLinks").addEventListener("click", function () {
+    var err = document.getElementById("linkErr");
+    var ok = document.getElementById("linkOk");
+    err.hidden = true; ok.hidden = true;
+    var list = [];
+    rows.querySelectorAll(".meal-link-row").forEach(function (w) {
+      var ins = w.querySelectorAll("input");
+      if (ins[1].value.trim()) list.push({ label: ins[0].value, url: ins[1].value });
+    });
+    post("setLinks", { links: list }).then(function (d) {
+      if (d.dropped) {
+        err.textContent = d.dropped + (d.dropped === 1 ? " link was" : " links were") +
+          " skipped — a link has to start with http:// or https://.";
+        err.hidden = false;
+      }
+      ok.hidden = false;
+      setTimeout(function () { location.reload(); }, 700);
+    }).catch(function (e) { showErr(err, e); });
+  });
 
   /* ---- CSV export, built client-side from the admin endpoint ---- */
   function csvCell(v) {
@@ -633,8 +1002,13 @@ export default {
     if (p === "/api/meal") return create(request, env);
     if (p === "/api/meal/claim") return claim(request, env);
     if (p === "/api/meal/uncook") return uncook(request, env);
-    if ((m = p.match(/^\/api\/meal\/([a-z0-9]+)\/(remove|delete)$/)))
-      return m[2] === "remove" ? orgRemove(m[1], request, env) : orgDelete(m[1], env);
+    if ((m = p.match(/^\/api\/meal\/([a-z0-9]+)\/(remove|delete|addTask|removeTask|setLinks)$/))) {
+      if (m[2] === "remove") return orgRemove(m[1], request, env);
+      if (m[2] === "delete") return orgDelete(m[1], env);
+      if (m[2] === "addTask") return orgAddTask(m[1], request, env);
+      if (m[2] === "removeTask") return orgRemoveTask(m[1], request, env);
+      return orgSetLinks(m[1], request, env);
+    }
     return null;
   },
 

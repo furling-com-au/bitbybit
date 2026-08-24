@@ -689,7 +689,7 @@
 
   <section class="api-tool" id="meal">
     <h3>Meal Train</h3>
-    <p>Creates a date-keyed meal roster so friends and neighbours can each claim a day to cook for a new parent, someone home from surgery, or a grieving family. — <a href="/meal-train/">human page</a></p>
+    <p>Creates a date-keyed meal roster for a new parent, someone home from surgery, or a grieving family, plus an optional board of other ways to help — the school run, the dog, the washing — and links to local places that could pitch in. — <a href="/meal-train/">human page</a></p>
     <p class="endpoint"><span class="verb">POST</span> <code>/api/meal</code></p>
     <div class="table-scroll">
       <table class="api-table">
@@ -742,22 +742,44 @@
           <td><code>number</code></td>
           <td>optional</td>
           <td>Optional, and it never returns an error. Must be a whole number of at least 1; anything else — missing, zero, negative, fractional, or not a number — silently becomes 1. A value above 3 is silently reduced to 3.</td>
+        </tr>
+        <tr>
+          <td><code>tasks</code></td>
+          <td><code>object</code></td>
+          <td>optional</td>
+          <td>Optional. An array of up to 12 objects, each with a label and a capacity. Labels are trimmed, whitespace-collapsed and truncated to 70 characters; an entry with an empty label is dropped. Capacity is a whole number from 1 to 20, defaulting to 1 if missing or invalid. Each job is given a stable id, so removing one later never disturbs another job&#39;s sign-ups. Jobs can also be added and removed from the coordinator page after the roster exists.</td>
+        </tr>
+        <tr>
+          <td><code>helpLinks</code></td>
+          <td><code>object</code></td>
+          <td>optional</td>
+          <td>Optional. An array of up to 8 objects, each with a label and a url. Only http and https URLs are kept; anything else is silently dropped. URLs are truncated to 300 characters and labels to 70; a missing label falls back to the link&#39;s hostname. These are plain outbound links — the site brokers nothing and handles no money.</td>
         </tr></tbody>
       </table>
     </div>
     <p class="eg-label">Example</p>
     <pre class="eg"><code>{
-  &quot;forWhom&quot;: &quot;the Nguyen family&quot;,
-  &quot;allergies&quot;: &quot;No peanuts - eldest is anaphylactic. Dad is coeliac, so gluten-free please.&quot;,
-  &quot;note&quot;: &quot;Bub arrived early, so anything freezer-friendly is a godsend.&quot;,
-  &quot;dropoff&quot;: &quot;Leave meals in the esky on the front porch, 14 Rosella Street, Coburg&quot;,
-  &quot;dates&quot;: [
-    &quot;2026-09-01&quot;,
-    &quot;2026-09-03&quot;,
-    &quot;2026-09-05&quot;,
-    &quot;2026-09-08&quot;
+  &quot;forWhom&quot;: &quot;the Brennan family&quot;,
+  &quot;allergies&quot;: &quot;No nuts — youngest is anaphylactic&quot;,
+  &quot;startDate&quot;: &quot;2026-09-01&quot;,
+  &quot;days&quot;: 10,
+  &quot;capacityPerDay&quot;: 1,
+  &quot;tasks&quot;: [
+    {
+      &quot;label&quot;: &quot;Walk Ruby — weekday evenings&quot;,
+      &quot;capacity&quot;: 2
+    },
+    {
+      &quot;label&quot;: &quot;School pickup, Tuesdays&quot;,
+      &quot;capacity&quot;: 1
+    }
   ],
-  &quot;capacityPerDay&quot;: 1
+  &quot;helpLinks&quot;: [
+    {
+      &quot;label&quot;: &quot;Sala Thai on High St — they deliver&quot;,
+      &quot;url&quot;: &quot;https://example.com/menu&quot;
+    }
+  ]
 }</code></pre>
     <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — forWhom is missing or empty once trimmed. A request body that is not valid JSON is treated as an empty body, so it fails here too. <span class="msg">“Who are the meals for? Add a name — a family, a person, whoever.”</span></li><li><code>400</code> — An entry in the dates array is not exactly YYYY-MM-DD, or is not a real calendar day — &quot;2026-02-30&quot; or &quot;1 Sep 2026&quot;, for instance. <span class="msg">“One of those days isn&#39;t a real calendar date.”</span></li><li><code>400</code> — No non-empty dates array was supplied, and startDate is missing or is not a valid YYYY-MM-DD calendar day. <span class="msg">“Pick a valid first day.”</span></li><li><code>400</code> — No non-empty dates array was supplied, and days is missing, is not a whole number, or is less than 1. <span class="msg">“How many days need a meal? At least one.”</span></li><li><code>400</code> — No days at all came out of either route. This is a defensive guard only and is unreachable in practice: the dates route requires a non-empty array whose entries either throw or are kept, and the startDate route guarantees at least one day. <span class="msg">“Add at least one day that needs a meal.”</span></li><li><code>400</code> — More than 60 unique valid days remain in the dates array. Because only the first 61 entries are read, this is reachable only when exactly 61 unique valid days are read. The startDate and days route cannot reach it — that route reduces to 60 silently instead. <span class="msg">“Sixty days is the limit — start a second roster if it runs longer.”</span></li><li><code>429</code> — More than 20 rosters created in the current clock hour from the same connection. The budget is shared across every tool&#39;s create endpoint on the site, not counted per tool. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
     <p class="flow"><strong>How people take part:</strong> The creator lands on the coordinator page at /e/&lt;editToken&gt; — the only place the drop-off details appear — and shares the public link /s/&lt;slug&gt;. Cooks POST /api/meal/claim with slug, slotId, name and an optional dish. slotId names one slot on one day and takes the form d&lt;day position&gt;-&lt;n&gt;, where n runs from 1 to capacityPerDay; anything else returns 400 &quot;That day isn&#39;t on this roster.&quot;. name is required, whitespace-collapsed to 40 characters, otherwise 400 &quot;Add your name so the family knows who&#39;s cooking.&quot;. dish is optional, whitespace-collapsed to 120 characters, and shows on both the public board and the coordinator page. A successful claim returns 201 with a 16-character secret, which is the cook&#39;s only way to hand the day back: POST /api/meal/uncook with slug, slotId and secret. If two people claim the same slot at once, the second gets 409 &quot;Someone&#39;s already got that day — pick another.&quot;. The edit token gates POST /api/meal/&lt;editToken&gt;/remove, POST /api/meal/&lt;editToken&gt;/delete and GET /api/meal/&lt;editToken&gt;/admin, which returns the roster as CSV and is served no-store and non-indexable. Drop-off details are never published, so the coordinator passes them to each cook directly.</p>

@@ -96,7 +96,7 @@
     },
     {
       "name": "Meal Train",
-      "description": "Creates a date-keyed meal roster so friends and neighbours can each claim a day to cook for a new parent, someone home from surgery, or a grieving family.",
+      "description": "Creates a date-keyed meal roster for a new parent, someone home from surgery, or a grieving family, plus an optional board of other ways to help — the school run, the dog, the washing — and links to local places that could pitch in.",
       "externalDocs": {
         "url": "https://bitibybit.com/meal-train/"
       }
@@ -854,7 +854,7 @@
       "post": {
         "operationId": "createMeal",
         "summary": "Create a Meal Train",
-        "description": "Creates a date-keyed meal roster so friends and neighbours can each claim a day to cook for a new parent, someone home from surgery, or a grieving family.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** The creator lands on the coordinator page at /e/<editToken> — the only place the drop-off details appear — and shares the public link /s/<slug>. Cooks POST /api/meal/claim with slug, slotId, name and an optional dish. slotId names one slot on one day and takes the form d<day position>-<n>, where n runs from 1 to capacityPerDay; anything else returns 400 \"That day isn't on this roster.\". name is required, whitespace-collapsed to 40 characters, otherwise 400 \"Add your name so the family knows who's cooking.\". dish is optional, whitespace-collapsed to 120 characters, and shows on both the public board and the coordinator page. A successful claim returns 201 with a 16-character secret, which is the cook's only way to hand the day back: POST /api/meal/uncook with slug, slotId and secret. If two people claim the same slot at once, the second gets 409 \"Someone's already got that day — pick another.\". The edit token gates POST /api/meal/<editToken>/remove, POST /api/meal/<editToken>/delete and GET /api/meal/<editToken>/admin, which returns the roster as CSV and is served no-store and non-indexable. Drop-off details are never published, so the coordinator passes them to each cook directly.\n\nHuman page: https://bitibybit.com/meal-train/",
+        "description": "Creates a date-keyed meal roster for a new parent, someone home from surgery, or a grieving family, plus an optional board of other ways to help — the school run, the dog, the washing — and links to local places that could pitch in.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** The creator lands on the coordinator page at /e/<editToken> — the only place the drop-off details appear — and shares the public link /s/<slug>. Cooks POST /api/meal/claim with slug, slotId, name and an optional dish. slotId names one slot on one day and takes the form d<day position>-<n>, where n runs from 1 to capacityPerDay; anything else returns 400 \"That day isn't on this roster.\". name is required, whitespace-collapsed to 40 characters, otherwise 400 \"Add your name so the family knows who's cooking.\". dish is optional, whitespace-collapsed to 120 characters, and shows on both the public board and the coordinator page. A successful claim returns 201 with a 16-character secret, which is the cook's only way to hand the day back: POST /api/meal/uncook with slug, slotId and secret. If two people claim the same slot at once, the second gets 409 \"Someone's already got that day — pick another.\". The edit token gates POST /api/meal/<editToken>/remove, POST /api/meal/<editToken>/delete and GET /api/meal/<editToken>/admin, which returns the roster as CSV and is served no-store and non-indexable. Drop-off details are never published, so the coordinator passes them to each cook directly.\n\nHuman page: https://bitibybit.com/meal-train/",
         "tags": [
           "Meal Train"
         ],
@@ -899,6 +899,14 @@
                   "capacityPerDay": {
                     "description": "How many meal slots each day has.",
                     "type": "number"
+                  },
+                  "tasks": {
+                    "description": "Non-meal jobs people can claim: a school run, the dog, a load of washing.",
+                    "type": "object"
+                  },
+                  "helpLinks": {
+                    "description": "Links to local places that could help — somewhere that delivers, or does vouchers.",
+                    "type": "object"
                   }
                 },
                 "required": [
@@ -906,17 +914,27 @@
                 ]
               },
               "example": {
-                "forWhom": "the Nguyen family",
-                "allergies": "No peanuts - eldest is anaphylactic. Dad is coeliac, so gluten-free please.",
-                "note": "Bub arrived early, so anything freezer-friendly is a godsend.",
-                "dropoff": "Leave meals in the esky on the front porch, 14 Rosella Street, Coburg",
-                "dates": [
-                  "2026-09-01",
-                  "2026-09-03",
-                  "2026-09-05",
-                  "2026-09-08"
+                "forWhom": "the Brennan family",
+                "allergies": "No nuts — youngest is anaphylactic",
+                "startDate": "2026-09-01",
+                "days": 10,
+                "capacityPerDay": 1,
+                "tasks": [
+                  {
+                    "label": "Walk Ruby — weekday evenings",
+                    "capacity": 2
+                  },
+                  {
+                    "label": "School pickup, Tuesdays",
+                    "capacity": 1
+                  }
                 ],
-                "capacityPerDay": 1
+                "helpLinks": [
+                  {
+                    "label": "Sala Thai on High St — they deliver",
+                    "url": "https://example.com/menu"
+                  }
+                ]
               }
             }
           }

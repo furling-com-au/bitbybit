@@ -100,6 +100,24 @@
   }
 
   /* ---- submit ------------------------------------------------ */
+  /* "Other ways to help": one job per line. A trailing "x2" means two
+     people are needed for it. The multiplier is stripped from the label,
+     or the board would read "Walk Ruby x2 — 0 of 2". */
+  function parseTasks(raw) {
+    return String(raw || "")
+      .split(/\r?\n/)
+      .map(function (line) { return line.trim(); })
+      .filter(Boolean)
+      .slice(0, 12)
+      .map(function (line) {
+        var m = /^(.*?)\s*[x×]\s*(\d{1,2})$/i.exec(line);
+        if (m && m[1].trim()) {
+          return { label: m[1].trim(), capacity: Math.min(parseInt(m[2], 10) || 1, 20) };
+        }
+        return { label: line, capacity: 1 };
+      });
+  }
+
   async function submit(e) {
     e.preventDefault();
     const btn = $("makeBtn");
@@ -112,6 +130,7 @@
     const dropoff = $("dropoff").value.trim();
     const dates = buildDates();
     const capacityPerDay = parseInt($("capacity").value, 10) || 1;
+    const tasks = parseTasks($("tasks").value);
 
     if (!forWhom) return fail("Who are the meals for? Add a name.");
     if (!$("firstDate").value) return fail("Pick the first day.");
@@ -124,7 +143,7 @@
       const res = await fetch("/api/meal", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ forWhom, allergies, note, dropoff, dates, capacityPerDay }),
+        body: JSON.stringify({ forWhom, allergies, note, dropoff, dates, capacityPerDay, tasks }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || `Server said ${res.status}.`);
