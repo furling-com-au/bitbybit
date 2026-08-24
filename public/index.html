@@ -9,6 +9,11 @@
 <meta property="og:title" content="biti by bit">
 <meta property="og:description" content="Small free tools for getting a group of people to do something.">
 <meta property="og:image" content="https://bitibybit.com/art/og-home.png">
+<meta property="og:url" content="https://bitibybit.com/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="biti by bit">
+<meta name="twitter:description" content="Small free tools for getting a group of people to do something.">
+<meta name="twitter:image" content="https://bitibybit.com/art/og-home.png">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#f4ead8">
 <link rel="icon" href="/favicon.svg">
@@ -181,7 +186,7 @@
     <p><strong>What is this?</strong> Little tools for organising a group of
     people — free, no accounts, no fuss. You make a thing, you share a link,
     everyone's sorted. Made in Australia, with new tools added often.</p>
-    <p class="fine">No tracking, no ads, no selling your data.
+    <p class="fine">No cookies, no ads, no personal data — just an anonymous count of page views on these public pages, never on the ones you share with your group.
     <a class="quiet-link" id="ghLink" href="https://github.com/furling-com-au/bitbybit">Open source on GitHub</a>.</p>
     <p class="foot-links">
       <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
@@ -224,5 +229,12 @@
 })();
 </script>
 
+<!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
+     Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,
+     the pages people share with their group. What their friends do in a sweep
+     or a meal train is none of our business. Token: Cloudflare dashboard →
+     Web Analytics → Add a site → copy the token. -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "REPLACE_WITH_CF_WEB_ANALYTICS_TOKEN"}'></script>
 </body>
 </html>

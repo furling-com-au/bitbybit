@@ -9,6 +9,11 @@
 <meta property="og:title" content="Kris Kringle Generator">
 <meta property="og:description" content="Draw names, no emails. Share one link — everyone sees only their person.">
 <meta property="og:image" content="https://bitibybit.com/art/og-kringle.png">
+<meta property="og:url" content="https://bitibybit.com/kris-kringle/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kris Kringle Generator">
+<meta name="twitter:description" content="Draw names, no emails. Share one link — everyone sees only their person.">
+<meta name="twitter:image" content="https://bitibybit.com/art/og-kringle.png">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#f4ead8">
 <link rel="icon" href="/favicon.svg">
@@ -160,7 +165,7 @@ Mia"></textarea>
 
   <footer class="site-foot">
     <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
-    small free tools for groups. No tracking, no ads.</p>
+    small free tools for groups. No cookies, no ads, no personal data.</p>
     <p class="foot-links">
       <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
       <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
@@ -188,5 +193,12 @@ Mia"></textarea>
 }
 </script>
 <script src="/kringle.js"></script>
+<!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
+     Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,
+     the pages people share with their group. What their friends do in a sweep
+     or a meal train is none of our business. Token: Cloudflare dashboard →
+     Web Analytics → Add a site → copy the token. -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "REPLACE_WITH_CF_WEB_ANALYTICS_TOKEN"}'></script>
 </body>
 </html>

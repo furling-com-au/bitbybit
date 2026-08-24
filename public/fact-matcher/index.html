@@ -9,6 +9,11 @@
 <meta property="og:title" content="Fact Matcher — the office icebreaker">
 <meta property="og:description" content="Everyone submits a secret fun fact, the team guesses who's who, then you reveal. Free, no signup.">
 <meta property="og:image" content="https://bitibybit.com/art/og-fact.png">
+<meta property="og:url" content="https://bitibybit.com/fact-matcher/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fact Matcher — the office icebreaker">
+<meta name="twitter:description" content="Everyone submits a secret fun fact, the team guesses who's who, then you reveal. Free, no signup.">
+<meta name="twitter:image" content="https://bitibybit.com/art/og-fact.png">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#f4ead8">
 <link rel="icon" href="/favicon.svg">
@@ -150,7 +155,7 @@ Tom"></textarea>
 
   <footer class="site-foot">
     <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
-    small free tools for groups. No tracking, no ads.</p>
+    small free tools for groups. No cookies, no ads, no personal data.</p>
     <p class="foot-links">
       <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
       <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
@@ -176,5 +181,12 @@ Tom"></textarea>
 }
 </script>
 <script src="/fact.js"></script>
+<!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
+     Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,
+     the pages people share with their group. What their friends do in a sweep
+     or a meal train is none of our business. Token: Cloudflare dashboard →
+     Web Analytics → Add a site → copy the token. -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "REPLACE_WITH_CF_WEB_ANALYTICS_TOKEN"}'></script>
 </body>
 </html>

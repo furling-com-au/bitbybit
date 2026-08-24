@@ -1,7 +1,7 @@
 # bitibybit.com
 
 > Small free tools for organising groups of people, made in Australia.
-> No accounts, no fees, no ads, no tracking. One person makes a thing,
+> No accounts, no fees, no ads, no cookies. One person makes a thing,
 > shares a single link, and everyone else just taps it. The site never
 > handles money.
 
