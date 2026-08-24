@@ -1666,6 +1666,8 @@ h1.qotd-q {
   text-transform: none; letter-spacing: .01em;
   font-size: clamp(1.35rem, 4.8vw, 2.15rem); line-height: 1.2;
   margin-bottom: .5rem;
+  /* a long custom question should not push the page sideways on a phone */
+  word-break: break-word;
 }
 
 /* the two big tappable sides */
@@ -1683,6 +1685,8 @@ h1.qotd-q {
 }
 .qotd-choice:hover { transform: translate(-1px,-1px); box-shadow: 6px 6px 0 0 var(--ink); background: var(--paper-2); }
 .qotd-choice:active { transform: translate(2px,2px); box-shadow: 0 0 0 0 var(--ink); }
+/* keyboard voters get the same clear target as everyone else */
+.qotd-choice:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .qotd-choice[disabled] { opacity: .55; cursor: not-allowed; transform: none; }
 .qotd-choice.is-sending { background: var(--paper-3); }
 .qotd-choice-key {
@@ -1741,6 +1745,7 @@ h1.qotd-q {
 .qotd-stat { margin: 1.2rem 0 .4rem; font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); }
 .qotd-custom { list-style: none; margin: .6rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
 .qotd-custom-item { background: var(--paper-2); border: 3px solid var(--line); padding: .55rem .7rem; }
+.qotd-custom-remove { margin-top: .45rem; }
 .qotd-custom-q { display: block; font-size: .88rem; line-height: 1.35; word-break: break-word; }
 .qotd-custom-opts { display: block; font-size: .72rem; color: var(--ink-faint); letter-spacing: .04em; }
 .qotd-custom-opts em { font-style: normal; }

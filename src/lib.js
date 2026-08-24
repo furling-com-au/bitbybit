@@ -159,6 +159,10 @@ export function pageShell({ title, body }) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)} — biti by bit</title>
 <meta name="robots" content="noindex">
+<!-- Organiser links are capability URLs. Without this, following any
+     link off an /e/:token page hands the token to the destination in
+     the Referer header. Same-origin only, everywhere. -->
+<meta name="referrer" content="same-origin">
 <meta name="theme-color" content="#f4ead8">
 <link rel="icon" href="/favicon.svg">
 <link rel="stylesheet" href="/styles.css">

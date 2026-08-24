@@ -173,7 +173,7 @@ export const QUESTIONS = [
   { text: "Would you rather every photo of you be blurry or every photo be taken mid-blink?", a: "Blurry", b: "Mid-blink" },
   { text: "Is a shopping trolley with a wobbly wheel cursed or just tired?", a: "Cursed", b: "Just tired" },
   { text: "Would you rather be able to summon rain or summon a rainbow?", a: "Summon rain", b: "Summon a rainbow" },
-  { text: "Beach footwear: thongs or flip-flops?", a: "Thongs", b: "Flip-flops" },
+  { text: "Sand at the beach: half the fun, or a menace you find for weeks?", a: "Half the fun", b: "A menace" },
 
   // 121-130
   { text: "Would you rather be a professional whistler or a professional bubble wrap popper?", a: "Whistler", b: "Bubble wrap popper" },
@@ -185,7 +185,7 @@ export const QUESTIONS = [
   { text: "Would you rather commute by zip line or by pogo stick?", a: "Zip line", b: "Pogo stick" },
   { text: "Would you rather have a pen that writes in any colour you think of or paper that never runs out?", a: "Magic pen", b: "Endless paper" },
   { text: "Would you rather have perfect handwriting forever or perfect parking forever?", a: "Perfect handwriting", b: "Perfect parking" },
-  { text: "How good is the weekend: is Friday arvo or Saturday morning the best bit?", a: "Friday arvo", b: "Saturday morning" },
+  { text: "Best bit of the week: Friday arvo or Saturday morning?", a: "Friday arvo", b: "Saturday morning" },
 
   // 131-140
   { text: "Would you rather have a backpack that never feels heavy or a bottle always full of cold water?", a: "Weightless backpack", b: "Endless cold water" },
@@ -206,7 +206,7 @@ export const QUESTIONS = [
   { text: "Long weekend: go somewhere or stay home doing nothing?", a: "Go somewhere", b: "Stay home" },
   { text: "Would you rather everything smelled faintly of popcorn or faintly of fresh laundry?", a: "Popcorn", b: "Fresh laundry" },
   { text: "Would you rather sing every phone greeting or dance every goodbye?", a: "Sing hello", b: "Dance goodbye" },
-  { text: "Would you rather have a trampoline that follows you or a hammock that appears on command?", a: "Following trampoline", b: "Instant hammock" },
+  { text: "Ten minutes bouncing on a trampoline, or an hour lying in a hammock?", a: "Ten minutes bouncing", b: "An hour lying down" },
   { text: "Is a rubber duck a toy or a colleague?", a: "A toy", b: "A colleague" },
   { text: "Would you rather own a lamp that grants terrible wishes or a map that shows where you left things?", a: "Terrible wish lamp", b: "Lost things map" },
   { text: "Would you rather have socks that always match or cables that never tangle?", a: "Matching socks", b: "Tangle-free cables" },
