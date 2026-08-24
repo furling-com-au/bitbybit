@@ -330,7 +330,7 @@ a.tool-card:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 0 rgb
    print — offices stick these on the fridge
    ------------------------------------------------------------ */
 @media print {
-  .scanlines, .site-head, .organiser-banner, .share-box,
+  .scanlines, .site-head, .organiser-banner, .share-box, .share-nudge, .season-next,
   .organiser-actions, .page-foot, .btn { display: none !important; }
   body { background: #fff; color: #000; }
   .draw-card { box-shadow: none; border-color: #000; break-inside: avoid; }
@@ -965,3 +965,15 @@ button.bracket-side:focus-visible { outline: 3px solid var(--gold); outline-offs
   .team-card { box-shadow: none; border-color: #000; break-inside: avoid; }
   .team-head { background: #fff !important; color: #000; border-bottom: 3px solid #000; }
 }
+
+/* ------------------------------------------------------------
+   share nudge + season chain
+   ------------------------------------------------------------ */
+.share-nudge { margin: .9rem 0 0; }
+.nudge-text {
+  flex: 1; font: inherit; font-size: .8rem; min-width: 0; resize: none;
+  padding: .5rem .6rem; background: var(--paper); color: var(--ink-soft);
+  border: 3px dashed var(--line); line-height: 1.45;
+}
+.season-next { margin-top: 1.6rem; }
+

@@ -166,7 +166,21 @@ const GRAND_TOTAL = [...SLOT_CENTS.values()].reduce((n, c) => n + c, 0); // 2500
    Strictly A-Z0-9 and one hyphen — banks reject a lot of
    punctuation, and "Sam & Alex" must not leak an ampersand into
    the reference. */
+
+/* The builder prefills a method string; without any actual details it
+   would render a lonely "Method: PayID / Bank transfer" row above the
+   "no payment details" note. Store nothing unless something real was given. */
+function hasRealDetails(p) {
+  return !!(String(p.payId || "").trim() || String(p.accountName || "").trim() ||
+    String(p.bsb || "").trim() || String(p.accountNumber || "").trim());
+}
+
 function reference(slotId, name) {
+  // A random tail so a reference can't be reconstructed from the
+  // public claims listing — the base stays human-readable.
+  return referenceBase(slotId, name) + randomString(3, "abcdefghjkmnpqrstuvwxyz23456789").toUpperCase();
+}
+function referenceBase(slotId, name) {
   const initials =
     String(name || "")
       .toUpperCase()
@@ -199,14 +213,14 @@ function parseCreate(body) {
     tagline: clean(body.tagline, MAX_TAGLINE),
     weddingDate: clean(body.weddingDate, MAX_DATE),
     subject: "prado",
-    payment: {
+    payment: hasRealDetails(p) ? {
       method: clean(p.method, 40),
       payId: clean(p.payId, 80),
       accountName: clean(p.accountName, 80),
       bsb: clean(p.bsb, 10),
       accountNumber: clean(p.accountNumber, 20),
       note: clean(p.note, 200),
-    },
+    } : { method: "", payId: "", accountName: "", bsb: "", accountNumber: "", note: "" },
     overflowTitle: clean(body.overflowTitle, MAX_OVERFLOW_TITLE) || DEFAULT_OVERFLOW_TITLE,
   };
 }
@@ -290,6 +304,14 @@ async function contribute(request, env) {
   if (!Number.isInteger(cents) || cents < MIN_CONTRIB_CENTS || cents > MAX_CONTRIB_CENTS)
     throw badInput("Pick an amount between $5 and $2,000.");
 
+  // Bounded, like the group card: without a cap this is the one
+  // storage-abuse path the rate limiter can't see.
+  const count = await env.DB.prepare(
+    "SELECT COUNT(*) AS n FROM claims WHERE instance_id = ? LIMIT 700 AND slot_id LIKE 'overflow-%'"
+  ).bind(row.id).first();
+  if (count && count.n >= 400)
+    return json({ error: "The overflow patch is chockers — give your gift to the couple directly." }, 409);
+
   for (let attempt = 0; attempt < 3; attempt++) {
     const slotId = "overflow-" + randomString(6);
     try {
@@ -322,7 +344,7 @@ async function release(token, request, env) {
   if (!row || row.tool_type !== "registry") return json({ error: "not found" }, 404);
   const body = await request.json().catch(() => ({}));
   const res = await env.DB.prepare(
-    "DELETE FROM claims WHERE instance_id = ? AND slot_id = ?"
+    "DELETE FROM claims WHERE instance_id = ? LIMIT 700 AND slot_id = ?"
   ).bind(row.id, String(body.slotId || "")).run();
   if (!res.meta.changes) return json({ error: "That claim wasn't found." }, 404);
   return json({ ok: true });
@@ -502,7 +524,7 @@ function shellBody(row, data, { organiser, origin }) {
 
 <dialog class="rg-modal" id="rgModal" aria-labelledby="rgClaimTitle">
   <form method="dialog" class="rg-modal-inner" id="rgClaimForm">
-    <button class="rg-modal-close" value="cancel" aria-label="Close">×</button>
+    <button class="rg-modal-close" type="button" id="rgModalClose" aria-label="Close">×</button>
 
     <div id="rgClaimStep">
       <p class="rg-modal-tier" id="rgClaimTier"></p>

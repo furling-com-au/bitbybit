@@ -32,11 +32,11 @@ const BY_TYPE = Object.fromEntries(TOOLS.map((t) => [t.type, t]));
    write amplifiers (a kringle create is ~1 row per participant), so
    they get the tight budget. */
 const CREATE_RE = /^\/api\/(sweeps|kringle|roles|plate|bracket|card|registry)$/;
-async function overLimit(request, path) {
-  // Local dev is exempt — the persisted miniflare cache otherwise
-  // locks you out of your own test loop for an hour at a time.
-  const devHost = new URL(request.url).hostname;
-  if (devHost === "localhost" || devHost === "127.0.0.1") return false;
+async function overLimit(request, path, env) {
+  // Local dev is exempt (.dev.vars sets DEV_MODE; it never exists in
+  // production) — otherwise the persisted miniflare cache locks you
+  // out of your own test loop for an hour at a time.
+  if (env && env.DEV_MODE === "1") return false;
   const limit = CREATE_RE.test(path) ? 20 : 240; // per IP per hour
   const ip = request.headers.get("cf-connecting-ip") || "unknown";
   const kind = CREATE_RE.test(path) ? "create" : "act";
@@ -75,7 +75,7 @@ export default {
 
     try {
       if (path.startsWith("/api/")) {
-        if (request.method === "POST" && await overLimit(request, path))
+        if (request.method === "POST" && await overLimit(request, path, env))
           return json({ error: "Steady on — too many requests from this connection. Give it a few minutes." }, 429);
         for (const tool of TOOLS) {
           const res = await tool.api(request, env, url);
@@ -86,25 +86,39 @@ export default {
 
       let m;
       if ((m = path.match(new RegExp("^/via/([a-z]+)/?$"))) && VIA[m[1]]) {
-        try { await logEvent(env, null, m[1], "via"); } catch (e) { /* never block the redirect */ }
+        if ((request.method === "GET" || request.method === "HEAD") && !(env && env.DEV_MODE === "1")) {
+          // Log at most one event per IP per tool per hour (Cache API
+          // dedupe) so a curl loop can't burn D1 writes through this route.
+          try {
+            const ip = request.headers.get("cf-connecting-ip") || "unknown";
+            const hour = Math.floor(Date.now() / 3600000);
+            const seenKey = new Request(`https://via.internal/${m[1]}/${ip}/${hour}`);
+            if (!(await caches.default.match(seenKey))) {
+              await caches.default.put(seenKey, new Response("1", {
+                headers: { "cache-control": "max-age=3600" },
+              }));
+              await logEvent(env, null, m[1], "via");
+            }
+          } catch (e) { /* never block the redirect */ }
+        }
         return Response.redirect(url.origin + VIA[m[1]], 302);
       }
 
-      if ((m = path.match(/^\/s\/([a-z0-9-]+)\/?$/)) && request.method === "GET") {
+      if ((m = path.match(/^\/s\/([a-z0-9-]+)\/?$/)) && (request.method === "GET" || request.method === "HEAD")) {
         const row = await getBySlug(env, m[1]);
         const tool = row && BY_TYPE[row.tool_type];
         if (!tool) return notFoundPage(env);
         return tool.publicPage(row, env, url);
       }
 
-      if ((m = path.match(/^\/e\/([a-z0-9]+)\/?$/)) && request.method === "GET") {
+      if ((m = path.match(/^\/e\/([a-z0-9]+)\/?$/)) && (request.method === "GET" || request.method === "HEAD")) {
         const row = await getByToken(env, m[1]);
         const tool = row && BY_TYPE[row.tool_type];
         if (!tool) return notFoundPage(env);
         return tool.editPage(row, env, url);
       }
 
-      if ((m = path.match(/^\/p\/([a-z0-9]+)\/?$/)) && request.method === "GET") {
+      if ((m = path.match(/^\/p\/([a-z0-9]+)\/?$/)) && (request.method === "GET" || request.method === "HEAD")) {
         const prow = await getParticipant(env, m[1]);
         const row = prow && await getInstanceById(env, prow.instance_id);
         const tool = row && BY_TYPE[row.tool_type];

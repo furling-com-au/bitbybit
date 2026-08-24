@@ -157,7 +157,13 @@ async function result(token, request, env) {
   if (m.winner !== winner) {
     m.winner = winner;
     feedNext(data.rounds, r, i, winner);
-    await updateInstanceData(env, row.id, JSON.stringify(data));
+    // Optimistic write: result() is a read-modify-write of the whole
+  // bracket, so guard on updated_at and let the client retry on clash.
+  const guard = await env.DB.prepare(
+    "UPDATE instances SET data = ?, updated_at = ? WHERE id = ? AND updated_at = ?"
+  ).bind(JSON.stringify(data), new Date().toISOString(), row.id, row.updated_at).run();
+  if (!guard.meta.changes)
+    return json({ error: "Two results landed at once — refresh and tap again." }, 409);
   }
   return json({ ok: true });
 }
@@ -203,8 +209,9 @@ function renderBracket(data, organiser) {
           return `<span class="bracket-side is-null">${r === 0 ? "bye" : "tbd"}</span>`;
         const cls = "bracket-side" +
           (m.winner === name ? " is-winner" : m.winner !== null ? " is-loser" : "");
+      const ariaWin = m.winner === name ? ' aria-pressed="true" aria-label="' + name.replace(/"/g, "&quot;") + ' — winner"' : m.winner !== null ? ' aria-pressed="false"' : "";
         if (organiser && playable)
-          return `<button class="${cls}" type="button" data-r="${r}" data-m="${i}" data-name="${esc(name)}">${esc(name)}</button>`;
+          return `<button class="${cls}" type="button" data-r="${r}" data-m="${i}" data-name="${esc(name)}"${ariaWin}>${esc(name)}</button>`;
         return `<span class="${cls}">${esc(name)}</span>`;
       };
       const decided = organiser && playable ? ` data-decided="${m.winner !== null ? 1 : 0}"` : "";
@@ -308,13 +315,21 @@ function editPage(row, origin) {
       setTimeout(function () { b.textContent = "Copy"; }, 1500);
     });
   });
+  var busy = false;
   function send(round, match, winner) {
+    if (busy) return;
+    busy = true;
+    document.querySelectorAll("button.bracket-side").forEach(function (b) { b.disabled = true; });
     fetch("/api/bracket/" + token + "/result", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ round: round, match: match, winner: winner }),
     }).then(function (r) { if (!r.ok) return r.json().catch(function () { return {}; }).then(function (d) { throw new Error(d.error || "That didn't work — try again."); }); location.reload(); })
-      .catch(function (e) { alert((e && e.message) || "That didn't work — try again."); });
+      .catch(function (e) {
+        busy = false;
+        document.querySelectorAll("button.bracket-side").forEach(function (b) { b.disabled = false; });
+        alert((e && e.message) || "That didn't work — try again.");
+      });
   }
   document.querySelectorAll("button.bracket-side").forEach(function (btn) {
     btn.addEventListener("click", function () {

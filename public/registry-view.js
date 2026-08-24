@@ -54,6 +54,13 @@
       else if (/^overflow-/.test(c.slotId)) overflow.push(c);
     }
     state.claims = claims;
+    // Prune "claimed by you" badges whose claim was released (or re-claimed
+    // by someone else after a release).
+    try {
+      var live = new Set(state.claims.map(function (c) { return c.slotId; }));
+      var pruned = mine().filter(function (id) { return live.has(id); });
+      localStorage.setItem(MINE_KEY, JSON.stringify(pruned));
+    } catch (e) { /* private mode */ }
     state.overflow = overflow; // API sorts newest first
   }
 
@@ -81,7 +88,8 @@
     const partCents = claimedCentsFor(null);
     const raised = partCents + overflowCents();
     const claimed = RP.SLOTS.filter((s) => state.claims[s.id]).length;
-    const pct = Math.round((partCents / RP.GRAND_TOTAL) * 100);
+    let pct = Math.floor((partCents / RP.GRAND_TOTAL) * 100);
+    if (pct === 100 && claimedCount !== RP.SLOTS.length) pct = 99; // finished means finished
 
     $("rgMeterFill").style.width = pct + "%";
     // Numbers only — nothing user-typed goes through innerHTML.
@@ -123,14 +131,14 @@
       const total = RP.GROUP_TOTALS[g.id];
       const done = claimedCentsFor(g.id);
       const claimed = RP.SLOTS.filter((s) => s.group === g.id && state.claims[s.id]).length;
-      const pct = Math.round(prog[g.id] * 100);
+      const pct = Math.floor(prog[g.id] * 100);
       const colour = "var(--rg-g-" + g.id + ")";
 
       const el = document.createElement("button");
       el.type = "button";
       el.className = "rg-sect" +
         (state.filterGroup === g.id ? " is-on" : "") +
-        (pct === 100 ? " is-done" : "");
+        (claimedCount === RP.SLOTS.length ? " is-done" : "");
       el.setAttribute("aria-pressed", String(state.filterGroup === g.id));
       el.innerHTML =
         '<span class="rg-sect-top">' +
@@ -352,6 +360,8 @@
   }
 
   async function confirmClaim() {
+    if ($("rgClaimConfirm").disabled) return; // in-flight guard: Enter bypasses the button
+
     if (!pending) return;
     const btn = $("rgClaimConfirm");
     const err = $("rgClaimError");
@@ -398,6 +408,7 @@
       });
       const data = await res.json().catch(() => ({}));
       if (res.status === 409) {
+        $("rgClaimConfirm").disabled = false;
         // The server's words, not ours — and the board repaints so
         // the part shows who got there first.
         err.textContent = data.error || "Someone beat you to that one by a whisker.";
@@ -468,7 +479,11 @@
     $("rgClaimCancel").addEventListener("click", () => $("rgModal").close());
     $("rgDoneClose").addEventListener("click", () => $("rgModal").close());
     $("rgClaimForm").addEventListener("submit", (e) => e.preventDefault());
+    $("rgModalClose").addEventListener("click", () => $("rgModal").close());
     $("rgName").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); confirmClaim(); }
+    });
+    $("rgAmount").addEventListener("keydown", (e) => {
       if (e.key === "Enter") { e.preventDefault(); confirmClaim(); }
     });
     $("rgCopyRef").addEventListener("click", async () => {
@@ -543,7 +558,12 @@
       ]);
     }
     const csv = rows
-      .map((r) => r.map((v) => '"' + String(v).replace(/"/g, '""') + '"').join(","))
+      .map((r) => r.map((v) => {
+        // Formula-injection guard: Excel executes cells starting =+-@
+        let t = String(v).replace(/"/g, '""');
+        if (/^[=+\-@\t\r]/.test(t)) t = "'" + t;
+        return '"' + t + '"';
+      }).join(","))
       .join("\r\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
     const a = document.createElement("a");
