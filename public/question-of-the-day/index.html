@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Question of the Day for Work — a new one every day, free | biti by bit</title>
+<meta name="description" content="A silly would-you-rather question of the day for work, with a live poll. Set it up once, share one link, and a fresh question lands every morning by itself. Free, no signup, no app, no reminders to send.">
+<link rel="canonical" href="https://bitibybit.com/question-of-the-day/">
+<meta property="og:title" content="Question of the Day — one link, a new question every morning">
+<meta property="og:description" content="A daft would-you-rather for the team, with a live vote. Set it up once and it keeps going on its own. Free, no signup.">
+<meta property="og:image" content="https://bitibybit.com/art/og-qotd.png">
+<meta property="og:url" content="https://bitibybit.com/question-of-the-day/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Question of the Day — one link, a new question every morning">
+<meta name="twitter:description" content="A daft would-you-rather for the team, with a live vote. Set it up once and it keeps going on its own. Free, no signup.">
+<meta name="twitter:image" content="https://bitibybit.com/art/og-qotd.png">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Question of the Day",
+"url":"https://bitibybit.com/question-of-the-day/","applicationCategory":"UtilitiesApplication",
+"operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},
+"description":"A daily would-you-rather question for a team, with a live poll. One shared link; the question changes by itself every day. Free, no accounts."}
+</script>
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="biti by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    biti by bit
+    <span class="beta-badge">beta</span>
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no signup · one link, forever</p>
+    <h1>Question of the Day</h1>
+    <p class="lede">A daft would-you-rather for the team, with a live vote. Set it
+    up once, paste one link in the team chat, and a new question lands there every
+    morning on its own. Nothing to remember, nobody to nag.</p>
+  </section>
+
+  <section class="builder panel">
+    <div class="qotd-preview">
+      <p class="qotd-preview-kicker">Today, for instance</p>
+      <p class="qotd-preview-q" id="previewQ">Is a hot dog a sandwich?</p>
+      <div class="qotd-preview-opts">
+        <span class="qotd-preview-opt"><b>A</b> <span id="previewA">Sandwich</span></span>
+        <span class="qotd-preview-opt"><b>B</b> <span id="previewB">Not a sandwich</span></span>
+      </div>
+      <button class="btn ghost small" id="previewNext" type="button">Show me another</button>
+    </div>
+
+    <form id="qotdForm" novalidate>
+      <label class="field">
+        <span>Team name <em>(optional — it just sits at the top)</em></span>
+        <input type="text" id="teamName" maxlength="60" autocomplete="organization"
+               placeholder="Payroll, or Level 3, or The Sunday Roasters">
+      </label>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="makeBtn">Start today's question →</button>
+      <p class="fine">You'll get two links: one for the team chat, one for you.
+      The team link never changes — the question behind it does.</p>
+    </form>
+
+    <div class="prev-sweeps" id="prevQotd" hidden>
+      <p class="fine">Your earlier ones (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>How it works</h2>
+    <h3>1. One link, shared once</h3>
+    <p>You don't build anything. Give it a team name if you like, press the
+    button, and you get a share link. Paste it in the team chat, pin it, put it
+    in the stand-up doc — wherever people already look.</p>
+    <h3>2. A new question every day, by itself</h3>
+    <p>This is the bit that matters. The question behind that link changes
+    overnight, every day, in an order shuffled just for your team. There's no
+    reminder to set, no bot to install, no "who's doing the question today"
+    rostered to the person who's on leave. It simply rotates.</p>
+    <h3>3. Vote, then see the split</h3>
+    <p>Two big options, A and B. You tap one, and only then do the bars appear.
+    Hiding the numbers until you've voted keeps people honest — nobody just
+    piles onto whatever the first three said. Change your mind any time; the
+    day's tally updates.</p>
+
+    <h2>Why this beats posting one in the group chat</h2>
+    <p>Everyone's tried it. Someone kicks off a <strong>team question of the
+    day</strong> with real enthusiasm, keeps it up for eight working days, then
+    gets busy and it quietly dies. Meanwhile the answers are scattered through
+    forty messages, three people replied to the wrong one, and there's no way to
+    tell what the team actually reckons.</p>
+    <p>A link that refreshes itself has no enthusiasm to run out of. The
+    question is waiting when people get in. The vote is two taps on a phone. The
+    split is a picture, not a thread. And when someone joins the team in March,
+    you send them the same link you sent everyone in January.</p>
+
+    <h2>Stand-ups, remote teams and the ten-past-nine lull</h2>
+    <p>The obvious slot is the start of a stand-up: read the question out, let
+    people call their side, then show the bars. It takes forty seconds and it
+    gets voices in the room before anyone has to say the word "blockers".</p>
+    <p>For remote and hybrid teams it does more work. A <strong>daily icebreaker
+    question</strong> in the channel gives people who don't share a kitchen
+    something small to have an opinion about, and it's asynchronous — the
+    part-timer who starts at eleven still gets to vote. Some teams put the link
+    in the channel topic and never touch it again. Others open it on the shared
+    screen at the Monday catch-up and argue about hot dogs for a minute.</p>
+    <p>It also works for a class, a book club, a family chat, or a shift roster
+    where people never overlap. Anywhere a group needs a low-stakes reason to
+    say something to each other.</p>
+
+    <h2>What sort of questions?</h2>
+    <p>Silly ones. <strong>Would you rather questions for work</strong> that
+    don't need anyone to be vulnerable: fight one horse-sized duck or a hundred
+    duck-sized horses, always be ten minutes early or always five minutes late,
+    lose the office Wi-Fi for a week or the kettle forever. Plus the classic
+    unwinnable debates — is a hot dog a sandwich, is cereal a soup, does
+    pineapple belong on a pizza.</p>
+    <p>Nothing asks people to share a feeling, a family story, or their worst
+    fear. That's on purpose. A <strong>question of the day for work</strong>
+    should be safe to skip and safe to answer honestly, and the fastest way to
+    kill one is to make it earnest.</p>
+    <p>If your team has its own long-running argument, add it. Your questions go
+    into your team's rotation alongside the shared ones.</p>
+
+    <h2>FAQ</h2>
+    <h3>Do I have to post a new question every day?</h3>
+    <p>No — that's the whole point. The question changes on its own at midnight.
+    The link you shared stays exactly the same, so there's nothing to send and
+    nothing to remember.</p>
+    <h3>Is it free?</h3>
+    <p>Yes. No account, no trial, no card, no app to install. It's a small tool,
+    not a platform.</p>
+    <h3>Can I skip a question I don't like?</h3>
+    <p>Yes. On your organiser page there's a "skip today's question" button — the
+    next one in your rotation takes over for the rest of the day, and tomorrow
+    carries on as normal. Skipping clears any votes cast today, since they were
+    about the question you just swapped out.</p>
+    <h3>Can I add our own questions?</h3>
+    <p>Yes. Write the question and its two sides on the organiser page and it
+    joins your team's rotation, queued for the next free day. Up to a hundred of
+    your own.</p>
+    <h3>Do people need an account to vote?</h3>
+    <p>No. They tap the link, tap A or B, and that's it. Their browser remembers
+    the vote so they can change it, which also means one-vote-per-person is on
+    the honour system — someone with two phones could vote twice. It's a talking
+    point, not an election.</p>
+    <h3>Can I see who voted for what?</h3>
+    <p>Only if people type a name, and only you can see it. Everyone on the
+    shared link sees the two numbers and nothing else.</p>
+    <h3>What happened to yesterday's question?</h3>
+    <p>It's on the same page, under today's, with its final split — plus a
+    collapsible archive of the last thirty days. Good for settling an argument
+    about what the team decided about hot dogs.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
+    small free tools for groups. No cookies, no ads, no personal data.</p>
+    <p class="foot-links">
+      <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
+    </p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Do I have to post a new question every day?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No — that's the whole point. The question changes on its own at midnight. The link you shared stays exactly the same, so there's nothing to send and nothing to remember."}},
+    {"@type": "Question", "name": "Is the question of the day free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. No account, no trial, no card, no app to install. It's a small tool, not a platform."}},
+    {"@type": "Question", "name": "Can I skip a question I don't like?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. On your organiser page there's a skip today's question button. The next one in your rotation takes over for the rest of the day, and tomorrow carries on as normal. Skipping clears any votes cast today, since they were about the question you just swapped out."}},
+    {"@type": "Question", "name": "Can I add our own questions?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Write the question and its two sides on the organiser page and it joins your team's rotation, queued for the next free day. Up to a hundred of your own."}},
+    {"@type": "Question", "name": "Do people need an account to vote?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. They tap the link, tap A or B, and that's it. Their browser remembers the vote so they can change it, which also means one vote per person is on the honour system — someone with two phones could vote twice. It's a talking point, not an election."}},
+    {"@type": "Question", "name": "Can I see who voted for what?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Only if people type a name, and only you can see it. Everyone on the shared link sees the two numbers and nothing else."}},
+    {"@type": "Question", "name": "What happened to yesterday's question?",
+     "acceptedAnswer": {"@type": "Answer", "text": "It's on the same page, under today's, with its final split — plus a collapsible archive of the last thirty days."}}
+  ]
+}
+</script>
+<script src="/qotd.js"></script>
+<!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
+     Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,
+     the pages people share with their group. What their friends do in a sweep
+     or a meal train is none of our business. Token: Cloudflare dashboard →
+     Web Analytics → Add a site → copy the token. -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "7df4259a0571411390aec9252ecc4f3e"}'></script>
+</body>
+</html>

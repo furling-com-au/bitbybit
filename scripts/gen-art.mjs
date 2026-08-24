@@ -175,6 +175,22 @@ function iconCocktail() {
   return g;
 }
 
+
+function iconSignpost() {
+  const g = new Grid(16, 16);
+  g.rect(7, 2, 8, 15, P.brownDark);              // post
+  // left-pointing board (sage)
+  g.rect(1, 4, 7, 7, P.sage);
+  g.px(0, 5, P.sage); g.px(0, 6, P.sage);
+  g.rect(2, 5, 5, 5, P.paper);                   // blank text line
+  // right-pointing board (terracotta)
+  g.rect(8, 9, 14, 12, P.terra);
+  g.px(15, 10, P.terra); g.px(15, 11, P.terra);
+  g.rect(10, 10, 13, 10, P.paper);
+  g.px(7, 3, "#a98a68");                          // post highlight
+  return g;
+}
+
 /* ---------- footy field scene ------------------------------- */
 function fieldScene(w, h) {
   const g = new Grid(w, h, P.paper);
@@ -221,7 +237,7 @@ const icons = {
   footy: iconFooty(), horse: iconHorse(), gift: iconGift(), car: iconCar(),
   wolf: iconWolf(), pot: iconPot(), card: iconCard(), trophy: iconTrophy(),
   rattle: iconRattle(), clipboard: iconClipboard(), bubbles: iconBubbles(),
-  casserole: iconCasserole(), ballot: iconBallot(), recipe: iconRecipe(), bulb: iconBulb(), cocktail: iconCocktail(),
+  casserole: iconCasserole(), signpost: iconSignpost(), ballot: iconBallot(), recipe: iconRecipe(), bulb: iconBulb(), cocktail: iconCocktail(),
 };
 for (const [name, g] of Object.entries(icons)) g.toPng(`public/icons/${name}.png`, 8);
 
