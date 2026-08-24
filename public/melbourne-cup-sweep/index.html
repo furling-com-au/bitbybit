@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Melbourne Cup Sweep Generator — free, no signup | bit by bit</title>
+<meta name="description" content="Run the office Melbourne Cup sweep in under a minute. 24 horses, everyone's names, one shareable link. Free, fair, printable, no signup — no scissors required.">
+<link rel="canonical" href="https://bitibybit.com/melbourne-cup-sweep/">
+<meta property="og:title" content="Melbourne Cup Sweep Generator">
+<meta property="og:description" content="24 horses, your office, one link. Free, fair, no signup.">
+<meta property="og:image" content="https://bitibybit.com/art/og-cup.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="bit by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    bit&nbsp;by&nbsp;bit
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no signup · one shareable link</p>
+    <h1>Melbourne Cup Sweep</h1>
+    <p class="lede">The office Cup sweep without the scissors, the hat, or the
+    soggy bits of paper. Paste everyone's names, hit draw, and share the link —
+    24 horses dealt out fairly before the race that stops the nation.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/cup-hero.png"
+           alt="Pixel art racetrack with a grandstand crowd, three galloping racehorses, and a red and white finish post"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="cupForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Sweep title <em>(optional)</em></span>
+            <input type="text" id="title" maxlength="80" placeholder="The office Cup sweep">
+          </label>
+          <label class="field">
+            <span>Horses <em>(one per line — edit freely)</em></span>
+            <textarea id="outcomes" rows="12" spellcheck="false">Horse 1
+Horse 2
+Horse 3
+Horse 4
+Horse 5
+Horse 6
+Horse 7
+Horse 8
+Horse 9
+Horse 10
+Horse 11
+Horse 12
+Horse 13
+Horse 14
+Horse 15
+Horse 16
+Horse 17
+Horse 18
+Horse 19
+Horse 20
+Horse 21
+Horse 22
+Horse 23
+Horse 24</textarea>
+          </label>
+          <p class="fine">The final field of 24 isn't declared until the
+          Saturday before the race. Draw with numbers now and match them to
+          the printed field on the day, or paste the real names in here once
+          they're out.</p>
+        </div>
+        <div>
+          <label class="field">
+            <span>Who's in? <em>(one name per line)</em></span>
+            <textarea id="names" rows="14" spellcheck="false" placeholder="Sam
+Priya
+Jordan
+Alex
+Mia"></textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+        </div>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="drawBtn">Draw the sweep →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevSweeps" hidden>
+      <p class="fine">Your earlier sweeps (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>How it works</h2>
+    <h3>1. Set it up</h3>
+    <p>The horses box comes prefilled with Horse 1 through Horse 24, because
+    the real field isn't confirmed until the Saturday before the race. Two
+    ways to run it: draw now with numbers and match them to the printed field
+    on the day — every paper and the VRC site carry it — or hold off until
+    the declarations and paste the actual names in. Short field this year?
+    Delete a few lines.</p>
+    <h3>2. Draw</h3>
+    <p>Paste everyone's names and hit draw. The shuffle uses your browser's
+    cryptographic randomness — nobody can rig it, including us. Fewer people
+    than horses is the normal state of a Cup sweep: names cycle fairly, so
+    everyone draws the same number of horses, give or take one. Ten people,
+    twenty-four horses, plenty to yell about at 3pm.</p>
+    <h3>3. Share the link</h3>
+    <p>You get two links: a <strong>share link</strong> that shows everyone the
+    drawn board, and an <strong>organiser link</strong> that lets you re-draw
+    or delete. Bookmark the organiser one — there are no accounts, so the link
+    is the only key. The shared page prints cleanly for the tea-room fridge.</p>
+
+    <h2>FAQ</h2>
+    <h3>Is it actually free?</h3>
+    <p>Yes. No account, no trial, no card. It's a small tool, not a platform.</p>
+    <h3>How many people do we need?</h3>
+    <p>Anywhere from two to twenty-four. Fewer people than horses is how a Cup
+    sweep is meant to work — everyone just draws more than one. More than 24
+    and someone misses out, so run a second sweep for the overflow.</p>
+    <h3>What about scratchings?</h3>
+    <p>Agree the house rule before the race, while everyone's still friends.
+    The usual options: a scratched horse's holder gets their money back,
+    scratchings share last place's prize, or the whole board gets re-drawn
+    once the final field is locked in. If you go the re-draw route, the
+    organiser link has a button for it — one click, no whiteboard.</p>
+    <h3>Does it handle money?</h3>
+    <p>No — deliberately. Collect the gold coins however your office always
+    has. This just does the drawing and the remembering.</p>
+    <h3>Can I print it?</h3>
+    <p>The drawn board prints cleanly on one page — open the shared link and
+    hit print. If you were searching for a printable sweep template to cut
+    into 24 bits of paper: this is the same thing, minus the scissors.</p>
+    <h3>When is the Melbourne Cup?</h3>
+    <p>The first Tuesday in November — 3&nbsp;November 2026 — jumping at 3pm
+    AEDT. The final field of 24 is declared the Saturday before.</p>
+    <h3>Grand Final sweep?</h3>
+    <p>September's covered too — <a href="/grand-final-sweep/">the margin
+    sweep</a> works the same way.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">bit by bit</a> —
+    small free tools for groups. No tracking, no ads.</p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is the Melbourne Cup sweep generator free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You make a sweep and share one link."}},
+    {"@type": "Question", "name": "How many people do you need for a Melbourne Cup sweep?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Anywhere from 2 to 24. Fewer people than horses is normal — names cycle fairly, so everyone draws several horses. With more than 24 people, run a second sweep."}},
+    {"@type": "Question", "name": "What happens if a horse is scratched?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Agree a house rule before race day: common ones are refunding the holder, sharing last place's prize, or re-drawing the whole sweep once the final field is set. The organiser link has a one-click re-draw button."}},
+    {"@type": "Question", "name": "Does it handle the money?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. It only draws and displays the sweep — collect entries however your office normally does."}}
+  ]
+}
+</script>
+<script src="/cup-sweep.js"></script>
+</body>
+</html>

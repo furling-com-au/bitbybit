@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secret Role Dealer — Werewolf, Spyfall &amp; party roles, free | bit by bit</title>
+<meta name="description" content="A free werewolf role generator, Spyfall dealer and secret role assigner for any party game. Type the roles, share one link — each player privately draws one. No app, no signup.">
+<link rel="canonical" href="https://bitibybit.com/secret-role-dealer/">
+<meta property="og:title" content="Secret Role Dealer">
+<meta property="og:description" content="One link — every role private. Werewolf, Spyfall, Avalon, or anything you can type.">
+<meta property="og:image" content="https://bitibybit.com/art/og-roles.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="bit by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    bit&nbsp;by&nbsp;bit
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no app · one shareable link</p>
+    <h1>Secret Role Dealer</h1>
+    <p class="lede">Werewolf, Spyfall, Avalon — or anything you can type.
+    Put in the roles, share one link with the group, and each player privately
+    draws one. No cards to print, no app to install, nobody peeking over the
+    dealer's shoulder.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/roles-hero.png"
+           alt="Pixel art night scene: a gold moon over village rooftops with lit windows, and a wolf howling on a roof"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="rolesForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Game title <em>(optional)</em></span>
+            <input type="text" id="title" maxlength="80" placeholder="Friday night Werewolf">
+          </label>
+          <div class="preset-row" role="group" aria-label="Fill the roles with a preset">
+            <label class="count-field">Players
+              <input type="number" id="playerCount" min="2" max="40" inputmode="numeric" placeholder="8">
+            </label>
+            <button type="button" class="btn small" data-preset="werewolf">Werewolf</button>
+            <button type="button" class="btn small" data-preset="spyfall">Spyfall</button>
+            <button type="button" class="btn small" data-preset="avalon">Avalon</button>
+            <button type="button" class="btn small" data-preset="traitor">The Traitor</button>
+          </div>
+          <label class="field">
+            <span>Roles <em>(one per line — duplicates are fine)</em></span>
+            <textarea id="roles" rows="12" spellcheck="false" placeholder="Werewolf
+Werewolf
+Seer
+Doctor
+Villager
+Villager"></textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+        </div>
+        <div>
+          <label class="field">
+            <span>Note to players <em>(optional — shows on every role page)</em></span>
+            <textarea id="note" rows="5" maxlength="300" placeholder="Gather in the kitchen at 8. No phones at the table once we start."></textarea>
+          </label>
+          <p class="fine">One role per line, dealt at random — the count needs to
+          match your player count exactly. The presets fill the box for whatever
+          number you set, and you can edit the lines freely afterwards.
+          Six lines of "Villager" is six villagers.</p>
+        </div>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="dealBtn">Deal the roles →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevMade" hidden>
+      <p class="fine">Your earlier games (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>How it works</h2>
+    <h3>1. Make the deal</h3>
+    <p>Type the roles, one per line — or hit a preset and it writes a standard
+    setup for your player count. Duplicates are normal: a ten-player Werewolf
+    game is mostly a stack of Villagers. Anything you can type is a role, so
+    it works for any hidden-role game, not just the famous ones.</p>
+    <h3>2. Share one link</h3>
+    <p>You get a share link for the group chat and an organiser link for you.
+    Everyone opens the same share link — no app to install, no accounts, works
+    on whatever phone is already in their hand.</p>
+    <h3>3. Each player takes a role privately</h3>
+    <p>A player types their name, taps <em>deal me in</em>, and lands on a
+    private page showing only their role. The draw is random and atomic — two
+    people tapping at once can't get the same slot, and nobody can see anyone
+    else's page.</p>
+
+    <h2>FAQ</h2>
+    <h3>Can players see each other's roles?</h3>
+    <p>No. Each player gets their own private page at a secret link, and the
+    shared link never shows a role to anyone. The only way to leak your role is
+    the time-honoured one: waving your screen around.</p>
+    <h3>Can the organiser play too?</h3>
+    <p>Yes — that's the point of dealing at random. The organiser page lists
+    who's joined but hides the roles, so you can join from the share link like
+    everyone else. There's a reveal-all link for after the game, clearly
+    labelled as the spoiler it is.</p>
+    <h3>What if two people have the same name?</h3>
+    <p>Names must be unique within a game, so the second Sam gets asked to add
+    a surname initial. Better than two people arguing over one Seer.</p>
+    <h3>Can I re-deal?</h3>
+    <p>The organiser can reset a single player (their role goes back in the
+    pool) or re-deal everything — that clears every player and every private
+    link, and the group joins again from scratch with a fresh shuffle.</p>
+    <h3>Is it actually free?</h3>
+    <p>Yes. No account, no trial, no card. It's a small tool, not a platform.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">bit by bit</a> —
+    small free tools for groups. No tracking, no ads.</p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Can players see each other's roles?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. Each player gets a private page at a secret link showing only their own role. The shared link never reveals a role to anyone."}},
+    {"@type": "Question", "name": "Can the organiser play too?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Roles are dealt at random, and the organiser page hides everyone's roles unless deliberately revealed — so the organiser joins from the share link like any other player."}},
+    {"@type": "Question", "name": "What if two players enter the same name?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Names must be unique within a game. The second person with the same name is asked to add a surname initial."}},
+    {"@type": "Question", "name": "Can I re-deal the roles?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes. The organiser can reset one player or re-deal everything — a full re-deal clears all players and private links, and the group joins again with a fresh random shuffle."}}
+  ]
+}
+</script>
+<script src="/roles.js"></script>
+</body>
+</html>

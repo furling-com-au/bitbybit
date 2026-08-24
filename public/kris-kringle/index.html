@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kris Kringle Generator — draw names online, no emails | bit by bit</title>
+<meta name="description" content="Draw Kris Kringle (Secret Santa) names online without collecting a single email address. Share one link, everyone claims their name and sees only their person. Free, no signup, wishlists included.">
+<link rel="canonical" href="https://bitibybit.com/kris-kringle/">
+<meta property="og:title" content="Kris Kringle Generator">
+<meta property="og:description" content="Draw names, no emails. Share one link — everyone sees only their person.">
+<meta property="og:image" content="https://bitibybit.com/art/og-kringle.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="bit by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    bit&nbsp;by&nbsp;bit
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no emails · one shareable link</p>
+    <h1>Kris Kringle</h1>
+    <p class="lede">The name-drawing hat, minus the hat and the reply-all.
+    Type the names, share one link in the group chat, and everyone quietly
+    finds out who they're buying for. Wishlists included.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/kringle-hero.png"
+           alt="Pixel art of a string of fairy lights over a row of wrapped presents against an evening sky"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="kringleForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Title <em>(optional)</em></span>
+            <input type="text" id="title" maxlength="80" placeholder="Warehouse crew Kris Kringle">
+          </label>
+          <div class="builder-cols">
+            <label class="field">
+              <span>Budget <em>(optional)</em></span>
+              <input type="text" id="budget" maxlength="40" placeholder="$20">
+            </label>
+            <label class="field">
+              <span>Swap day <em>(optional)</em></span>
+              <input type="text" id="exchangeDate" maxlength="60" placeholder="Christmas lunch, 25 Dec">
+            </label>
+          </div>
+          <label class="field">
+            <span>Note to the group <em>(optional)</em></span>
+            <textarea id="note" rows="4" maxlength="300" placeholder="Nothing scented — Dave's allergic."></textarea>
+          </label>
+        </div>
+        <div>
+          <label class="field">
+            <span>Who's in? <em>(one name per line, three minimum)</em></span>
+            <textarea id="names" rows="12" spellcheck="false" placeholder="Sam
+Priya
+Jordan
+Alex
+Mia"></textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+        </div>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="drawBtn">Draw the names →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevDraws" hidden>
+      <p class="fine">Your earlier draws (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>How it works</h2>
+    <h3>1. Make the draw</h3>
+    <p>Names, one per line — the office, the extended family, the share house.
+    Add a budget and a swap day if you like, and a note ("nothing scented,
+    Dave's allergic"). Hit draw. The assignment is a single loop through
+    everyone, done with cryptographic randomness, so nobody can get
+    themselves — not by luck, by maths.</p>
+    <h3>2. Share one link</h3>
+    <p>You get two links: a <strong>share link</strong> for the group chat,
+    and an <strong>organiser link</strong> for you. No email addresses to
+    collect, no invites landing in spam — if your group has a chat, you're
+    done. Bookmark the organiser link; there are no accounts, so it's the
+    only key.</p>
+    <h3>3. Everyone claims their name</h3>
+    <p>Each person taps their own name on the shared page and lands on a
+    private page: who they're buying for, that person's wishlist, and a
+    wishlist box of their own. Nobody sees anyone else's draw — not even the
+    organiser. Your page shows who's claimed and who's opened theirs, so you
+    know exactly who to nag, without learning a single secret.</p>
+
+    <h2>No emails, on purpose</h2>
+    <p>Most Secret Santa sites want everyone's email address before a single
+    name is drawn. Then the invites bounce, or land in spam, or sit unopened
+    next to the electricity bill, and by December someone's chasing Nan for
+    a login. One link in a chat that everyone already reads skips all of it.
+    Works in WhatsApp, Messenger, Teams, the family thread — anywhere a link
+    can go.</p>
+
+    <h2>Wishlists</h2>
+    <p>Everyone can jot a wishlist on their private page — sizes, colours,
+    hard no's. It shows up for exactly one person: whoever drew them. Fewer
+    scented candles, fewer polite faces on the day. Wishlists even survive a
+    re-draw, so nothing gets retyped.</p>
+
+    <h2>FAQ</h2>
+    <h3>Can anyone see who I got?</h3>
+    <p>No. Your draw lives behind your own private link. The organiser's page
+    shows who's claimed their name and who's opened their page — never who
+    drew whom. We can't spoil it, and neither can they.</p>
+    <h3>Can I draw myself?</h3>
+    <p>No. The draw is a single cycle — one unbroken loop through the whole
+    group — which mathematically rules out anyone drawing themselves. No
+    "shuffle again until it works" behind the curtain.</p>
+    <h3>Someone claimed my name — what now?</h3>
+    <p>Tell the organiser. They can reset your name from their page: the
+    other person's link stops working immediately, and you claim your name
+    properly.</p>
+    <h3>What if someone loses their link?</h3>
+    <p>Same fix — the organiser resets that name, and the person claims it
+    again for a fresh private link. Their wishlist stays put.</p>
+    <h3>Can we re-draw?</h3>
+    <p>The organiser can re-draw everyone at any time. All private links are
+    voided and everyone claims their name again — but wishlists survive.</p>
+    <h3>Is it actually free?</h3>
+    <p>Yes. No account, no trial, no card, no emails collected. It's a small
+    tool, not a platform.</p>
+    <h3>Does it handle money?</h3>
+    <p>No — deliberately. The budget is a note, not a payment. Buy the
+    presents however you always have.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">bit by bit</a> —
+    small free tools for groups. No tracking, no ads.</p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Can anyone see who I got in the Kris Kringle draw?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. Each person's draw lives behind their own private link. The organiser's page only shows who has claimed their name — never who drew whom."}},
+    {"@type": "Question", "name": "Can I draw myself?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. The draw is a single cycle through the whole group, which mathematically guarantees nobody is assigned themselves."}},
+    {"@type": "Question", "name": "What if someone claimed my name?",
+     "acceptedAnswer": {"@type": "Answer", "text": "The organiser can reset any name from their organiser page. The wrong person's link stops working immediately, and you claim your name again."}},
+    {"@type": "Question", "name": "What if someone loses their link?",
+     "acceptedAnswer": {"@type": "Answer", "text": "The organiser resets that name, and the person claims it again to get a fresh private link. Their wishlist is kept."}},
+    {"@type": "Question", "name": "Is the Kris Kringle generator free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account, no signup, and no email addresses collected. You make a draw and share one link."}}
+  ]
+}
+</script>
+<script src="/kringle.js"></script>
+</body>
+</html>

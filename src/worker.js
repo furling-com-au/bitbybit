@@ -15,8 +15,11 @@
 
 import { json, getBySlug, getByToken, getParticipant, getInstanceById, notFoundPage } from "./lib.js";
 import sweep from "./tools/sweep.js";
+import kringle from "./tools/kringle.js";
+import roles from "./tools/roles.js";
+import plate from "./tools/plate.js";
 
-const TOOLS = [sweep];
+const TOOLS = [sweep, kringle, roles, plate];
 const BY_TYPE = Object.fromEntries(TOOLS.map((t) => [t.type, t]));
 
 export default {

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bring a Plate — potluck signup board, free | bit by bit</title>
+<meta name="description" content="The free potluck signup sheet. Set categories like mains, salads and desserts, share one link, and everyone claims a spot with what they're bringing. No accounts, no six-pavlova surprises.">
+<link rel="canonical" href="https://bitibybit.com/bring-a-plate/">
+<meta property="og:title" content="Bring a Plate — the potluck board">
+<meta property="og:description" content="Set the categories, share the link, everyone claims what they're bringing. Free, no signup.">
+<meta property="og:image" content="https://bitibybit.com/art/og-plate.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="bit by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    bit&nbsp;by&nbsp;bit
+  </a>
+  <nav class="site-nav">
+    <a href="/#tools">more tools</a>
+  </nav>
+</header>
+
+<main class="wrap page">
+
+  <section class="tool-hero">
+    <p class="kicker">Free · no signup · one shareable link</p>
+    <h1>Bring a Plate</h1>
+    <p class="lede">The potluck board that prevents six pavlovas and no salad.
+    Set the categories, share the link, and everyone puts their name on a spot
+    with what they're bringing. The board fills in; the doubling-up doesn't.</p>
+    <div class="tool-hero-art">
+      <img class="pixel" src="/art/plate-hero.png"
+           alt="Pixel art trestle table laden with a glazed ham, salad, jug, pavlova and lamingtons, with an esky underneath"
+           width="1120" height="320">
+    </div>
+  </section>
+
+  <section class="builder panel">
+    <form id="plateForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Board title <em>(optional)</em></span>
+            <input type="text" id="title" maxlength="80" placeholder="Street Christmas lunch">
+          </label>
+          <label class="field">
+            <span>When is it? <em>(optional — any wording)</em></span>
+            <input type="text" id="eventDate" maxlength="60" placeholder="Sunday 20 December, midday">
+          </label>
+          <label class="field">
+            <span>Note for the group <em>(optional)</em></span>
+            <textarea id="note" rows="4" maxlength="300" placeholder="BYO chairs. The oven at number 12 is free if anything needs heating."></textarea>
+          </label>
+        </div>
+        <div>
+          <label class="field">
+            <span>Categories <em>(one per line — "Name x spots")</em></span>
+            <textarea id="categories" rows="9" spellcheck="false">Mains x6
+Salads x5
+Desserts x4
+Drinks x4
+Ice and esky x2
+Wildcards x3</textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+        </div>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="makeBtn">Set the table →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevBoards" hidden>
+      <p class="fine">Your earlier boards (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>"Bring a plate"?</h2>
+    <p>For the uninitiated: when an Australian invitation says <strong>bring a
+    plate</strong>, it does not mean an empty one. It means bring a plate
+    <strong>of food</strong> — enough to share. Every migrant, exchange student
+    and new in-law learns this exactly once, usually while standing in a
+    doorway holding crockery. Elsewhere it's called a potluck; the mechanics
+    are identical, and so is the failure mode.</p>
+
+    <h2>The six-pavlova problem</h2>
+    <p>Left unorganised, a shared table converges on dessert. Everyone quietly
+    decides that their pav (or their famous slab of lasagne) is the safe
+    choice, nobody volunteers for ice, and at noon on the day there are six
+    pavlovas, no salad, and one warm esky. A signup board fixes this the
+    boring, reliable way: a fixed number of spots per category, claimed in the
+    open, first in best dressed. When the salads are full, they're full — bring
+    drinks instead.</p>
+
+    <h2>How it works</h2>
+    <h3>1. Set the categories</h3>
+    <p>One per line, with how many spots each gets — <em>Salads x5</em> means
+    five people can sign up to bring a salad. The defaults suit a decent-sized
+    Christmas lunch; edit them freely. "Ice and esky" earns its spot on the
+    list — someone has to, and it's never volunteered.</p>
+    <h3>2. Share the link</h3>
+    <p>You get two links: a <strong>share link</strong> for the group chat, and
+    an <strong>organiser link</strong> that can remove claims or delete the
+    board. Bookmark the organiser one — there are no accounts, so the link is
+    the only key.</p>
+    <h3>3. Watch it fill in</h3>
+    <p>Guests tap an open spot, type their name and what they're bringing,
+    done. Each category shows a running count, gets a tick when it's full, and
+    stops accepting names — that's the whole trick. Changed plans? Everyone
+    can take their own name back off.</p>
+
+    <h2>FAQ</h2>
+    <h3>Is it actually free?</h3>
+    <p>Yes. No account, no trial, no card. It's a small tool, not a platform.</p>
+    <h3>Do guests need accounts?</h3>
+    <p>No — tap the link, tap a spot, type your name, done. Their browser
+    remembers which spots are theirs, so they can undo their own claims too.</p>
+    <h3>Can I change what I'm bringing?</h3>
+    <p>Yes. Your own spot has a "changed plans?" button — take your name off
+    and pick another. The spot opens up for everyone else instantly.</p>
+    <h3>Does it handle money?</h3>
+    <p>No — deliberately. It sorts out who brings what; anything involving
+    dollars stays between you and the group, same as always.</p>
+    <h3>What if someone claims a spot and doesn't show?</h3>
+    <p>The organiser link can remove any claim, which opens the spot straight
+    back up. The tool can't make Uncle Rob actually cook the snags, though.
+    Nothing can.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">bit by bit</a> —
+    small free tools for groups. No tracking, no ads.</p>
+  </footer>
+
+</main>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Is the Bring a Plate potluck board free?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You make a board and share one link with the group."}},
+    {"@type": "Question", "name": "Do guests need accounts?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No. Guests tap the link, tap an open spot, type their name and what they're bringing, done. Their browser remembers which spots are theirs."}},
+    {"@type": "Question", "name": "Can I change what I'm bringing?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Yes — take your name off your own spot and pick another. The spot opens up for everyone else instantly."}},
+    {"@type": "Question", "name": "Does it handle money?",
+     "acceptedAnswer": {"@type": "Answer", "text": "No, deliberately. It organises who brings what — anything involving money stays between you and the group."}}
+  ]
+}
+</script>
+<script src="/plate.js"></script>
+</body>
+</html>
