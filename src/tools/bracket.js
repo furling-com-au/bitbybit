@@ -14,7 +14,7 @@
 import {
   esc, json, html, shuffle, badInput, pageShell,
   getByToken, createInstance, updateInstanceData, deleteInstance,
-  logEvent,
+  logEvent, shareNudge,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -247,7 +247,7 @@ function publicPage(row) {
   <footer class="page-foot">
     <p class="fine">Results land as the organiser taps them in — refresh for
     the latest. Reckon a score's wrong? Bail up the organiser, not us.</p>
-    <p><a class="quiet-link" href="${HOME}">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/bracket">made with bitibybit.com →</a></p>
   </footer>
 </main>`;
   return html(pageShell({ title: row.title || "Tournament bracket", body }));
@@ -274,6 +274,7 @@ function editPage(row, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
+  ${shareNudge("🏆 The bracket’s live — watch it fill in: " + shareUrl)}
 
   <p class="pixel-note">Tap the winner as each game finishes. Everyone watching
   the shared link sees it live-ish (on refresh). Tapped the wrong name? Tap the

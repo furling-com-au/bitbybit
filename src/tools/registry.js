@@ -16,7 +16,7 @@
    ============================================================ */
 import {
   esc, json, html, randomString, badInput, pageShell,
-  getBySlug, getByToken, createInstance, deleteInstance, logEvent,
+  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge,
 } from "../lib.js";
 
 const MAX_COUPLE = 80;
@@ -388,14 +388,16 @@ function shellBody(row, data, { organiser, origin }) {
     only way back in. Share the other link below with your guests.
   </div>` : "";
 
+  const shareUrl = `${origin}/s/${row.slug}`;
   const shareBox = organiser ? `
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with your guests</label>
     <div class="share-row">
-      <input id="shareUrl" class="share-input" type="text" readonly value="${esc(`${origin}/s/${row.slug}`)}">
+      <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
-  </div>` : "";
+  </div>
+  ${shareNudge("🚙 Our gift registry is live — claim a part and watch the picture build: " + shareUrl)}` : "";
 
   const paymentNudge = organiser && !hasPayment ? `
   <div class="pixel-note rg-nudge">
@@ -494,7 +496,7 @@ function shellBody(row, data, { organiser, origin }) {
     <p class="fine">No accounts — this browser remembers which parts are yours.
     Payments happen directly between you and the couple; this site never
     touches the money.</p>
-    <p><a class="quiet-link" href="${HOME}">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/registry">made with bitibybit.com →</a></p>
   </footer>
 </main>
 

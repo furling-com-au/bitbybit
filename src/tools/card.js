@@ -12,7 +12,7 @@
 import {
   esc, json, html, randomString, badInput, pageShell,
   getBySlug, getByToken, getParticipant, getInstanceById,
-  createInstance, deleteInstance, logEvent,
+  createInstance, deleteInstance, logEvent, shareNudge,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -192,7 +192,7 @@ async function publicPage(row, env) {
   </section>
 
   <footer class="page-foot">
-    <p><a class="quiet-link" href="${HOME}">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/card">made with bitibybit.com →</a></p>
   </footer>
 </main>
 
@@ -313,6 +313,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
+  ${shareNudge("✍️ We’re signing a card — add your message before it gets handed over: " + shareUrl)}
 
   <p class="pixel-note">Share the link with everyone <strong>except
   ${esc(data.recipient)}</strong>. When it's full, share it with them too —

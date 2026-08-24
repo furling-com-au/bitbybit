@@ -13,7 +13,7 @@
    contract below, import it, add it to TOOLS.
    ============================================================ */
 
-import { json, getBySlug, getByToken, getParticipant, getInstanceById, notFoundPage } from "./lib.js";
+import { json, getBySlug, getByToken, getParticipant, getInstanceById, notFoundPage, logEvent } from "./lib.js";
 import sweep from "./tools/sweep.js";
 import kringle from "./tools/kringle.js";
 import roles from "./tools/roles.js";
@@ -52,6 +52,16 @@ async function overLimit(request, path) {
   return false;
 }
 
+
+/* Counted referral redirects: the "made with" credit on shared pages
+   routes through here so the loop is measurable. One event row per
+   click, no cookies, then a plain redirect. */
+const VIA = {
+  gf: "/grand-final-sweep/", cup: "/melbourne-cup-sweep/",
+  kringle: "/kris-kringle/", roles: "/secret-role-dealer/",
+  plate: "/bring-a-plate/", bracket: "/tournament-bracket/",
+  card: "/group-card/", registry: "/gift-registry/", teams: "/team-picker/",
+};
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -75,6 +85,11 @@ export default {
       }
 
       let m;
+      if ((m = path.match(new RegExp("^/via/([a-z]+)/?$"))) && VIA[m[1]]) {
+        try { await logEvent(env, null, m[1], "via"); } catch (e) { /* never block the redirect */ }
+        return Response.redirect(url.origin + VIA[m[1]], 302);
+      }
+
       if ((m = path.match(/^\/s\/([a-z0-9-]+)\/?$/)) && request.method === "GET") {
         const row = await getBySlug(env, m[1]);
         const tool = row && BY_TYPE[row.tool_type];

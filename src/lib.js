@@ -118,6 +118,32 @@ export async function deleteInstance(env, id) {
   ]);
 }
 
+
+/* A paste-ready group-chat message on organiser pages. The share
+   link is the product's whole distribution channel; this writes the
+   message so the organiser doesn't have to. */
+export function shareNudge(message) {
+  return `
+  <div class="share-nudge">
+    <span class="share-label">Paste-ready for the group chat</span>
+    <div class="share-row">
+      <textarea id="nudgeText" class="nudge-text" rows="2" readonly>${esc(message)}</textarea>
+      <button class="btn" id="nudgeCopy" type="button">Copy</button>
+    </div>
+  </div>
+  <script>
+  document.getElementById("nudgeCopy").addEventListener("click", function () {
+    var t = document.getElementById("nudgeText");
+    t.select();
+    navigator.clipboard.writeText(t.value).then(function () {
+      var b = document.getElementById("nudgeCopy");
+      b.textContent = "Copied";
+      setTimeout(function () { b.textContent = "Copy"; }, 1500);
+    });
+  });
+  </script>`;
+}
+
 /* ---------- page shell -------------------------------------- */
 
 export function pageShell({ title, body }) {

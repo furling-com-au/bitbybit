@@ -7,7 +7,7 @@
    ============================================================ */
 import {
   esc, json, html, randomString, badInput, pageShell,
-  getBySlug, getByToken, createInstance, deleteInstance, logEvent,
+  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -223,7 +223,7 @@ async function publicPage(row, env) {
     <p class="fine">No accounts — this browser remembers which spots are yours,
     and your own cards get an undo. If you're on someone else's phone,
     just ask the organiser to shift things.</p>
-    <p><a class="quiet-link" href="${HOME}">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/plate">made with bitibybit.com →</a></p>
   </footer>
 </main>
 
@@ -376,6 +376,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
+  ${shareNudge("🍴 Put your name on a plate — pick what you’re bringing: " + shareUrl)}
 
   ${board(data, bySlot, true)}
 

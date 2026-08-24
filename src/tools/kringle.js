@@ -10,7 +10,7 @@
 import {
   esc, json, html, rand, randomString, badInput, pageShell,
   getBySlug, getByToken, getParticipant, getInstanceById,
-  createInstance, deleteInstance, logEvent, fmtDate,
+  createInstance, deleteInstance, logEvent, fmtDate, shareNudge,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -238,7 +238,7 @@ async function publicPage(row, env) {
   <footer class="page-foot">
     <p class="fine">One claim per name. Grabbed the wrong one, or someone
     pinched yours? The organiser can reset it.</p>
-    <p><a class="quiet-link" href="${HOME}">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/kringle">made with bitibybit.com →</a></p>
   </footer>
 </main>
 
@@ -347,7 +347,7 @@ async function participantPage(prow, row, env) {
     <p class="fine">Keep this page to yourself. Bookmark it — it's the only
     way back in. Lost it? The organiser can reset your name so you can claim
     it again.</p>
-    <p><a class="quiet-link" href="${HOME}">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/kringle">made with bitibybit.com →</a></p>
   </footer>
 </main>
 
@@ -418,6 +418,7 @@ async function editPage(row, env, url) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
+  ${shareNudge("🎁 Kris Kringle time — claim your name and see who you drew (takes 10 seconds, no emails): " + shareUrl)}
 
   <p class="pixel-note">This page never shows who drew whom — we can't spoil
   it for you either. If someone claimed a name that wasn't theirs, a reset restores access — but they've already seen that draw, so the clean fix is a full re-draw.</p>

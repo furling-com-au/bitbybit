@@ -8,7 +8,7 @@
 import {
   esc, json, html, randomString, badInput, pageShell,
   getBySlug, getByToken, createInstance, deleteInstance,
-  logEvent, fmtDate,
+  logEvent, fmtDate, shareNudge,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -163,7 +163,7 @@ async function publicPage(row, env) {
   </div>
 
   <footer class="page-foot">
-    <p><a class="quiet-link" href="${HOME}">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/roles">made with bitibybit.com →</a></p>
   </footer>
 </main>
 
@@ -248,7 +248,7 @@ async function participantPage(prow, row, env) {
   <p class="fine">The page stays here — bookmark it if the game runs long.</p>
 
   <footer class="page-foot">
-    <p><a class="quiet-link" href="${HOME}">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/roles">made with bitibybit.com →</a></p>
   </footer>
 </main>`;
   return html(pageShell({ title: "Your role", body }));
@@ -305,6 +305,7 @@ async function editPage(row, env, url) {
     on a private page. Playing yourself? Join from the same link — roles stay
     hidden here so nothing gets spoiled for you.</p>
   </div>
+  ${shareNudge("🐺 Roles are dealt — tap for yours, and keep it secret: " + shareUrl)}
 
   ${table}
   <p class="fine reveal-line">${revealLink}</p>

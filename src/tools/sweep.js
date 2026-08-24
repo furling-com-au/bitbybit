@@ -6,7 +6,7 @@
 import {
   esc, json, html, shuffle, badInput, pageShell,
   getByToken, createInstance, updateInstanceData, deleteInstance,
-  logEvent, fmtDate,
+  logEvent, fmtDate, shareNudge,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -104,6 +104,22 @@ async function remove(token, env) {
   return json({ ok: true });
 }
 
+
+/* The spike-to-spike chain: once one season's event has run, its
+   shared pages point the crowd at the next tool on the calendar. */
+function seasonBanner(kind) {
+  const now = new Date();
+  const y = now.getFullYear();
+  if (kind !== "cup" && now > new Date(y, 9, 5))
+    return `<p class="pixel-note season-next">Footy's done for the year — the
+      <a href="/melbourne-cup-sweep/">Melbourne Cup sweep</a> is up next.</p>`;
+  if (kind === "cup" && now > new Date(y, 10, 4))
+    return `<p class="pixel-note season-next">Race run, sweep settled. Next on
+      the calendar: <a href="/kris-kringle/">Kris Kringle</a> — draw names
+      without the group chat seeing.</p>`;
+  return "";
+}
+
 /* ---------- rendering --------------------------------------- */
 
 function grid(data, { reveal }) {
@@ -140,8 +156,9 @@ function publicPage(row) {
   <h1>${esc(row.title || "The office sweep")}</h1>
   <p class="page-sub">${subLine(data)}</p>
   ${grid(data, { reveal: true })}
+  ${seasonBanner(data.kind)}
   <footer class="page-foot">
-    <p><a class="quiet-link" href="${HOME_FOR(data.kind)}">made with bitibybit.com →</a></p>
+    <p><a class="quiet-link" href="/via/${data.kind === "cup" ? "cup" : "gf"}">made with bitibybit.com →</a></p>
   </footer>
 </main>`;
   return html(pageShell({ title: row.title || "Sweep", body }));
@@ -168,6 +185,7 @@ function editPage(row, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
+  ${shareNudge((data.kind === "cup" ? "🐎 Cup sweep’s drawn! Find your horse: " : "🏉 The sweep’s drawn — come see what you pulled: ") + shareUrl)}
 
   ${grid(data, { reveal: false })}
 
