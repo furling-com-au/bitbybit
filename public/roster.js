@@ -10,6 +10,41 @@
     String(s).replace(/[&<>"']/g, (c) =>
       ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+  /* ---- club templates ---------------------------------------
+     Ten real match-day duty sheets, grouped so a secretary is not offered
+     a netball roster in August (winter sport) or a junior AFL one (season
+     finished 9 Aug). Choosing one replaces the box; the note underneath
+     says who it is for, because every one of these needs rescaling to the
+     club's own numbers and pretending otherwise is how it stops being
+     credible. */
+  (function presets() {
+    const sel = $("rosterPreset");
+    const note = $("presetNote");
+    if (!sel || typeof ROSTER_PRESETS === "undefined") return;
+
+    const groups = {};
+    for (const [key, p] of Object.entries(ROSTER_PRESETS)) (groups[p.group] ||= []).push([key, p]);
+    for (const [name, items] of Object.entries(groups)) {
+      const og = document.createElement("optgroup");
+      og.label = name;
+      for (const [key, p] of items) {
+        const o = document.createElement("option");
+        o.value = key; o.textContent = p.label;
+        og.appendChild(o);
+      }
+      sel.appendChild(og);
+    }
+
+    sel.addEventListener("change", () => {
+      const p = ROSTER_PRESETS[sel.value];
+      if (!p) { note.hidden = true; return; }
+      $("shifts").value = p.shifts.join("\n");
+      note.textContent = p.note;
+      note.hidden = false;
+      $("shifts").dispatchEvent(new Event("input", { bubbles: true }));
+    });
+  })();
+
   /* ---- shifts: "Job time xN" per line ------------------------ */
   const shiftLines = () =>
     $("shifts").value.split("\n")

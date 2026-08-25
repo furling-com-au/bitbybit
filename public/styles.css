@@ -2262,3 +2262,17 @@ body.is-demo { padding-bottom: 6rem; }
   .nudge-actions { flex-direction: row; }
   .nudge-actions .btn { flex: 1; }
 }
+
+/* Template picker on the roster builder. The note underneath carries who
+   the template is for and what needs rescaling — a duty sheet handed over
+   without that reads as an instruction rather than a starting point. */
+.preset-note {
+  font-size: .76rem; line-height: 1.5; color: var(--ink-soft);
+  border-left: 3px solid var(--gold); padding: .1rem 0 .1rem .7rem;
+  margin: -.4rem 0 1rem; max-width: 52ch;
+}
+.count-field select {
+  font: inherit; font-size: .78rem; padding: .3rem .4rem;
+  background: var(--paper); color: var(--ink); border: 2px solid var(--line);
+  max-width: 15rem;
+}
