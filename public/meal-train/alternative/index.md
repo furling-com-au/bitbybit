@@ -36,8 +36,8 @@ This tool sidesteps it by not having anywhere to put an email address. The trade
 | Drop-off address | On your coordinator page only — deliberately kept off the shared link | Optional, and shown to participants so they know where to deliver |
 | Dietary needs | Pinned at the top of the shared board | Recorded on the page with preferences and allergies |
 | Gift cards & donations | **No** | Yes, built in |
-| More than one meal a day | Yes, free | Meal Train Plus — $10 per page |
-| Childcare, rides, errands | **No** | Meal Train Plus — $10 per page |
+| More than one meal a day | Yes, free — up to 3 a day | Meal Train Plus — $10 per page |
+| Childcare, lifts, errands, dog walking | Yes, free — up to 12 jobs run alongside the meals | Meal Train Plus — $10 per page |
 | Managing many pages | Make as many as you like, but they are not linked together | Meal Train Pro — $15/month |
 | Cookies | None on the shared page | Consent banner — non-essential cookies available |
 | Cost | Free | Free, with paid add-ons above |
@@ -48,7 +48,6 @@ Genuinely, and this is not throat-clearing — if any of these apply, use theirs
 
 - **You want people reminded.** Their email reminders at a week and a day out are the single most useful thing a meal train can do, and nothing here does it. If your group needs nudging, that is worth more than any privacy argument on this page.
 - **You want to collect money or gift cards.** They have it built in. This site never handles money at all, on purpose.
-- **You need more than meals** — childcare, lifts, dog walking, errands. Their Plus tier covers it for $10.
 - **You are a church, school or charity running many at once.** Their Pro tier is built for exactly that.
 - **You want the safe, known option.** They say they have organised over 120 million meals for 4.4 million families. This is a small Australian site with a fraction of that history, and if the person you are helping would find a familiar name reassuring, that counts.
 
@@ -57,6 +56,7 @@ Genuinely, and this is not throat-clearing — if any of these apply, use theirs
 - **The recipient has not been told yet**, or would not want their email handed to a company. Nothing here asks for one.
 - **The address needs to stay private.** A new mother's or a grieving family's home address should not sit on a link that gets forwarded through a dozen group chats. Here it lives on your coordinator page and you pass it to each person once they have claimed a day.
 - **You want more than one meal a day without paying.**
+- **The help needed isn't only food.** Add up to twelve other jobs beside the meals — the school run, the dog, a load of washing, the lawn before the wake — each with how many people it needs. They are claimed the same way and come out in the same export. On MealTrain.com that is the $10 Plus tier.
 - **Some of the people cooking are not online much.** There is no account, no app and no password — they tap a link, type their name, done.
 - **You would rather nobody's inbox was involved at all.**
 

@@ -20,6 +20,12 @@ Allergies and dietary needs aren't a nice-to-have here — they're a safety fiel
 
 The drop-off address is the one thing that *doesn't* go on the shared link. A home address — especially a new mum's or a grieving family's — shouldn't live on a URL that gets forwarded around a dozen group chats. You add it on your own coordinator page, and pass it to each person once they've claimed a day. Everything else is open; the address is yours to share deliberately.
 
+## Not everyone cooks
+
+Food is only half of what helps. Alongside the meals you can add up to **twelve other jobs** — the school run, walking the dog, a load of washing, mowing the lawn before the wake — each with how many people it needs. They sit on the same board, get claimed the same way, and come out in the same printout and CSV, so the coordinator sees everyone who is helping in one place rather than running a second roster in the group chat.
+
+It matters because the people who want to help are not all cooks. The neighbour who cannot cook but drives past the school at 3pm every day is offering something genuinely useful, and there should be somewhere to put it. Say when the job is in its name — *School pickup, Tuesdays* — and it reads correctly to everyone looking at the board.
+
 ## How it works
 
 ### 1. Set the days
@@ -55,6 +61,10 @@ There's a dietary field when you set the roster up. It shows prominently at the 
 ### Can someone cancel if they can't make it?
 
 Yes. Their own day has a "can't make it?" button — it hands the day back and it opens up for someone else straight away. You can also remove any name from the coordinator page.
+
+### Can people sign up for things other than meals?
+
+Yes, and it is free. Add up to twelve other jobs beside the meals — a school run, the dog, washing, the lawn — each with how many people it needs. They are claimed from the same link and appear in the same export.
 
 ### Does it handle money?
 
