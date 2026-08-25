@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy — what biti by bit stores, and what it doesn't</title>
+<meta name="description" content="No accounts, no email addresses, no ads, no cookies. What gets stored when you make something, who can see it, how long it stays, and how to delete it.">
+<link rel="canonical" href="https://bitibybit.com/privacy/">
+<meta property="og:title" content="Privacy — biti by bit">
+<meta property="og:description" content="No accounts, no email addresses, no ads, no cookies. Plainly: what is stored, who can see it, and how to delete it.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bitibybit.com/privacy/">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body class="article">
+<div class="scanlines" aria-hidden="true"></div>
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="biti by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    biti by bit
+    <span class="beta-badge">beta</span>
+  </a>
+  <nav class="site-nav"><a href="/#tools">the tools</a></nav>
+</header>
+
+<main class="wrap page">
+  <p class="kicker">What is stored, and what isn't</p>
+  <h1>Privacy</h1>
+  <p class="lede">Short version: there are no accounts, no email addresses are
+  collected from anyone, there are no ads, and nothing is sold or shared. The
+  longer version is below, including the parts that are a trade-off rather than
+  a win.</p>
+
+  <section class="content">
+    <h2>There are no accounts</h2>
+    <p>Not for the person who makes something, and not for anyone who uses it.
+    Nobody signs up, nobody sets a password, and no email address is asked for
+    or stored anywhere in any of the tools. This is the whole design, not a
+    setting — there is no user table to leak because there are no users.</p>
+
+    <h2>What gets stored when you make something</h2>
+    <p>Whatever you type in. If you make a volunteer roster, that is the shift
+    labels, the times and the number of spots. If people then claim a slot,
+    it is the name they typed. A meal train stores the dates and the dietary
+    note you wrote. A Kris Kringle stores the list of names and who drew whom.</p>
+    <p>That sits in a database on Cloudflare's network. It is not sent anywhere
+    else, not sold, not used to train anything, and not looked at except when
+    something is broken and needs fixing.</p>
+
+    <h2>Who can see it — this is the trade-off</h2>
+    <p>Anyone with the link. There are no accounts, so there is nothing to log
+    in to and no permissions to set. The link <em>is</em> the credential, and it
+    is a long random one that will not be guessed, but if it is forwarded on
+    then whoever receives it can see the page.</p>
+    <p>That is the same exposure as a roster pinned to a clubhouse noticeboard,
+    and it is worth thinking about before you put anything sensitive on one.
+    The organiser's link — the one with <code>/e/</code> in it — is the more
+    powerful of the two, because it can edit and delete. Treat that one as
+    yours.</p>
+    <p>Some tools deliberately keep things private within a shared page: a Kris
+    Kringle draw is only visible to the person who claimed that name, and a
+    weekly pulse response cannot be traced back to the person who left it. Where
+    that applies, the tool's own page says so.</p>
+
+    <h2>Cookies and tracking</h2>
+    <p><strong>Shared pages set no cookies and make no third-party requests at
+    all.</strong> That is every <code>/s/</code>, <code>/e/</code> and
+    <code>/p/</code> page — the ones an ordinary participant actually opens.
+    Nothing is loaded from any other company, so nobody else learns you were
+    there.</p>
+    <p>The public pages — this one, the homepage, the tool descriptions — load
+    one script: Cloudflare Web Analytics. It counts page views in aggregate. It
+    sets no cookies, does not fingerprint the browser, and does not follow
+    anyone between sites. It is there so it is possible to tell whether anything
+    is being used at all.</p>
+    <p>There are no advertising trackers, no Google Analytics, no Meta pixel, no
+    session recording and no A/B testing scripts.</p>
+
+    <h2>What your browser remembers</h2>
+    <p>Some tools keep a small note in your own browser's local storage — a list
+    of things you have made, so you can find them again, and which slots on a
+    board are yours, so you can change your mind. That never leaves your device
+    and is not readable by this site's server. Clearing your browser data clears
+    it, and the only thing you lose is the convenience.</p>
+
+    <h2>How long it stays</h2>
+    <p>Honestly: mostly until someone deletes it. There is no scheduled cleanup
+    that removes old boards, so a sweep from last September is probably still
+    sitting there.</p>
+    <p>A few tools prune themselves because they are designed to roll over —
+    a kudos wall drops notes older than about three months, and a scrum poker
+    board only keeps the last few rounds of votes. Those are stated on the tool's
+    own page. Everything else stays until it is deleted.</p>
+
+    <h2>Deleting something</h2>
+    <p>Open the organiser link — the <code>/e/</code> one you got when you made
+    it — and there is a delete button at the bottom. It removes the board and
+    everything on it, and the shared link stops working for everyone
+    immediately. It is not recoverable, which is the point.</p>
+    <p>If you have lost the organiser link and want something removed, email
+    <a href="mailto:hello@bitibybit.com">hello@bitibybit.com</a> with the shared
+    link and it will be dealt with.</p>
+
+    <h2>Money</h2>
+    <p>The site never handles money. Where a tool involves money at all — the
+    gift registry, a kitty note on a hens planner — it shows the organiser's own
+    payment details so people can pay them directly. Nothing goes through here,
+    and no payment details are stored.</p>
+    <p>The tools are free. Some may later carry a one-off charge of a few
+    dollars; if that happens, anything already made keeps working.</p>
+
+    <h2>Changes, and who to ask</h2>
+    <p>If any of this changes it will change on this page, and the site is open
+    source at <a href="https://github.com/furling-com-au/bitbybit">GitHub</a>,
+    so the claims above can be checked against the code rather than taken on
+    trust.</p>
+    <p>Questions: <a href="mailto:hello@bitibybit.com">hello@bitibybit.com</a>.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
+    small free tools for groups. No ads, no accounts.</p>
+    <p class="foot-links">
+      <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
+      <a class="foot-link" href="/privacy/">▪ Privacy</a>
+    </p>
+  </footer>
+</main>
+
+<!-- Cloudflare Web Analytics: public pages only, never on /s/, /e/ or /p/. -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "7df4259a0571411390aec9252ecc4f3e"}'></script>
+</body>
+</html>
