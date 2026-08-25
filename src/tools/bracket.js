@@ -257,7 +257,10 @@ function publicPage(row) {
     <p><a class="quiet-link" href="/via/bracket">made with biti by bit →</a></p>
   </footer>
 </main>`;
-  return html(pageShell({ title: row.title || "Tournament bracket", body }));
+  return html(pageShell({
+    title: row.title || "Tournament bracket", body,
+    shareType: "bracket", shareSlug: row.slug,
+  }));
 }
 
 function editPage(row, origin) {

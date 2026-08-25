@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Group Vote — free poll maker, no signup | biti by bit</title>
-<meta name="description" content="A free poll maker with no signup. Ask a question, paste the options, share one link — the group votes and the tally fills in live. Great for a book club's next read, a baby name, where to eat, or picking a date.">
+<title>Group Vote — free poll maker, no signup</title>
+<meta name="description" content="A free poll maker with no signup. Ask a question, paste the options, share one link — the group votes and the tally fills in live. Pick a book, date or name.">
 <link rel="canonical" href="https://bitibybit.com/group-vote/">
 <meta property="og:title" content="Group Vote — one quick poll, everyone picks">
 <meta property="og:description" content="Ask a question, share a link, watch the tally fill in. Free group vote online, no accounts.">
@@ -48,11 +48,9 @@
     <p class="lede">The dead-simple poll for a group decision. Ask the question,
     paste the options, share one link — everyone picks and the tally fills in as
     the votes land. The next book, a baby name, where to eat, which date works.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/poll-hero.png"
-           alt="Pixel art ballot box with a slip going in, beside a little bar chart of results with the leader in gold"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-group-vote">See a finished vote &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
@@ -92,6 +90,13 @@ Sunday</textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/poll-hero.png"
+           alt="Pixel art ballot box with a slip going in, beside a little bar chart of results with the leader in gold"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>A poll without the palaver</h2>
@@ -163,14 +168,46 @@ Sunday</textarea>
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type": "Question", "name": "Is the Group Vote poll maker free?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You make a poll and share one link with the group."}},
-    {"@type": "Question", "name": "Is it really one vote per person?",
-     "acceptedAnswer": {"@type": "Answer", "text": "It's on the honour system. There are no accounts, so the browser remembers a person's vote, but a determined voter on two devices could vote twice. It's for friendly group decisions, not elections."}},
-    {"@type": "Question", "name": "Can voters add their own options?",
-     "acceptedAnswer": {"@type": "Answer", "text": "If you switch it on, yes. A voter can add an option that isn't listed and vote for it in one go. Leave it off and the option list stays exactly as you set it."}},
-    {"@type": "Question", "name": "Can I change my vote?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes, any time until the organiser closes the poll. Your browser remembers your vote, so a change-my-vote button sits right on the results."}}
+    {
+      "@type": "Question",
+      "name": "Is it actually free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. No account, no trial, no card. It's a small tool, not a platform."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it really one vote per person?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On the honour system. There are no accounts, so a browser remembers a person's vote — but a determined voter on two phones could vote twice. It's built for friendly group decisions, not elections. If you need a locked-down ballot, this isn't it, and it says so honestly."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can voters add their own options?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "If you switch it on, yes — a voter can add an option that isn't listed and vote for it in one go. Leave it off and the list stays exactly as you set it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I change my vote?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, any time until the poll's closed. Your browser remembers your vote, so \"change my vote\" is right there on the results."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who can see how I voted?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Only the organiser sees the breakdown of who picked what. Everyone else — anyone with the share link — sees just the totals."
+      }
+    }
   ]
 }
 </script>

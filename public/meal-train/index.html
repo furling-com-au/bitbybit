@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Meal Train — free meal roster sign-up, no accounts | biti by bit</title>
-<meta name="description" content="A free meal train sign-up: set the days, share one link, and friends claim a day to cook. Dietary needs shown up front, drop-off address kept private. For a new mum, someone home from surgery, or a grieving family. No accounts.">
+<title>Meal Train — free meal roster sign-up, no accounts</title>
+<meta name="description" content="A free meal train sign-up with no accounts. Set the days, share one link, friends claim a day to cook. Dietary needs up front, drop-off address kept private.">
 <link rel="canonical" href="https://bitibybit.com/meal-train/">
 <meta property="og:title" content="Meal Train — a meal roster for someone who needs one">
-<meta property="og:description" content="Set the days, share the link, friends claim a day to cook. Allergies up front, address kept private. Free, no signup.">
+<meta property="og:description" content="Set the days, share one link. Friends claim a day to cook, or take on the school run, the dog, the washing. Allergies up front, address private. Free, no signup.">
 <meta property="og:image" content="https://bitibybit.com/art/og-meal.png">
 <meta property="og:url" content="https://bitibybit.com/meal-train/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Meal Train — a meal roster for someone who needs one">
-<meta name="twitter:description" content="Set the days, share the link, friends claim a day to cook. Allergies up front, address kept private. Free, no signup.">
+<meta name="twitter:description" content="Set the days, share one link. Friends claim a day to cook, or take on the school run, the dog, the washing. Allergies up front, address private. Free, no signup.">
 <meta name="twitter:image" content="https://bitibybit.com/art/og-meal.png">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#f4ead8">
@@ -22,7 +22,7 @@
 {"@context":"https://schema.org","@type":"WebApplication","name":"Meal Train",
 "url":"https://bitibybit.com/meal-train/","applicationCategory":"UtilitiesApplication",
 "operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},
-"description":"A meal roster keyed by date — friends claim a day to cook for a new parent, someone recovering, or a grieving family. Dietary needs shown to everyone; drop-off address kept private. Free, no accounts."}
+"description":"A meal roster keyed by date, plus an optional board of other ways to help — the school run, the dog, a load of washing — and links to local places that could pitch in. Dietary needs shown to everyone; drop-off address kept private. Free, no accounts."}
 </script>
 </head>
 <body>
@@ -49,11 +49,9 @@
     a loved one, the kindest thing is a hot meal that just turns up. Set the
     days that need covering, share one link, and friends and neighbours each
     claim a day to cook. No group-chat scramble, no doubling up, no accounts.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/meal-hero.png"
-           alt="Pixel art of a little house, a wall calendar with a day marked, and a steaming casserole dish ready to drop off"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-meal-train">See a finished meal train &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
@@ -68,16 +66,6 @@
             <span>Dietary needs &amp; allergies <em>(shown to everyone — the safety bit)</em></span>
             <input type="text" id="allergies" maxlength="200" placeholder="No nuts. One veggo, one coeliac. Baby is dairy-free.">
           </label>
-          <label class="field">
-            <span>Note for cooks <em>(optional — shown to everyone)</em></span>
-            <textarea id="note" rows="3" maxlength="400" placeholder="Meals for four. A container we can freeze is a godsend. No need to knock — leave it in the esky on the porch."></textarea>
-          </label>
-          <label class="field">
-            <span>Drop-off details <em>(optional — only you see this)</em></span>
-            <textarea id="dropoff" rows="2" maxlength="120" placeholder="14 Rosella St. Text first: 0400 000 000."></textarea>
-          </label>
-        </div>
-        <div>
           <label class="field">
             <span>First day</span>
             <input type="date" id="firstDate">
@@ -103,11 +91,28 @@
             </select>
           </label>
           <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Start the roster →</button>
+        </div>
+        <div>
+          <label class="field">
+            <span>Note for cooks <em>(optional — shown to everyone)</em></span>
+            <textarea id="note" rows="3" maxlength="400" placeholder="Meals for four. A container we can freeze is a godsend. No need to knock — leave it in the esky on the porch."></textarea>
+          </label>
+          <label class="field">
+            <span>Drop-off details <em>(optional — only you see this)</em></span>
+            <textarea id="dropoff" rows="2" maxlength="120" placeholder="14 Rosella St. Text first: 0400 000 000."></textarea>
+          </label>
+          <label class="field">
+            <span>Other ways to help <em>(optional — one job per line)</em></span>
+            <textarea id="tasks" rows="4" placeholder="Walk Ruby &#8212; weekday evenings x2&#10;School pickup, Tuesdays&#10;A load of washing&#10;Mow the lawn before the wake"></textarea>
+            <em class="field-hint">Not everyone cooks. Add the jobs that would
+            actually take weight off. Put the when in the name, and add
+            &#8220;x2&#8221; if you need two people. You can add more later.</em>
+          </label>
         </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Start the roster →</button>
     </form>
 
     <div class="prev-sweeps" id="prevBoards" hidden>
@@ -115,6 +120,13 @@
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/meal-hero.png"
+           alt="Pixel art of a little house, a wall calendar with a day marked, and a steaming casserole dish ready to drop off"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>What a meal train does</h2>
@@ -205,14 +217,46 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type": "Question", "name": "Is the meal train sign-up free?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You set the days and share one link with friends and family."}},
-    {"@type": "Question", "name": "Do people need accounts to sign up for a meal?",
-     "acceptedAnswer": {"@type": "Answer", "text": "No. People tap the link, tap a day, type their name and what they're bringing, done. Their browser remembers which days are theirs."}},
-    {"@type": "Question", "name": "How are allergies and dietary needs handled?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Dietary needs and allergies are shown prominently at the top of the shared board for everyone cooking — it's treated as a safety field. The drop-off address, by contrast, is kept private to the coordinator's page."}},
-    {"@type": "Question", "name": "Can I cancel a meal I signed up for?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Your own day has a cancel button that hands it back so it opens up for someone else. The coordinator can also remove any name."}}
+    {
+      "@type": "Question",
+      "name": "Is it actually free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. No account, no trial, no card. It's a small tool, not a platform."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do people need accounts to sign up?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — tap the link, tap a day, type your name, done. Their browser remembers which days are theirs, so they can hand one back if something comes up."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where do I put allergies and dietary needs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "There's a dietary field when you set the roster up. It shows prominently at the top of the shared board for everyone who cooks — that's deliberate, it's the safety detail. The drop-off address, by contrast, stays private to your coordinator page."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can someone cancel if they can't make it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Their own day has a \"can't make it?\" button — it hands the day back and it opens up for someone else straight away. You can also remove any name from the coordinator page."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it handle money?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — deliberately. It organises who cooks on which day. Nothing to do with dollars; that's never part of it."
+      }
+    }
   ]
 }
 </script>

@@ -307,7 +307,7 @@ async function contribute(request, env) {
   // Bounded, like the group card: without a cap this is the one
   // storage-abuse path the rate limiter can't see.
   const count = await env.DB.prepare(
-    "SELECT COUNT(*) AS n FROM claims WHERE instance_id = ? LIMIT 700 AND slot_id LIKE 'overflow-%'"
+    "SELECT COUNT(*) AS n FROM claims WHERE instance_id = ? AND slot_id LIKE 'overflow-%'"
   ).bind(row.id).first();
   if (count && count.n >= 400)
     return json({ error: "The overflow patch is chockers — give your gift to the couple directly." }, 409);
@@ -344,7 +344,7 @@ async function release(token, request, env) {
   if (!row || row.tool_type !== "registry") return json({ error: "not found" }, 404);
   const body = await request.json().catch(() => ({}));
   const res = await env.DB.prepare(
-    "DELETE FROM claims WHERE instance_id = ? LIMIT 700 AND slot_id = ?"
+    "DELETE FROM claims WHERE instance_id = ? AND slot_id = ?"
   ).bind(row.id, String(body.slotId || "")).run();
   if (!res.meta.changes) return json({ error: "That claim wasn't found." }, 404);
   return json({ ok: true });
@@ -583,6 +583,7 @@ function publicPage(row, env, url) {
   return html(pageShell({
     title: `${data.coupleNames} — build the Prado`,
     body: shellBody(row, data, { organiser: false, origin: url.origin }),
+    shareType: "registry", shareSlug: row.slug,
   }));
 }
 

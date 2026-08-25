@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tournament Bracket Generator — free, no signup | biti by bit</title>
-<meta name="description" content="Free single elimination bracket maker. Type the names, share one link, tap winners as games finish — office ping pong, FIFA nights, backyard cricket. Byes handled, no accounts.">
+<title>Tournament Bracket Generator — free, no signup</title>
+<meta name="description" content="Free single elimination bracket maker — no signup. Type the names, share one link, tap the winners as games finish. Byes handled for you.">
 <link rel="canonical" href="https://bitibybit.com/tournament-bracket/">
 <meta property="og:title" content="Tournament Bracket Generator">
 <meta property="og:description" content="Type the names, share the link, tap the winners. Free, no signup.">
@@ -49,16 +49,28 @@
     names, get a single elimination bracket, and tap the winners as games
     finish. Everyone watches it fill in from one shared link — no accounts,
     no whiteboard, no arguments about who plays whom.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/bracket-hero.png"
-           alt="Pixel art tournament bracket lines converging left to right into a gold trophy"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-tournament-bracket">See a finished bracket &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
     <form id="bracketForm" novalidate>
       <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Who's in? <em>(one name per line, 2–64)</em></span>
+            <textarea id="entrants" rows="12" spellcheck="false" placeholder="Sam
+Priya
+Jordan
+Alex
+Mia
+Noah"></textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="buildBtn">Build the bracket →</button>
+        </div>
         <div>
           <label class="field">
             <span>Tournament title <em>(optional)</em></span>
@@ -78,22 +90,8 @@
             </div>
           </div>
         </div>
-        <div>
-          <label class="field">
-            <span>Who's in? <em>(one name per line, 2–64)</em></span>
-            <textarea id="entrants" rows="12" spellcheck="false" placeholder="Sam
-Priya
-Jordan
-Alex
-Mia
-Noah"></textarea>
-          </label>
-          <p class="status-line" id="statusLine"></p>
-        </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="buildBtn">Build the bracket →</button>
     </form>
 
     <div class="prev-sweeps" id="prevBrackets" hidden>
@@ -101,6 +99,13 @@ Noah"></textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/bracket-hero.png"
+           alt="Pixel art tournament bracket lines converging left to right into a gold trophy"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>How it works</h2>
@@ -171,16 +176,46 @@ Noah"></textarea>
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type": "Question", "name": "Is the tournament bracket generator free?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. Type the names, build the bracket, share one link."}},
-    {"@type": "Question", "name": "How do byes work in a single elimination bracket?",
-     "acceptedAnswer": {"@type": "Answer", "text": "The bracket pads to the next power of two — 6 players get a bracket of 8 with 2 byes. Byes resolve automatically and are spread across the draw using standard seed pairing, so they never stack in one half."}},
-    {"@type": "Question", "name": "Can a result be fixed or re-run?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes. The organiser taps the winner again to clear a game, or taps the other name to switch it. Later results that depended on that game are wiped so they can be re-entered correctly."}},
-    {"@type": "Question", "name": "Does it do double elimination?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Not yet — single elimination only. A common workaround is running a second bracket for round-one losers."}},
-    {"@type": "Question", "name": "Do players need accounts?",
-     "acceptedAnswer": {"@type": "Answer", "text": "No. The organiser records winners from one private link; everyone else watches the bracket fill in from the shared link."}}
+    {
+      "@type": "Question",
+      "name": "Is it actually free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. No account, no trial, no card. It's a small tool, not a platform."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do byes work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Brackets need a power-of-two field, so 6 players get a bracket of 8 with 2 byes. A bye resolves itself — that player advances automatically — and the byes are spread across the draw, not stacked in one half. With a random draw, luck hands them out; with your typed order, the top seeds get them."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I fix a wrong result?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Tap the recorded winner again to clear the game, or tap the other name to switch it. Any later results that were built on that game get wiped too — the bracket never shows a run that couldn't have happened."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Double elimination?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not yet — this is single elimination only, honestly. If one loss feels too brutal for your crowd, run a second bracket for the round-one losers and call it the plate. Very dignified."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do players need accounts?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Only the organiser link can record results; everyone else just watches the shared link fill in. Refresh for the latest."
+      }
+    }
   ]
 }
 </script>

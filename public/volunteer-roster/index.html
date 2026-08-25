@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Volunteer Roster — free sign up sheet online | biti by bit</title>
-<meta name="description" content="A free volunteer roster template. Set the shifts for your fete, canteen, working bee or sausage sizzle, share one link, and volunteers put their name down. No accounts. Print it or export CSV.">
+<title>Volunteer Roster — free sign up sheet online</title>
+<meta name="description" content="Free volunteer roster and sign-up sheet, no accounts. Set the shifts, share one link, and volunteers put their own names down. Print it or export CSV.">
 <link rel="canonical" href="https://bitibybit.com/volunteer-roster/">
 <meta property="og:title" content="Volunteer Roster — sign up, show up, sorted">
 <meta property="og:description" content="Set the shifts, share the link, volunteers sign themselves up. Free, no accounts. Print or export the filled roster.">
@@ -48,16 +48,28 @@
     <p class="lede">The sign-up sheet for the fete, the canteen, the working bee,
     the sausage sizzle. Set the shifts, share one link, and volunteers put their
     own name down. You watch it fill in — and print or export the lot when it's done.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/roster-hero.png"
-           alt="Pixel art canteen marquee with a sign-up clipboard and a sausage-sizzle grill with a couple of snags on it"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example is-one-tap">Five shifts are already filled in, setup through pack-down. <a href="/s/demo-volunteer-roster">See a finished roster &rarr;</a></p>
+    <p class="one-tap"><button type="submit" form="rosterForm" id="makeBtnTop" class="btn primary">Build the roster now &rarr;</button><a class="fine" href="#rosterForm">or change them below</a></p>
+
   </section>
 
   <section class="builder panel">
     <form id="rosterForm" novalidate>
       <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Shifts <em>(one per line — "Job time xN")</em></span>
+            <textarea id="shifts" rows="9" spellcheck="false">Setup 8-9am x2
+Grill 9-11am x3
+Grill 11am-1pm x3
+Serving 9am-1pm x4
+Pack down 1-2pm x4</textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Build the roster →</button>
+        </div>
         <div>
           <label class="field">
             <span>Roster title <em>(optional)</em></span>
@@ -72,21 +84,8 @@
             <textarea id="note" rows="4" maxlength="300" placeholder="Wear closed-in shoes. Hi-vis and aprons are in the canteen. Park behind the hall."></textarea>
           </label>
         </div>
-        <div>
-          <label class="field">
-            <span>Shifts <em>(one per line — "Job time xN")</em></span>
-            <textarea id="shifts" rows="9" spellcheck="false">Setup 8-9am x2
-Grill 9-11am x3
-Grill 11am-1pm x3
-Serving 9am-1pm x4
-Pack down 1-2pm x4</textarea>
-          </label>
-          <p class="status-line" id="statusLine"></p>
-        </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Build the roster →</button>
     </form>
 
     <div class="prev-sweeps" id="prevRosters" hidden>
@@ -94,6 +93,13 @@ Pack down 1-2pm x4</textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/roster-hero.png"
+           alt="Pixel art canteen marquee with a sign-up clipboard and a sausage-sizzle grill with a couple of snags on it"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>A sign-up sheet without the clipboard</h2>
@@ -134,6 +140,33 @@ Pack down 1-2pm x4</textarea>
     <p>Not sure how to carve up the day? The <a href="/volunteer-roster/templates/">volunteer roster templates</a> page has copy-ready shift structures for a school canteen week, a fete day, a Bunnings-style sausage sizzle, a Saturday club canteen and a working bee — with shift lengths, how many people each slot needs, plus how to get people to actually sign up and how to chase without nagging.</p>
 
 
+    <h2>Prefer a spreadsheet?</h2>
+    <p>Some committees want a file they can print and stick on the noticeboard,
+    or email round before anyone touches a website. Each of these is a real
+    starting roster with the shifts and jobs already filled in — you add the
+    names. Free, no sign-up, nothing to install.</p>
+    <ul class="tpl-list">
+      <li><strong>School canteen — a week</strong>
+        <a class="dl" href="/volunteer-roster/templates/school-canteen-roster.xlsx" download>.xlsx</a>
+        <a class="dl" href="/volunteer-roster/templates/school-canteen-roster.csv" download>.csv</a></li>
+      <li><strong>School fete — one day</strong>
+        <a class="dl" href="/volunteer-roster/templates/school-fete-roster.xlsx" download>.xlsx</a>
+        <a class="dl" href="/volunteer-roster/templates/school-fete-roster.csv" download>.csv</a></li>
+      <li><strong>Sausage sizzle</strong>
+        <a class="dl" href="/volunteer-roster/templates/sausage-sizzle-roster.xlsx" download>.xlsx</a>
+        <a class="dl" href="/volunteer-roster/templates/sausage-sizzle-roster.csv" download>.csv</a></li>
+      <li><strong>Sports club canteen — a Saturday</strong>
+        <a class="dl" href="/volunteer-roster/templates/club-canteen-roster.xlsx" download>.xlsx</a>
+        <a class="dl" href="/volunteer-roster/templates/club-canteen-roster.csv" download>.csv</a></li>
+      <li><strong>Working bee</strong>
+        <a class="dl" href="/volunteer-roster/templates/working-bee-roster.xlsx" download>.xlsx</a>
+        <a class="dl" href="/volunteer-roster/templates/working-bee-roster.csv" download>.csv</a></li>
+    </ul>
+    <p class="fine">The spreadsheet is the easy part. Chasing the names is the
+    hard part, and that is the bit <a href="/volunteer-roster/">the roster tool</a>
+    does for you — people claim their own shift from a link and the sheet fills
+    itself in.</p>
+
     <h2>FAQ</h2>
     <h3>Is it actually free?</h3>
     <p>Yes. No account, no trial, no card, no catch. It's a small tool run for
@@ -167,14 +200,38 @@ Pack down 1-2pm x4</textarea>
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type": "Question", "name": "Is the volunteer roster free?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You set the shifts and share one link with your volunteers."}},
-    {"@type": "Question", "name": "Do volunteers need an account?",
-     "acceptedAnswer": {"@type": "Answer", "text": "No. Volunteers tap the link, tap an open shift, type their name and an optional note, done. Their browser remembers which spots are theirs."}},
-    {"@type": "Question", "name": "Can someone drop out of a shift?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Each volunteer's own spot has a 'can't make it?' button that takes their name off and reopens the shift. The coordinator can also remove any name."}},
-    {"@type": "Question", "name": "Can I print the roster?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes. The coordinator page has a Print button that lays out just the roster with no buttons, and a Download CSV button for a spreadsheet copy."}}
+    {
+      "@type": "Question",
+      "name": "Is it actually free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. No account, no trial, no card, no catch. It's a small tool run for the love of it, not a platform."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do volunteers need an account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. They tap the link, tap an open shift, type their name, done. Their browser quietly remembers which spots are theirs so they can undo their own."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can someone drop out?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Each volunteer's own spot has a \"can't make it?\" button that takes their name off and reopens the shift. You can also remove any name from the coordinator page if someone lets you know instead."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I print it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — the coordinator page has a Print button that lays out just the roster, no buttons or chrome, ready for the fridge or the canteen wall. There's a Download CSV button too, for a spreadsheet copy."
+      }
+    }
   ]
 }
 </script>

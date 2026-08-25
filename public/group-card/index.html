@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Group Card — one card everyone signs, free | biti by bit</title>
-<meta name="description" content="Make a group card online, free. Farewells, new babies, big birthdays, retirements — share one link, everyone signs, no accounts and no subscription. Hand it over as a link or print it.">
+<title>Group Card — one card everyone signs, free</title>
+<meta name="description" content="A free online group card, no signup. Share one link, everyone adds a message, and you hand it over as a link or print it. Farewells, babies, birthdays.">
 <link rel="canonical" href="https://bitibybit.com/group-card/">
 <meta property="og:title" content="Group Card — one card, everyone signs">
 <meta property="og:description" content="Start a card, share the link, everyone signs. Free, no signup, no paywall.">
@@ -49,11 +49,9 @@
     to desk. Start a card, share the link with everyone except the person it's
     for, and the messages pile up as sticky notes. Hand it over as a link — or
     print it.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/card-hero.png"
-           alt="Pixel art of a big greeting card with a heart, an envelope beside it, and colourful sticky notes scattered around under a string of bunting"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-group-card">See a finished card &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
@@ -68,6 +66,8 @@
             <span>Card title <em>(optional)</em></span>
             <input type="text" id="title" maxlength="80" placeholder="A card for…">
           </label>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Start the card →</button>
         </div>
         <div>
           <label class="field">
@@ -77,8 +77,6 @@
         </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Start the card →</button>
     </form>
 
     <div class="prev-sweeps" id="prevCards" hidden>
@@ -86,6 +84,13 @@
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/card-hero.png"
+           alt="Pixel art of a big greeting card with a heart, an envelope beside it, and colourful sticky notes scattered around under a string of bunting"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>How it works</h2>
@@ -147,14 +152,38 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type": "Question", "name": "Is the group card actually free?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account, no trial and no subscription. The big group-card sites charge per card or per month; this one is a small tool, not a platform."}},
-    {"@type": "Question", "name": "Do people need accounts to sign the card?",
-     "acceptedAnswer": {"@type": "Answer", "text": "No. Anyone with the share link types a name and a message, done. It works on any phone or browser."}},
-    {"@type": "Question", "name": "Can a message be removed from the card?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes. Signers can remove their own message from the browser they signed in, and the organiser link can remove any message."}},
-    {"@type": "Question", "name": "How do we give the card to the recipient?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Share the link with them once everyone has signed, or print the page — the print view shows just the card, no buttons."}}
+    {
+      "@type": "Question",
+      "name": "Is it actually free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The big group-card sites charge per card once you pass a handful of messages, or want you on a subscription. This one's a small tool, not a platform: no account, no trial, no card required to make a card."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do people need accounts to sign?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — open the link, type a name and a message, done. It works on whatever phone the link lands on."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can a message be removed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, from either end. Signers can take their own message back off (same browser they signed from), and the organiser link can remove any message — handy when someone's \"joke\" doesn't survive contact with daylight."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do we give it to them?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Share the link with the recipient once everyone's signed, or print the page — the print view is just the card. Either way it stays up afterwards, unless the organiser deletes it."
+      }
+    }
   ]
 }
 </script>

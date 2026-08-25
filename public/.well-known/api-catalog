@@ -1,0 +1,387 @@
+{
+ "linkset": [
+  {
+   "anchor": "https://bitibybit.com/.well-known/api-catalog",
+   "item": [
+    {
+     "href": "https://bitibybit.com/api/sweeps"
+    },
+    {
+     "href": "https://bitibybit.com/api/kringle"
+    },
+    {
+     "href": "https://bitibybit.com/api/roles"
+    },
+    {
+     "href": "https://bitibybit.com/api/plate"
+    },
+    {
+     "href": "https://bitibybit.com/api/bracket"
+    },
+    {
+     "href": "https://bitibybit.com/api/card"
+    },
+    {
+     "href": "https://bitibybit.com/api/registry"
+    },
+    {
+     "href": "https://bitibybit.com/api/fact"
+    },
+    {
+     "href": "https://bitibybit.com/api/baby"
+    },
+    {
+     "href": "https://bitibybit.com/api/roster"
+    },
+    {
+     "href": "https://bitibybit.com/api/meal"
+    },
+    {
+     "href": "https://bitibybit.com/api/poll"
+    },
+    {
+     "href": "https://bitibybit.com/api/recipe"
+    },
+    {
+     "href": "https://bitibybit.com/api/giftidea"
+    },
+    {
+     "href": "https://bitibybit.com/api/hens"
+    },
+    {
+     "href": "https://bitibybit.com/api/qotd"
+    },
+    {
+     "href": "https://bitibybit.com/api/coffee"
+    },
+    {
+     "href": "https://bitibybit.com/api/pulse"
+    },
+    {
+     "href": "https://bitibybit.com/api/kudos"
+    },
+    {
+     "href": "https://bitibybit.com/api/poker"
+    }
+   ],
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/",
+     "type": "text/html"
+    }
+   ],
+   "service-meta": [
+    {
+     "href": "https://bitibybit.com/auth.md",
+     "type": "text/markdown"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/sweeps",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#sweep",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/kringle",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#kringle",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/roles",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#roles",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/plate",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#plate",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/bracket",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#bracket",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/card",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#card",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/registry",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#registry",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/fact",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#fact",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/baby",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#baby",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/roster",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#roster",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/meal",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#meal",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/poll",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#poll",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/recipe",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#recipe",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/giftidea",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#giftidea",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/hens",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#hens",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/qotd",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#qotd",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/coffee",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#coffee",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/pulse",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#pulse",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/kudos",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#kudos",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/poker",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#poker",
+     "type": "text/html"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,59 @@
+# Response headers for static assets.
+#
+# Only public marketing pages are affected. /api/*, /s/*, /e/*, /p/* and
+# /via/* are listed in run_worker_first in wrangler.jsonc, so they never
+# reach the assets layer and never see these rules — their headers come
+# from html()/json() in src/lib.js instead.
+
+# ------------------------------------------------------------------
+# Agent discovery, on every public page.
+#
+# RFC 8288 links to the machine-readable descriptions of this site.
+# All four targets are one comma-separated Link header, which RFC 8288
+# Section 3.5 defines as exactly equivalent to four separate headers —
+# fewer moving parts, and no reliance on how _headers merges repeats.
+#
+# Relation types are all IANA-registered, so they are legal as bare
+# lowercase tokens: api-catalog (RFC 9727), service-desc and service-doc
+# (RFC 8631), describedby (W3C POWDER).
+# ------------------------------------------------------------------
+/*
+  Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </openapi.json>; rel="service-desc"; type="application/json", </api-docs/>; rel="service-doc"; type="text/html", </llms.txt>; rel="describedby"; type="text/plain"
+
+# ------------------------------------------------------------------
+# The API catalog itself.
+#
+# RFC 9727 Section 6.2 makes application/linkset+json mandatory at this
+# location, and Section 4.2 asks for the profile parameter. The file has
+# no extension, so without this rule the assets layer would guess.
+#
+# RFC 9727 Section 2 also requires a HEAD of this URL to come back
+# carrying an api-catalog Link header — checkers test HEAD, not just GET.
+# The /* rule above already supplies one and the two rules merge, so
+# there is deliberately no Link line repeated here.
+# ------------------------------------------------------------------
+/.well-known/api-catalog
+  Content-Type: application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"
+  Cache-Control: public, max-age=3600
+
+# Markdown documents are served as markdown, not as a download.
+/auth.md
+  Content-Type: text/markdown; charset=utf-8
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+
+# ------------------------------------------------------------------
+# Downloadable roster templates.
+#
+# Someone searching "canteen roster template" wants a file, not an
+# app. These are the file. Long cache — the content only changes when
+# the generator is re-run.
+# ------------------------------------------------------------------
+/volunteer-roster/templates/*.xlsx
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Cache-Control: public, max-age=86400
+
+/volunteer-roster/templates/*.csv
+  Content-Type: text/csv; charset=utf-8
+  Cache-Control: public, max-age=86400

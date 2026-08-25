@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coffee Roulette — pair your team up, free, no signup</title>
+<meta name="description" content="Free coffee roulette for teams. One link pairs everyone up, each person privately sees who they got and a question to start with. No accounts, no app.">
+<link rel="canonical" href="https://bitibybit.com/coffee-roulette/">
+<meta property="og:title" content="Coffee Roulette — pair your team up for a chat">
+<meta property="og:description" content="One link. Everyone taps their name once and gets a private page showing who they're having a coffee with this round. Free, no signup, no app to install.">
+<meta property="og:image" content="https://bitibybit.com/art/og-coffee.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bitibybit.com/coffee-roulette/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Coffee Roulette — pair your team up for a chat">
+<meta name="twitter:description" content="One link. Everyone taps their name once and gets a private page showing who they're paired with this round. Free, no signup.">
+<meta name="twitter:image" content="https://bitibybit.com/art/og-coffee.png">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Coffee Roulette","url":"https://bitibybit.com/coffee-roulette/",
+"applicationCategory":"BusinessApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},
+"description":"Pairs a team up for coffee, one round at a time. Each person gets a private link showing who they are paired with and a conversation starter. Free, no accounts."}
+</script>
+</head>
+<body>
+<div class="scanlines" aria-hidden="true"></div>
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="biti by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    biti by bit
+    <span class="beta-badge">beta</span>
+  </a>
+  <nav class="site-nav"><a href="/#tools">the tools</a></nav>
+</header>
+
+<main class="wrap page">
+  <p class="kicker">Free · no signup · one link, every round</p>
+  <h1>Coffee Roulette</h1>
+  <p class="lede">Pairs your team up for a coffee, then does it again next round.
+  Everyone taps their name once and gets a private link — bookmark it, and each
+  round it shows who they're sitting down with and something to talk about.</p>
+
+  <p class="see-example">Not sure what you get? <a href="/s/demo-coffee-roulette">See a finished round &rarr;</a></p>
+
+  <section class="builder">
+    <form id="coffeeForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Who's in? <em>(one name per line)</em></span>
+            <textarea id="names" rows="9" placeholder="Priya&#10;Tom H&#10;Meredith&#10;Jules&#10;Sam N&#10;Alex"></textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Pair them up →</button>
+        </div>
+        <div>
+          <label class="field">
+            <span>What's it called?</span>
+            <input type="text" id="title" maxlength="80" placeholder="Product team coffee roulette" autocomplete="off">
+          </label>
+          <label class="field">
+            <span>How often? <em>(optional — just a label)</em></span>
+            <input type="text" id="cadence" maxlength="40" placeholder="Every second Monday">
+          </label>
+          <label class="field">
+            <span>Note for everyone <em>(optional)</em></span>
+            <textarea id="note" rows="3" maxlength="300" placeholder="Twenty minutes, on you, anywhere you like. Coffee optional — a walk counts."></textarea>
+          </label>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="prev-sweeps" id="prevBoards" hidden>
+      <p class="fine">Your earlier roulettes (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>What it's for</h2>
+    <p>Most people know about a third of the organisation and then stop. Not
+    because anyone is unfriendly — there is simply no reason to talk to someone
+    two teams over, and no natural moment to start. Coffee roulette manufactures
+    the moment: you get paired with someone, there is a reason to say hello, and
+    twenty minutes later you know one more person.</p>
+    <p>It matters more in a hybrid team, where the corridor conversation that
+    used to do this job stopped happening and nothing replaced it.</p>
+
+    <h2>How it works</h2>
+    <h3>1. Paste the names, share one link</h3>
+    <p>The names go in, everyone gets the same shared link. There is no invite
+    list, no email addresses, and nothing to install. If you can put a link in a
+    group chat, you can run this.</p>
+    <h3>2. Everyone claims their name once</h3>
+    <p>Each person taps their own name and lands on a private page. That page is
+    theirs — bookmark it. Nobody else can see it, including you.</p>
+    <h3>3. Draw the next round whenever you like</h3>
+    <p>One button re-pairs everybody. <strong>Nobody has to claim their name
+    again</strong> — the link each person already has simply starts showing their
+    new partner. That is the whole difference between a tool people use twice and
+    one they use all year.</p>
+
+    <h2>The details that matter</h2>
+    <ul>
+      <li><strong>Odd numbers make a three, not a leftover.</strong> If your team
+      has eleven people, one group is a trio. Nobody sits out, and nobody has to
+      be told they were the odd one.</li>
+      <li><strong>Recent pairings are avoided.</strong> The draw remembers the
+      last few rounds and tries not to repeat a pairing. It is a soft rule — on a
+      small team a repeat eventually has to happen, and a round that happens
+      beats a round that is perfect.</li>
+      <li><strong>Every pair gets a conversation starter.</strong> An actual
+      question, not "get to know each other". It is the first two minutes that
+      are awkward, and a question skips them.</li>
+      <li><strong>The organiser can't see the pairings.</strong> You can see who
+      has claimed a name. Who got who lives only on each person's own page.</li>
+    </ul>
+
+    <h2>Why not a Slack or Teams app?</h2>
+    <p>Because most people can't install one. Donut, CoffeePals and the rest are
+    workspace apps, and adding a workspace app means an admin, a ticket and
+    sometimes a procurement conversation. A link is not procurement. If you can
+    paste a URL into a channel, you can start this afternoon without asking
+    anybody.</p>
+    <p>The trade is honest: an app can nudge people in Slack and this cannot.
+    This sends no notifications at all. You post the link when a new round is
+    drawn, the same way you would post anything else.</p>
+
+    <h2>FAQ</h2>
+    <h3>Do people need an account?</h3>
+    <p>No. Nobody signs up, nobody gives an email address, and there is nothing
+    to install. Each person's page is a long unguessable link — holding the link
+    is the whole thing.</p>
+    <h3>What happens with an odd number of people?</h3>
+    <p>One group of three. Nobody is left out and nobody has to be told they drew
+    the short straw.</p>
+    <h3>Does everyone have to re-claim their name each round?</h3>
+    <p>No, and this is the point. Claiming happens once. After that each person's
+    private link keeps working, and every new round it shows a new partner.</p>
+    <h3>Can I see who got paired with who?</h3>
+    <p>No — not even as the organiser. The pairing only appears on each person's
+    own private page. You can see who has claimed a name, so you know who still
+    needs a nudge.</p>
+    <h3>What if someone loses their link?</h3>
+    <p>Reset them from your organiser page. That rotates their private link and
+    lets them claim their name again. Their old link stops working.</p>
+    <h3>Can I use it for something other than coffee?</h3>
+    <p>Yes. It is a pairing draw with a conversation starter attached — people
+    use the same thing for walking meetings, lunch pairs, mentoring rounds and
+    onboarding buddies. The tool does not care what you do when you get there.</p>
+
+    <h2>Related</h2>
+    <p>If you want something for the whole room rather than pairs, there is a
+    <a href="/question-of-the-day/">daily question</a> with a live vote, a set of
+    <a href="/fact-matcher/icebreaker-questions/">icebreaker questions sorted by
+    situation</a>, and <a href="/fact-matcher/standup-games/">stand-up games</a>
+    that fit inside ninety seconds.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
+    small free tools for groups. No ads, no accounts.</p>
+    <p class="foot-links">
+      <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
+    </p>
+  </footer>
+</main>
+
+<script src="/coffee.js"></script>
+<!-- Cloudflare Web Analytics: public pages only, never on /s/, /e/ or /p/. -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "7df4259a0571411390aec9252ecc4f3e"}'></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do people need an account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Nobody signs up, nobody gives an email address, and there is nothing to install. Each person's page is a long unguessable link — holding the link is the whole thing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What happens with an odd number of people?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "One group of three. Nobody is left out and nobody has to be told they drew the short straw."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does everyone have to re-claim their name each round?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, and this is the point. Claiming happens once. After that each person's private link keeps working, and every new round it shows a new partner."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I see who got paired with who?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — not even as the organiser. The pairing only appears on each person's own private page. You can see who has claimed a name, so you know who still needs a nudge."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if someone loses their link?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Reset them from your organiser page. That rotates their private link and lets them claim their name again. Their old link stops working."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use it for something other than coffee?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. It is a pairing draw with a conversation starter attached — people use the same thing for walking meetings, lunch pairs, mentoring rounds and onboarding buddies. The tool does not care what you do when you get there."
+      }
+    }
+  ]
+}
+</script>
+</body>
+</html>

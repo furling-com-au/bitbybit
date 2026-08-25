@@ -24,6 +24,12 @@
   --grass-dark: #55794b;
 
   --mono: ui-monospace, "SFMono-Regular", "DejaVu Sans Mono", "Consolas", "Courier New", monospace;
+
+  /* Running prose on the guide pages only — see body.article below. A system
+     stack, deliberately: the site sets no cookies and makes no third-party
+     requests, and a webfont would break both for a typeface nobody came here
+     to look at. */
+  --prose: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -39,6 +45,14 @@
 }
 
 * { box-sizing: border-box; }
+
+/* The `hidden` attribute is only a UA `display: none`, so ANY author rule
+   that sets display beats it — and .btn sets inline-block, which is how a
+   hidden button stays on screen. Six places in this stylesheet had already
+   patched that locally for one component each (.plate-slot, .rost-slot,
+   .meal-slot, .poll-suggest, .gi-card, .qotd-namefield); this is the same
+   fix once, for everything. An element carrying `hidden` should be hidden. */
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 
 body {
@@ -60,6 +74,28 @@ body {
   mix-blend-mode: multiply;
 }
 @media (prefers-color-scheme: dark) { .scanlines { mix-blend-mode: normal; opacity: .5; } }
+
+/* ---- long-form pages ------------------------------------------------
+   Monospace is the site's face and it stays on every page that IS the
+   product — the homepage, the 21 builders, the share pages. But it costs
+   about eight characters a line, and on a 2,000-word guide that measured
+   out at 43 characters per line against 51, which is below the comfortable
+   range for running prose, and made those pages 15% taller.
+
+   So the swap is scoped to the guides and articles, where people actually
+   read rather than scan. Headings, tables' header cells, labels, buttons
+   and the wordmark stay monospace everywhere, which is what keeps these
+   pages recognisably part of the same site. /api-docs/ is excluded on
+   purpose — it is a code reference, and mono is correct there — as is the
+   printable Cup sheet, whose columns need to line up.
+
+   The class is applied by scripts/sync-article-face.mjs. */
+body.article .lede,
+body.article .content p,
+body.article .content li,
+body.article .content td,
+body.article .content dd,
+body.article .content blockquote { font-family: var(--prose); }
 
 .wrap { width: min(1020px, 100% - 2rem); margin-inline: auto; }
 img.pixel { image-rendering: pixelated; image-rendering: crisp-edges; }
@@ -200,7 +236,7 @@ a { color: var(--terra-dark); }
   text-transform: uppercase; color: #f6f1e4; background: var(--terra-dark);
   padding: .18rem .55rem; margin-bottom: .5rem;
 }
-.feature-card h3 { margin: 0 0 .25rem; font-size: 1.25rem; text-transform: uppercase; letter-spacing: .03em; }
+.feature-card h2 { margin: 0 0 .25rem; font-size: 1.25rem; text-transform: uppercase; letter-spacing: .03em; }
 .feature-card p { margin: 0; font-size: .82rem; color: var(--ink-soft); max-width: 46ch; }
 .feature-art img { display: block; width: clamp(96px, 18vw, 150px); height: auto; }
 
@@ -220,8 +256,40 @@ a.tool-card:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 0 rgb
 .tool-card img { width: 56px; height: 56px; }
 .tool-card .tool-name { font-weight: 700; font-size: .92rem; line-height: 1.3; }
 .tool-card .tool-desc { font-size: .74rem; color: var(--ink-soft); line-height: 1.45; flex: 1; }
+.tool-card .tool-desc-short { display: none; }
 .tool-card .tool-go { font-size: .72rem; color: var(--terra-dark); letter-spacing: .08em; }
 @media (prefers-color-scheme: dark) { .tool-card .tool-go { color: var(--terra); } }
+
+/* Compact two-up shelf on phones.
+   .tool-grid's repeat(auto-fill, minmax(215px, 1fr)) can only ever resolve
+   to ONE track inside a 343px .wrap, so twenty-one cards at ~200px each
+   were 4,577px of scroll — two thirds of the document — on the page that
+   63 of the last 72 visits landed on, on the device that is 67% of them.
+   The h2 rule is scoped to #tools deliberately: a bare h2 in here would
+   retype every section heading on all 21 tool pages and every /s/ page.
+   32px icons keep the eighteen 128px sources on an exact 4x downscale
+   under image-rendering: pixelated. */
+@media (max-width: 34rem) {
+  .tool-grid { grid-template-columns: repeat(2, 1fr); gap: .55rem; }
+  .tool-card {
+    min-height: 0; padding: .6rem; gap: .35rem;
+    border-width: 3px; box-shadow: 3px 3px 0 0 rgba(0,0,0,.10);
+  }
+  .tool-card img { width: 32px; height: 32px; }
+  /* Swap the written blurb for the short one. Clamping the long copy was
+     the first attempt and it measured badly: 0 of 21 cards showed their
+     blurb in full and the mean was 48% visible, so every tile ended
+     mid-sentence — which costs the same space as a complete short line and
+     reads as broken. Only one of the two is ever displayed, so only one is
+     in the accessibility tree. */
+  .tool-card .tool-go, .tool-card .tool-desc { display: none; }
+  .tool-card .tool-desc-short {
+    display: block; font-size: .68rem; line-height: 1.35;
+    color: var(--ink-soft); flex: 0 0 auto;
+  }
+  .tool-card .tool-name { font-size: .8rem; line-height: 1.25; }
+  #tools h2 { margin: 1.5rem 0 .6rem; font-size: .72rem; letter-spacing: .18em; }
+}
 
 .tool-card.soon { border-color: var(--line); box-shadow: none; opacity: .75; }
 .tool-card.soon img { filter: saturate(.35) opacity(.7); }
@@ -246,8 +314,38 @@ a.tool-card:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 0 rgb
 .tool-hero-art img { display: block; width: 100%; height: auto; }
 
 .builder { margin-top: .4rem; }
-.builder-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.builder-cols {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;
+  /* The submit button now lives at the foot of the primary column, so the
+     two columns are different heights on desktop. Without this the shorter
+     one stretches and its fields drift apart. */
+  align-items: start;
+}
+.builder-cols > div > .btn.big { margin-top: .2rem; }
 @media (max-width: 720px) { .builder-cols { grid-template-columns: 1fr; } }
+
+/* Cap the tall list boxes on phones. A rows="12" textarea is 300px there —
+   a third of the screen spent on blank lines, sitting between the visitor
+   and the button.
+
+   11rem is a floor, not a round number: it leaves ~152px of content box,
+   and the tallest placeholder on any capped field is 6 lines (~138px) —
+   secret-role-dealer#roles, tournament-bracket#entrants, fact-matcher#names,
+   team-picker#names. 10rem would clip all four. The two zero-typing pages
+   keep their prefilled demonstration fully visible too: bring-a-plate's six
+   categories and volunteer-roster's five shifts both fit. Melbourne Cup's
+   24 hard-coded horses already scrolled inside a rows="12" box.
+
+   Selected by rows= rather than blanket: a rule on all .builder textarea
+   would GROW the rows=2-4 note boxes. And `height`, not `max-height`, so
+   the inline style the browser writes on drag still wins — resize: vertical
+   remains the escape hatch. */
+@media (max-width: 720px) {
+  .builder textarea[rows="9"],
+  .builder textarea[rows="11"],
+  .builder textarea[rows="12"],
+  .builder textarea[rows="14"] { height: 11rem; }
+}
 
 .status-line {
   font-size: .78rem; color: var(--ink-soft); margin: .2rem 0 1rem;
@@ -1666,6 +1764,8 @@ h1.qotd-q {
   text-transform: none; letter-spacing: .01em;
   font-size: clamp(1.35rem, 4.8vw, 2.15rem); line-height: 1.2;
   margin-bottom: .5rem;
+  /* a long custom question should not push the page sideways on a phone */
+  word-break: break-word;
 }
 
 /* the two big tappable sides */
@@ -1683,6 +1783,8 @@ h1.qotd-q {
 }
 .qotd-choice:hover { transform: translate(-1px,-1px); box-shadow: 6px 6px 0 0 var(--ink); background: var(--paper-2); }
 .qotd-choice:active { transform: translate(2px,2px); box-shadow: 0 0 0 0 var(--ink); }
+/* keyboard voters get the same clear target as everyone else */
+.qotd-choice:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 .qotd-choice[disabled] { opacity: .55; cursor: not-allowed; transform: none; }
 .qotd-choice.is-sending { background: var(--paper-3); }
 .qotd-choice-key {
@@ -1741,6 +1843,7 @@ h1.qotd-q {
 .qotd-stat { margin: 1.2rem 0 .4rem; font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); }
 .qotd-custom { list-style: none; margin: .6rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
 .qotd-custom-item { background: var(--paper-2); border: 3px solid var(--line); padding: .55rem .7rem; }
+.qotd-custom-remove { margin-top: .45rem; }
 .qotd-custom-q { display: block; font-size: .88rem; line-height: 1.35; word-break: break-word; }
 .qotd-custom-opts { display: block; font-size: .72rem; color: var(--ink-faint); letter-spacing: .04em; }
 .qotd-custom-opts em { font-style: normal; }
@@ -1763,3 +1866,368 @@ h1.qotd-q {
   .qotd-archive { border-color: #000; }
   .qotd-archive-item { break-inside: avoid; }
 }
+
+/* ------------------------------------------------------------
+   meal train — "other ways to help" and local places
+   The non-meal jobs reuse .meal-day / .meal-slot wholesale, so
+   there is nothing to style for the board itself; these are the
+   section headings, the coordinator's add-a-job form, and the
+   outbound link list.
+   ------------------------------------------------------------ */
+.meal-section-h {
+  margin: 2.4rem 0 .2rem; font-size: 1rem; letter-spacing: .02em;
+  padding-top: 1.2rem; border-top: 3px solid var(--line);
+}
+.meal-links { margin: 0 0 1rem; }
+.meal-link-list { list-style: none; margin: 1rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
+.meal-link-list li { margin: 0; }
+.meal-link {
+  display: inline-block; background: var(--paper-2); border-left: 5px solid var(--gold);
+  padding: .55rem .85rem; font-size: .85rem; color: var(--ink); text-decoration: none;
+  width: 100%; word-break: break-word;
+}
+.meal-link:hover { background: var(--paper); text-decoration: underline; }
+
+.meal-admin { margin: 0 0 1.4rem; }
+.meal-admin-form {
+  display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .9rem 0 0;
+}
+.meal-admin-form input[type="text"],
+.meal-admin-form input[type="url"] {
+  flex: 1 1 14rem; min-width: 0; font: inherit; font-size: .85rem;
+  padding: .55rem .7rem; border: 3px solid var(--ink); background: var(--paper);
+  color: var(--ink);
+}
+.meal-admin-cap { font-size: .78rem; color: var(--ink-soft); display: flex; align-items: center; gap: .4rem; }
+.meal-admin-cap input {
+  width: 4.2rem; font: inherit; font-size: .85rem; padding: .55rem .5rem;
+  border: 3px solid var(--ink); background: var(--paper); color: var(--ink);
+}
+.meal-link-row { margin: 0 0 .5rem; }
+
+@media print {
+  .meal-admin { display: none; }
+  .meal-link { border-color: #000; }
+}
+
+/* ------------------------------------------------------------
+   homepage guides list
+   The guide pages carry most of the site's actual writing, and
+   until now the homepage — the only page with any inbound links
+   — pointed at none of them. Two columns of plain links; this is
+   a signpost, not another card grid competing with the shelf.
+   ------------------------------------------------------------ */
+.guide-list {
+  list-style: none; margin: 1.1rem 0 0; padding: 0;
+  columns: 2; column-gap: 2.2rem; font-size: .84rem;
+}
+.guide-list li { margin: 0 0 .45rem; break-inside: avoid; }
+.guide-list a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line); }
+.guide-list a:hover { color: var(--ink); border-bottom-color: var(--ink); }
+.section-note { font-size: .84rem; color: var(--ink-faint); margin: .2rem 0 0; max-width: 46ch; }
+@media (max-width: 34rem) { .guide-list { columns: 1; } }
+
+/* ------------------------------------------------------------
+   downloadable template links
+   Search intent for "roster template" is a file, not an app —
+   so the file gets a real, visible affordance next to each
+   roster rather than being buried in a sentence.
+   ------------------------------------------------------------ */
+.dl-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .5rem;
+  margin: .7rem 0 1.4rem;
+}
+.dl-label {
+  font-size: .68rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-faint); margin-right: .2rem;
+}
+.dl {
+  display: inline-block; font-size: .78rem; text-decoration: none;
+  color: var(--ink); background: var(--paper-2);
+  border: 2px solid var(--ink); padding: .3rem .7rem;
+  box-shadow: 3px 3px 0 0 var(--ink);
+}
+.dl:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 0 var(--ink); background: var(--paper); }
+.dl:active { transform: translate(2px,2px); box-shadow: 0 0 0 0 var(--ink); }
+.dl:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+@media print { .dl-row { display: none; } }
+
+.tpl-list { list-style: none; margin: 1rem 0 1.2rem; padding: 0; }
+.tpl-list li {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .5rem;
+  padding: .55rem 0; border-top: 1px solid var(--line); font-size: .85rem;
+}
+.tpl-list li:last-child { border-bottom: 1px solid var(--line); }
+.tpl-list strong { flex: 1 1 15rem; font-weight: 700; }
+
+/* the download panel at the top of each roster guide */
+.dl-panel {
+  border: 3px solid var(--ink); background: var(--paper-2);
+  padding: 1rem 1.2rem; margin: 1.4rem 0 2rem;
+}
+.dl-panel .dl-label {
+  font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-faint); margin: 0 0 .6rem;
+}
+.dl-panel .dl-row { margin: 0 0 .7rem; }
+.dl-panel .fine { margin: 0; }
+.more-link { font-size: .82rem; color: var(--ink-soft); margin: .4rem 0 .8rem; }
+
+/* ------------------------------------------------------------
+   coffee roulette
+   ------------------------------------------------------------ */
+.page.narrow { max-width: 34rem; }
+
+/* the shared page: a list of names to claim */
+.claim-list { list-style: none; margin: 1.4rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .5rem; }
+.claim-name {
+  display: flex; align-items: center; justify-content: space-between; gap: .8rem;
+  border: 3px solid var(--ink); background: var(--paper);
+  box-shadow: 4px 4px 0 0 var(--ink); padding: .7rem .9rem;
+}
+.claim-name.taken { box-shadow: none; border-color: var(--line); background: var(--paper-2); }
+.cn-name { font-weight: 700; font-size: .95rem; }
+.claim-name.taken .cn-name { color: var(--ink-faint); font-weight: 400; }
+.cn-state { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
+.cn-btn { flex: none; font-size: .8rem; padding: .35rem .8rem; }
+
+/* the private page: who you got */
+.coffee-label {
+  font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-faint); margin: 1.6rem 0 .3rem;
+}
+.coffee-with {
+  font-family: inherit; font-weight: 700;
+  font-size: clamp(1.6rem, 7vw, 2.6rem); line-height: 1.15;
+  margin: 0 0 1.4rem; word-break: break-word;
+}
+.coffee-with span { color: var(--ink-faint); font-weight: 400; font-size: .5em; }
+.coffee-with-none { font-size: 1rem; color: var(--ink-soft); margin: 1.6rem 0; }
+
+.coffee-starter {
+  border: 3px solid var(--ink); background: var(--paper-2);
+  box-shadow: 5px 5px 0 0 var(--ink);
+  padding: 1rem 1.2rem; margin: 0 0 1.4rem;
+}
+.coffee-starter-label {
+  display: block; font-size: .68rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--ink-faint); margin-bottom: .5rem;
+}
+.coffee-starter-q { margin: 0; font-size: 1.02rem; line-height: 1.45; }
+
+@media print {
+  .cn-btn, .coffee-starter { box-shadow: none; }
+}
+
+/* ------------------------------------------------------------
+   weekly pulse
+   ------------------------------------------------------------ */
+.pulse-form { margin: 1.4rem 0 0; }
+.pulse-ask { font-size: .85rem; color: var(--ink-soft); margin: 0 0 .7rem; }
+.pulse-scale { display: flex; gap: .6rem; flex-wrap: wrap; }
+.pulse-num {
+  flex: 1 1 3.4rem; min-width: 3.4rem; aspect-ratio: 1;
+  font: inherit; font-size: 1.4rem; font-weight: 700;
+  color: var(--ink); background: var(--paper);
+  border: 4px solid var(--ink); box-shadow: 5px 5px 0 0 var(--ink);
+  cursor: pointer;
+  transition: transform .06s steps(2), box-shadow .06s steps(2), background .06s steps(2);
+}
+.pulse-num:hover { transform: translate(-1px,-1px); box-shadow: 6px 6px 0 0 var(--ink); background: var(--paper-2); }
+.pulse-num:active { transform: translate(2px,2px); box-shadow: 0 0 0 0 var(--ink); }
+.pulse-num:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.pulse-num.picked { background: var(--gold); transform: translate(2px,2px); box-shadow: 0 0 0 0 var(--ink); }
+.pulse-words { margin: 1rem 0 0; }
+.pulse-actions { display: flex; gap: .6rem; margin: 1rem 0 0; flex-wrap: wrap; }
+.pulse-thanks { font-size: 1.1rem; font-weight: 700; margin: 1.4rem 0; }
+
+.pulse-big { font-size: clamp(2.6rem, 12vw, 4rem); font-weight: 700; line-height: 1; margin: .4rem 0 .2rem; }
+.pulse-of { font-size: .35em; color: var(--ink-faint); font-weight: 400; }
+
+.pulse-bars { list-style: none; margin: 1rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .3rem; }
+.pulse-bar-row { display: grid; grid-template-columns: 1.4rem 1fr 2rem; gap: .6rem; align-items: center; font-size: .8rem; }
+.pulse-bar-n { color: var(--ink-faint); text-align: right; }
+.pulse-bar { display: block; height: .9rem; background: var(--paper-2); border: 2px solid var(--line); }
+.pulse-bar-fill { display: block; height: 100%; background: var(--sage, #7f9e78); }
+.pulse-bar-c { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+.pulse-hold { border: 3px dashed var(--line-firm, var(--line)); padding: 1.1rem 1.3rem; margin: 1.6rem 0; }
+.pulse-hold-n { font-weight: 700; margin: 0 0 .4rem; }
+
+.pulse-trend { list-style: none; display: flex; gap: .35rem; align-items: flex-end; margin: 1rem 0 0; padding: 0; overflow-x: auto; }
+.trend-col { flex: 1 1 0; min-width: 2.4rem; display: flex; flex-direction: column; align-items: center; gap: .25rem; height: 8rem; justify-content: flex-end; }
+.trend-bar { display: block; width: 100%; background: var(--paper-2); border: 2px solid var(--ink); min-height: 3px; }
+.trend-col.now .trend-bar { background: var(--gold); }
+.trend-label { font-size: .6rem; color: var(--ink-faint); white-space: nowrap; }
+.trend-val { font-size: .7rem; font-variant-numeric: tabular-nums; }
+
+.wordcloud { display: flex; flex-wrap: wrap; gap: .3rem .8rem; align-items: baseline;
+  padding: 1.1rem 1.2rem; border: 3px solid var(--ink); background: var(--paper-2); margin: 1rem 0 0; }
+.cw { line-height: 1.15; font-weight: 700; color: var(--ink); }
+
+/* ------------------------------------------------------------
+   kudos wall
+   ------------------------------------------------------------ */
+.kudo-form { margin: 1.4rem 0 0; }
+.kudo-fields { display: grid; gap: .8rem; }
+@media (min-width: 520px) { .kudo-fields { grid-template-columns: 1fr 1fr; } }
+
+.kudo-list {
+  list-style: none; margin: 1rem 0 0; padding: 0;
+  display: grid; gap: .8rem;
+}
+@media (min-width: 620px) { .kudo-list { grid-template-columns: 1fr 1fr; } }
+.kudo {
+  border: 3px solid var(--ink); background: var(--paper);
+  box-shadow: 5px 5px 0 0 var(--ink); padding: .9rem 1rem;
+  display: flex; flex-direction: column; gap: .35rem;
+}
+.kudo-to { margin: 0; font-weight: 700; font-size: .95rem; }
+.kudo-msg { margin: 0; font-size: .88rem; line-height: 1.5; color: var(--ink-soft); word-break: break-word; }
+.kudo-from { margin: .2rem 0 0; font-size: .76rem; color: var(--ink-faint); }
+.kudo-del, .kudo-mine { align-self: flex-start; margin-top: .3rem; }
+
+.kudo-week { border-top: 1px solid var(--line); padding: .7rem 0 0; margin: .8rem 0 0; }
+.kudo-week summary { cursor: pointer; font-size: .85rem; font-weight: 700; }
+.kudo-week summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.kudo-week[open] summary { margin-bottom: .4rem; }
+
+@media print { .kudo { box-shadow: none; } .kudo-form, .kudo-del, .kudo-mine { display: none; } }
+
+/* ------------------------------------------------------------
+   press kit images
+   The <img> tags carry their intrinsic 1200x630 so the browser
+   reserves the right space before the file arrives — without that
+   the page jumped a full viewport when they loaded, which is what
+   the analytics recorded as a CLS of 1 on html>body. Declaring the
+   real width then makes max-width mandatory, or they overflow the
+   moment the viewport is narrower than 1200px.
+   ------------------------------------------------------------ */
+.press-imgs { display: grid; gap: 1rem; margin: 1rem 0 0; }
+@media (min-width: 700px) { .press-imgs { grid-template-columns: 1fr 1fr; } }
+.press-imgs img {
+  display: block;
+  width: 100%; max-width: 100%; height: auto;
+  border: 3px solid var(--ink);
+}
+
+/* ---- "see a finished one" ------------------------------------------
+   A dashed border everywhere else on the site means solid: real control.
+   Dashed reads as "a sample", which is exactly what this offers. It sits
+   directly under the lede because on a phone the submit button is roughly
+   a screen and a half further down, and someone deciding whether this tool
+   is worth their time should not have to scroll to find that out. */
+.see-example {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: .3rem .6rem;
+  max-width: 52ch; margin: 0 0 1.5rem; padding: .6rem .8rem;
+  border: 2px dashed var(--line); background: var(--paper-2);
+  font-size: .8rem; line-height: 1.5; color: var(--ink-soft);
+}
+.see-example a {
+  color: var(--ink); font-weight: 700; text-decoration: none;
+  border-bottom: 2px solid var(--gold); white-space: nowrap;
+}
+.see-example a:hover { background: var(--gold); color: #2b2216; border-bottom-color: var(--ink); }
+
+/* ---- one tap to a real thing --------------------------------------
+   Five tools need nothing typed. The button that proves it sits inside the
+   form, roughly 1,400px down a phone screen, so this repeats it directly
+   under the promise at ~332px. Solid border, unlike the dashed example
+   strip above it: this one is a real control, and the difference should be
+   visible before it is read. */
+.see-example.is-one-tap { margin-bottom: .7rem; }
+.one-tap {
+  display: flex; align-items: center; flex-wrap: wrap; gap: .6rem .9rem;
+  max-width: 52ch; margin: 0 0 1.6rem;
+}
+.one-tap .btn { flex: 0 0 auto; }
+.one-tap a.fine {
+  color: var(--ink-soft); text-decoration: underline; text-underline-offset: 2px;
+}
+.one-tap a.fine:hover { color: var(--ink); }
+
+/* ---- the example pages themselves ---------------------------------
+   Fixed rather than sticky: the bar is injected just before </body>, so
+   as a last child a sticky element would only pin once you had scrolled
+   to the bottom — which is precisely when it is no longer needed. */
+body.is-demo { padding-bottom: 6rem; }
+.demo-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+  background: var(--gold); color: #2b2216;
+  border-top: 3px solid var(--ink);
+  padding: .7rem 1rem; text-align: center;
+  font-size: .78rem; line-height: 1.5;
+  box-shadow: 0 -3px 0 0 rgba(0,0,0,.14);
+}
+.demo-bar a { color: #2b2216; font-weight: 700; white-space: nowrap; }
+.demo-bar.nudged { animation: demo-nudge .42s steps(2) 2; }
+@keyframes demo-nudge { 50% { background: var(--terra); color: #fff8ec; } }
+@media (prefers-reduced-motion: reduce) {
+  .demo-bar.nudged { animation: none; background: var(--terra); color: #fff8ec; }
+}
+
+/* ---- scrum poker ----------------------------------------------------
+   The deck is the whole interface, so the cards are sized for a thumb
+   on a phone first: a 3-across grid at 375px, wider only when there is
+   room. Face-down and face-up are visually different shapes, not just
+   different text, because across a video call the state of the table
+   has to read at a glance. */
+.pk-story {
+  font-size: 1.05rem; line-height: 1.4; margin: .2rem 0 1.4rem;
+  max-width: 52ch; color: var(--ink);
+}
+.pk-story-empty { color: var(--ink-faint); font-style: italic; }
+
+.pk-deck {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem;
+  margin: 0 0 1.4rem; max-width: 30rem;
+}
+@media (min-width: 30rem) { .pk-deck { grid-template-columns: repeat(5, 1fr); } }
+
+.pk-card {
+  font: inherit; font-size: 1.3rem; font-weight: 700; cursor: pointer;
+  aspect-ratio: 3 / 4; display: grid; place-items: center;
+  background: var(--paper-2); color: var(--ink);
+  border: 3px solid var(--ink); box-shadow: 3px 3px 0 0 var(--ink);
+  transition: transform .06s steps(2), box-shadow .06s steps(2);
+}
+.pk-card:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 0 var(--ink); }
+.pk-card:active { transform: translate(2px,2px); box-shadow: 0 0 0 0 var(--ink); }
+.pk-card.is-picked {
+  background: var(--sage-dark); color: #f6f1e4;
+  transform: translate(-2px,-2px); box-shadow: 5px 5px 0 0 var(--ink);
+}
+.pk-card:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.pk-card-sample { cursor: default; font-size: 1rem; }
+.pk-card-sample:hover { transform: none; box-shadow: 3px 3px 0 0 var(--ink); }
+
+.pk-name-field { max-width: 22rem; }
+
+.pk-table {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+  list-style: none; padding: 0; margin: 0 0 1rem;
+}
+.pk-slot {
+  min-width: 4.2rem; padding: .5rem .4rem; text-align: center;
+  border: 3px solid var(--ink); background: var(--paper-2);
+}
+.pk-slot-card { display: block; font-size: 1.2rem; font-weight: 700; line-height: 1.2; }
+.pk-slot-name {
+  display: block; font-size: .64rem; color: var(--ink-soft);
+  letter-spacing: .04em; margin-top: .2rem;
+  max-width: 6rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+/* Face down: the dot is deliberately faint, so a full table of them
+   reads as "everyone is in" without inviting anyone to squint at it. */
+.pk-hidden { background: var(--paper-3); }
+.pk-hidden .pk-slot-card { color: var(--ink-faint); }
+.pk-shown .pk-slot-card { color: var(--ink); }
+
+.pk-count { font-size: .82rem; color: var(--ink-soft); margin: 0 0 1.2rem; }
+.pk-verdict {
+  border-left: 4px solid var(--gold); padding: .6rem 0 .6rem .8rem;
+  margin: 0 0 1.4rem; max-width: 56ch; font-size: .88rem; line-height: 1.55;
+}
+.pk-agreed { border-left-color: var(--sage-dark); }
+@media (prefers-color-scheme: dark) { .pk-agreed { border-left-color: var(--sage); } }
+.pk-controls { display: flex; flex-wrap: wrap; gap: .7rem; margin: 0 0 1.6rem; }

@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scrum Poker — free planning poker, no signup</title>
+<meta name="description" content="Free planning poker for a sprint team. One link, everyone picks a card, the facilitator turns them over together. No accounts, no app, nothing to install.">
+<link rel="canonical" href="https://bitibybit.com/scrum-poker/">
+<meta property="og:title" content="Scrum Poker — estimate together, no signup">
+<meta property="og:description" content="Planning poker in one link. Everyone picks a card privately, the facilitator reveals, and the spread is what you talk about. Free, no accounts.">
+<meta property="og:image" content="https://bitibybit.com/art/og-poker.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bitibybit.com/scrum-poker/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Scrum Poker — estimate together, no signup">
+<meta name="twitter:description" content="Planning poker in one link. Pick a card, reveal together, talk about the spread. Free, no accounts.">
+<meta name="twitter:image" content="https://bitibybit.com/art/og-poker.png">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Scrum Poker","url":"https://bitibybit.com/scrum-poker/",
+"applicationCategory":"BusinessApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},
+"description":"Free planning poker for sprint estimation. One shared link, private card selection, simultaneous reveal, and a spread summary. No accounts."}
+</script>
+</head>
+<body>
+<div class="scanlines" aria-hidden="true"></div>
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="biti by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    biti by bit
+    <span class="beta-badge">beta</span>
+  </a>
+  <nav class="site-nav"><a href="/#tools">the tools</a></nav>
+</header>
+
+<main class="wrap page">
+  <p class="kicker">Free · no signup · one link per team</p>
+  <h1>Scrum Poker</h1>
+  <p class="lede">Everyone picks a card at the same time, so nobody anchors on
+  the first number said out loud. Turn them over together, and spend the meeting
+  on the disagreement instead of the arithmetic.</p>
+
+  <p class="see-example is-one-tap">Nothing needs filling in — Fibonacci is ready to go. <a href="/s/demo-scrum-poker">See a finished round &rarr;</a></p>
+  <p class="one-tap"><button type="submit" form="pokerForm" id="makeBtnTop" class="btn primary">Deal the cards now &rarr;</button><a class="fine" href="#pokerForm">or name the story first</a></p>
+
+  <section class="builder">
+    <form id="pokerForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>What are we sizing first? <em>(optional — you can type it in the meeting)</em></span>
+            <input type="text" id="story" maxlength="120" placeholder="Search results pagination" autocomplete="off">
+          </label>
+
+          <fieldset class="field pk-deck-choice">
+            <legend><span>Which deck?</span></legend>
+            <label class="radio-row">
+              <input type="radio" name="deck" value="fib" checked>
+              <span>Fibonacci — the usual one</span>
+            </label>
+            <label class="radio-row">
+              <input type="radio" name="deck" value="tshirt">
+              <span>T-shirt sizes — for rougher sizing</span>
+            </label>
+            <div class="pk-deck pk-deck-preview" id="deckPreview" aria-hidden="true"></div>
+          </fieldset>
+
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Deal the cards →</button>
+        </div>
+        <div>
+          <label class="field">
+            <span>Team name <em>(optional)</em></span>
+            <input type="text" id="team" maxlength="60" placeholder="Platform team" autocomplete="off">
+          </label>
+        </div>
+      </div>
+    </form>
+
+    <div class="prev-sweeps" id="prevBoards" hidden>
+      <p class="fine">Your earlier boards (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <div class="tool-hero-art">
+    <img class="pixel" loading="lazy" decoding="async" src="/art/poker-hero.png"
+         alt="Pixel art of a row of estimation cards face down on a table, one turned over showing an eight"
+         width="1120" height="320">
+  </div>
+
+  <section class="content">
+    <h2>How it works</h2>
+    <h3>1. One link, shared once</h3>
+    <p>Post it in the channel or drop it in the calendar invite. The same link
+    works for every story, this sprint and every sprint after. Nobody signs up,
+    nobody installs anything, and there is no room code to read out twice
+    because somebody mistyped it.</p>
+    <h3>2. Everyone picks a card</h3>
+    <p>Cards stay face down. The page shows how many people have voted and who
+    they are if they gave a name — never what anyone chose. You can change your
+    mind as many times as you like until the cards are turned over.</p>
+    <h3>3. Turn them over together</h3>
+    <p>The facilitator reveals, and every open page flips within a second or
+    two. You get the spread, the highest and the lowest, and then you talk.</p>
+
+    <h2>Why simultaneous matters</h2>
+    <p>The reason planning poker exists is anchoring. If the tech lead says
+    "that's a five" before anyone else commits, the estimates that follow
+    cluster around five — not because the team agrees, but because five is now
+    the number in the room. Committing privately and revealing at once is the
+    entire mechanism, and it is why a spreadsheet or a show of hands does not
+    substitute.</p>
+    <p>This tool will not show you an average, on purpose. The moment a group
+    estimate becomes arithmetic, it starts getting treated as a measurement. The
+    number that matters is the spread, and the useful minute of the meeting is
+    the one where the person who said 2 and the person who said 13 explain what
+    they are each picturing.</p>
+
+    <h2>What it is not</h2>
+    <ul>
+      <li><strong>Not a tracker.</strong> There is no velocity chart, no history
+      across sprints, no export. It sizes the story in front of you and then
+      gets out of the way.</li>
+      <li><strong>Not tied to a backlog tool.</strong> No Jira connection, no
+      integration to approve. Paste the story title, or just say it out loud and
+      leave the box empty.</li>
+      <li><strong>Not a permanent record.</strong> Votes from a few stories ago
+      are cleared as you go. The board holds the story you are on.</li>
+    </ul>
+
+    <h2>FAQ</h2>
+    <h3>Do people need an account?</h3>
+    <p>No. Nobody signs up, nobody gives an email address and there is nothing
+    to install. If you can paste a link into a call, everyone can vote.</p>
+    <h3>Can the facilitator see the cards early?</h3>
+    <p>No, and that is deliberate. The facilitator's page polls exactly the same
+    endpoint everyone else's does, and the server does not send a single card
+    value to anyone until the reveal. An estimate you can peek at is not an
+    estimate.</p>
+    <h3>Can I change my vote?</h3>
+    <p>Yes, as many times as you like, right up until the cards are turned over.
+    After that the round is closed and the next story starts fresh.</p>
+    <h3>Do I have to give my name?</h3>
+    <p>No. The name field is optional and is only there so the facilitator can
+    see who is still to vote. Leave it blank and you show up as a dash.</p>
+    <h3>How many people can vote?</h3>
+    <p>Sixty on one board, which is far more than a team that can usefully
+    estimate together. If you are over about a dozen, the conversation is the
+    bottleneck, not the tool.</p>
+    <h3>What are the "?" and coffee cards for?</h3>
+    <p>"?" means you cannot size it yet — usually the most useful card in the
+    deck, because it says a question needs answering before the estimate means
+    anything. The coffee cup is the traditional "I need a break".</p>
+    <h3>Does it work on a phone?</h3>
+    <p>Yes. The deck is laid out for a thumb, which matters because half the
+    people in a sprint planning call are on a phone or a second screen.</p>
+
+    <h2>Related</h2>
+    <p>For the top of the same meeting, there is a
+    <a href="/question-of-the-day/">daily question</a> and
+    <a href="/fact-matcher/standup-games/">stand-up games</a>. For how the team
+    is travelling, the <a href="/weekly-pulse/">weekly pulse</a>, and for saying
+    thank you afterwards, the <a href="/kudos-wall/">kudos wall</a>.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
+    small free tools for groups. No ads, no accounts.</p>
+    <p class="foot-links">
+      <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
+    </p>
+  </footer>
+</main>
+
+<script src="/poker.js"></script>
+<!-- Cloudflare Web Analytics: public pages only, never on /s/, /e/ or /p/. -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "7df4259a0571411390aec9252ecc4f3e"}'></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do people need an account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Nobody signs up, nobody gives an email address and there is nothing to install. If you can paste a link into a call, everyone can vote."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can the facilitator see the cards early?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, and that is deliberate. The facilitator's page polls exactly the same endpoint everyone else's does, and the server does not send a single card value to anyone until the reveal. An estimate you can peek at is not an estimate."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I change my vote?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, as many times as you like, right up until the cards are turned over. After that the round is closed and the next story starts fresh."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I have to give my name?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The name field is optional and is only there so the facilitator can see who is still to vote. Leave it blank and you show up as a dash."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How many people can vote?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sixty on one board, which is far more than a team that can usefully estimate together. If you are over about a dozen, the conversation is the bottleneck, not the tool."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the \"?\" and coffee cards for?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "\"?\" means you cannot size it yet — usually the most useful card in the deck, because it says a question needs answering before the estimate means anything. The coffee cup is the traditional \"I need a break\"."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work on a phone?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The deck is laid out for a thumb, which matters because half the people in a sprint planning call are on a phone or a second screen."
+      }
+    }
+  ]
+}
+</script>
+</body>
+</html>

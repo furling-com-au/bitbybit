@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grand Final Sweep Generator — free, no signup | biti by bit</title>
+<title>Grand Final Sweep Generator — free, no signup</title>
 <meta name="description" content="Run an AFL or NRL Grand Final margin sweep in under a minute. Paste your names, hit draw, share one link with the office. Free, fair, printable, no signup.">
 <link rel="canonical" href="https://bitibybit.com/grand-final-sweep/">
 <meta property="og:title" content="Grand Final Sweep Generator">
@@ -48,11 +48,9 @@
     <p class="lede">The office margin sweep, minus the whiteboard. Put in the
     two teams and everyone's names, hit draw, and share the link. Everyone
     gets an outcome; closest to the final margin wins.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/sweep-hero.png"
-           alt="Pixel art footy field with goal posts, a crowd, and a ball sailing through"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-grand-final-sweep">See a finished sweep &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
@@ -77,6 +75,8 @@
             <span>Outcomes <em>(one per line — edit freely)</em></span>
             <textarea id="outcomes" rows="9" spellcheck="false"></textarea>
           </label>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="drawBtn">Draw the sweep →</button>
         </div>
         <div>
           <label class="field">
@@ -91,8 +91,6 @@ Mia"></textarea>
         </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="drawBtn">Draw the sweep →</button>
     </form>
 
     <div class="prev-sweeps" id="prevSweeps" hidden>
@@ -100,6 +98,13 @@ Mia"></textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/sweep-hero.png"
+           alt="Pixel art footy field with goal posts, a crowd, and a ball sailing through"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>How it works</h2>
@@ -156,12 +161,46 @@ Mia"></textarea>
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type": "Question", "name": "Is the Grand Final sweep generator free?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You make a sweep and share one link."}},
-    {"@type": "Question", "name": "How are the outcomes drawn?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Names are shuffled with cryptographic randomness and assigned to margin outcomes. Every outcome gets a name; the draw can be re-run by the organiser."}},
-    {"@type": "Question", "name": "Does it handle the money?",
-     "acceptedAnswer": {"@type": "Answer", "text": "No. It only draws and displays the sweep — collect entries however your office normally does."}}
+    {
+      "@type": "Question",
+      "name": "Is it actually free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. No account, no trial, no card. It's a small tool, not a platform."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the sweep handle money?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — deliberately. Collect the gold coins however your office always has. This just does the drawing and the remembering."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What margins should we use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The default is six bands per team (1–9 through 60+), which suits 10–14 people. For a bigger group, split the bands finer; for a smaller one, use 1–24, 25–49, 50+ per team."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I re-draw?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The organiser link can re-draw the whole board any time before the game. Everyone's assignments reshuffle, and the shared link updates."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Melbourne Cup?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Right this way — the Melbourne Cup sweep runs the classic 24-horse draw. The shelf has everything else."
+      }
+    }
   ]
 }
 </script>

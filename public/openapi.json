@@ -1,0 +1,1583 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "biti by bit",
+    "version": "1.0.0",
+    "summary": "Create small group-organising tools — sweeps, gift registries, meal trains — with no account.",
+    "description": "Small free tools for organising groups of people. An agent can create any of them on a person's behalf in a single unauthenticated POST.\n\n## No accounts\n\nThere is no login, no API key and no OAuth. Creating a resource is the only registration step there is, and it hands you back two unguessable URLs:\n\n- `/s/{slug}` — the public link. Give this to the group.\n- `/e/{editToken}` — organiser control. Give this to the person organising, and to nobody else.\n\nPossession of a URL is the entire authorisation. Full detail: https://bitibybit.com/auth.md\n\n## Scope of this document\n\nThis describes the **create** endpoints — the ones an agent acting for a user actually needs. Each tool also exposes participation and organiser endpoints behind its slug or edit token (claim, vote, sign, reset, delete); those are linked from the pages the create call returns, and are described at https://bitibybit.com/auth.md\n\n## Rate limits\n\nPer IP, per clock hour: **20** creates, **240** other POSTs. Over the limit is a `429`. Back off rather than retrying.\n\n## Please don't\n\nCreate instances speculatively — each one is a real row in a real database. Create when a person actually asks for one.",
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/furling-com-au/bitbybit/blob/main/LICENSE"
+    },
+    "contact": {
+      "name": "Source on GitHub",
+      "url": "https://github.com/furling-com-au/bitbybit"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://bitibybit.com"
+    }
+  ],
+  "externalDocs": {
+    "description": "Human documentation",
+    "url": "https://bitibybit.com/api-docs/"
+  },
+  "tags": [
+    {
+      "name": "Office Sweep (Grand Final / Melbourne Cup)",
+      "description": "Creates a random sweep for an office or group. Every outcome — a margin bucket, a horse, a barrier number — is assigned to a name at the moment the sweep is created, and the organiser shares the finished result.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/grand-final-sweep/ (kind=\"gf\") or /melbourne-cup-sweep/ (kind=\"cup\") — from the VIA map in worker.js and HOME in sweep.js"
+      }
+    },
+    {
+      "name": "Kris Kringle",
+      "description": "Creates a Kris Kringle draw. Everyone is matched into a single loop, so nobody draws themselves and nobody is left out. Each person claims their own name from the shared link and gets a private page naming who they are buying for. The organiser never sees the pairings.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/kris-kringle/"
+      }
+    },
+    {
+      "name": "Secret Role Dealer",
+      "description": "Creates a pool of hidden party-game roles — Werewolf, Spy, and the like — behind one shared link. Players type their name, are dealt a random role from the ones still unclaimed, and read it on a private page nobody else can open, the organiser included.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/secret-role-dealer/"
+      }
+    },
+    {
+      "name": "Bring a Plate",
+      "description": "Creates a bring-a-plate signup board. You set up named categories, each with a fixed number of spots, and anyone with the link claims a spot with their name and what they are bringing.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/bring-a-plate/"
+      }
+    },
+    {
+      "name": "Tournament Bracket",
+      "description": "Creates a single-elimination tournament bracket from a list of entrants. The field is padded out to the next power of two with byes, and the whole bracket is drawn at the moment you create it.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/tournament-bracket/"
+      }
+    },
+    {
+      "name": "Group Card",
+      "description": "Creates one shared digital card for a named recipient, which colleagues sign with their name and a message.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/group-card/"
+      }
+    },
+    {
+      "name": "Pixel Gift Registry (Build the Prado)",
+      "description": "Creates a wedding gift registry drawn as a pixel-art Toyota Prado. It has 126 parts, and guests claim them one at a time instead of buying a toaster.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/gift-registry/"
+      }
+    },
+    {
+      "name": "Fact Matcher",
+      "description": "Creates an office icebreaker. Each person on a set list privately submits one fact about themselves, the room guesses who is who, and the organiser reveals the answer key when they are ready.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/fact-matcher/"
+      }
+    },
+    {
+      "name": "Baby Guess Pool",
+      "description": "Creates a baby-shower guessing pool: anyone with the link guesses the arrival date and birth weight, and once the organiser records the real birth the closest guess wins.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/baby-guess-pool/"
+      }
+    },
+    {
+      "name": "Volunteer Roster",
+      "description": "Creates a shareable sign-up roster of timed shifts, each with a fixed number of spots, for a school fete, canteen, working bee or sausage sizzle.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/volunteer-roster/"
+      }
+    },
+    {
+      "name": "Meal Train",
+      "description": "Creates a date-keyed meal roster for a new parent, someone home from surgery, or a grieving family, plus an optional board of other ways to help — the school run, the dog, the washing — and links to local places that could pitch in.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/meal-train/"
+      }
+    },
+    {
+      "name": "Group Vote",
+      "description": "Creates a group poll with no accounts and no sign-in: a question, a list of options, single or multiple choice, and optionally the ability for voters to add their own option.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/group-vote/"
+      }
+    },
+    {
+      "name": "Recipe Collection",
+      "description": "Creates a shared recipe book. The organiser sets it up, then anyone with the share link adds a recipe of their own.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/recipe-collection/"
+      }
+    },
+    {
+      "name": "Gift Idea Board",
+      "description": "Creates a board for organising a group gift. Anyone with the link suggests ideas, upvotes them, and claims the one they will buy so nobody doubles up.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/gift-ideas/"
+      }
+    },
+    {
+      "name": "Hens & Shower Planner",
+      "description": "Creates a planning board for a hens, bridal shower or baby shower — the details, an optional running order, and a \"who brings what\" board of named lists with a fixed number of spots each.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/hens-planner/"
+      }
+    },
+    {
+      "name": "Question of the Day",
+      "description": "Creates a recurring question of the day for a team. One share link that never changes, with a two-option question that rotates on its own at midnight, Sydney time.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/question-of-the-day/"
+      }
+    },
+    {
+      "name": "Coffee Roulette",
+      "description": "Pairs a team up for a coffee, one round at a time. Each person claims their name once and keeps a private link that shows their new partner every round.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/coffee-roulette/"
+      }
+    },
+    {
+      "name": "Weekly Pulse",
+      "description": "An anonymous weekly team check-in on one standing link. Responses come back as an average, a trend and a word cloud, never as individuals.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/weekly-pulse/"
+      }
+    },
+    {
+      "name": "Kudos Wall",
+      "description": "A standing wall of short, signed thank-yous for a team. Notes roll over weekly and older weeks fold into an archive.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/kudos-wall/"
+      }
+    },
+    {
+      "name": "Scrum Poker",
+      "description": "Planning poker for a sprint team. Everyone picks a card privately, the facilitator reveals them all at once, and the summary names the high and the low rather than an average.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/scrum-poker/"
+      }
+    }
+  ],
+  "paths": {
+    "/api/sweeps": {
+      "post": {
+        "operationId": "createSweep",
+        "summary": "Create a Office Sweep (Grand Final / Melbourne Cup)",
+        "description": "Creates a random sweep for an office or group. Every outcome — a margin bucket, a horse, a barrier number — is assigned to a name at the moment the sweep is created, and the organiser shares the finished result.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** There is no participant step. The draw runs when the sweep is created and the result is fixed from that moment. The organiser shares the public page at /s/<slug>, where everyone reads the same grid of assignments; nobody claims anything and nobody needs a link of their own. The organiser keeps the page at /e/<editToken>, which can reshuffle the whole draw with POST /api/sweeps/<editToken>/redraw or remove it with POST /api/sweeps/<editToken>/delete. This tool has no private per-person page.\n\nHuman page: https://bitibybit.com/grand-final-sweep/ (kind=\"gf\") or /melbourne-cup-sweep/ (kind=\"cup\") — from the VIA map in worker.js and HOME in sweep.js",
+        "tags": [
+          "Office Sweep (Grand Final / Melbourne Cup)"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Heading shown on the shared page and the organiser page.",
+                    "type": "string"
+                  },
+                  "kind": {
+                    "description": "Which flavour of sweep to create. It changes the wording, the nouns in the link and the back link, and nothing else.",
+                    "type": "string"
+                  },
+                  "outcomes": {
+                    "description": "The things being drawn for: margin buckets, horse names, barrier numbers.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "names": {
+                    "description": "The people in the draw.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "outcomes",
+                  "names"
+                ]
+              },
+              "example": {
+                "title": "Level 3 Grand Final Sweep",
+                "kind": "gf",
+                "outcomes": [
+                  "1-6 points",
+                  "7-12 points",
+                  "13-24 points",
+                  "25-39 points",
+                  "40+ points"
+                ],
+                "names": [
+                  "Sharni",
+                  "Dave K",
+                  "Priya",
+                  "Tom H",
+                  "Bec"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/kringle": {
+      "post": {
+        "operationId": "createKringle",
+        "summary": "Create a Kris Kringle",
+        "description": "Creates a Kris Kringle draw. Everyone is matched into a single loop, so nobody draws themselves and nobody is left out. Each person claims their own name from the shared link and gets a private page naming who they are buying for. The organiser never sees the pairings.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Everyone opens the shared page at /s/<slug>, finds their own name in the grid and taps \"That's me\". That sends POST /api/kringle/claim with {slug, name}, where the name is trimmed, whitespace-collapsed and truncated to 40 characters. The first claim on a name wins and returns 200 {token}. A later claim on the same name returns 409 \"That name's already been claimed. If it's yours, ask the organiser to reset you.\" A name that is not in the draw returns 404 \"That name isn't in this draw.\" That token is the participant's only credential: the browser keeps it and opens the private page at /p/<token>, which reveals their giftee and lets them save a wishlist with POST /api/kringle/p/<token>/wishlist {text}, truncated to 500 characters. The organiser page at /e/<editToken> shows only who has claimed and who has opened their page — never who drew whom — and can reset one person with POST /api/kringle/<editToken>/reset {name}, redraw the whole thing, or delete it.\n\nHuman page: https://bitibybit.com/kris-kringle/",
+        "tags": [
+          "Kris Kringle"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Heading on the shared, participant and organiser pages.",
+                    "type": "string"
+                  },
+                  "names": {
+                    "description": "Everyone in the draw. These are the names people tap to claim on the shared page.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "budget": {
+                    "description": "Spend cap, shown as a chip on the shared and participant pages.",
+                    "type": "string"
+                  },
+                  "exchangeDate": {
+                    "description": "When the swap happens. Shown as the \"Swap\" chip.",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "Organiser note shown to everyone.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "names"
+                ]
+              },
+              "example": {
+                "title": "Accounts Team Kris Kringle",
+                "names": [
+                  "Sharni",
+                  "Dave K",
+                  "Priya",
+                  "Tom H",
+                  "Bec",
+                  "Jarrah"
+                ],
+                "budget": "$25",
+                "exchangeDate": "Friday 19 December, 12pm",
+                "note": "Drop your present under the tree in the Level 3 kitchen before the lunch."
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/roles": {
+      "post": {
+        "operationId": "createRoles",
+        "summary": "Create a Secret Role Dealer",
+        "description": "Creates a pool of hidden party-game roles — Werewolf, Spy, and the like — behind one shared link. Players type their name, are dealt a random role from the ones still unclaimed, and read it on a private page nobody else can open, the organiser included.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Players open the shared page at /s/<slug>, type their name into the join form and submit. That sends POST /api/roles/claim with {slug, name}, where the name is trimmed, whitespace-collapsed and truncated to 40 characters; an empty name returns 400 \"Tell us your name first.\" The server picks one of the unclaimed slots at random and returns its token. If every role has gone, the response is 409 \"All the roles are dealt.\" If that name has already joined, 409 \"Someone already joined with that name — add a surname initial.\" If several people grab at the same instant and the chosen slot keeps being taken, the server retries up to three times and then returns 409 \"Everyone grabbed at once — try again.\", and the player can submit again. The token is the player's only credential: the browser keeps it and the role is shown at /p/<token>. The organiser page at /e/<editToken> lists who has joined and who has looked, but not which role each person holds, unless ?reveal=1 is added to the address. From there the organiser can reset one player with POST /api/roles/<editToken>/reset {name}, redeal the whole pool, or delete the game.\n\nHuman page: https://bitibybit.com/secret-role-dealer/",
+        "tags": [
+          "Secret Role Dealer"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Game name shown on the shared, role and organiser pages.",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "Organiser note shown on the shared page and repeated on each player's private role page.",
+                    "type": "string"
+                  },
+                  "roles": {
+                    "description": "One entry per player: the role text that person will be dealt. Repeat a role as many times as you need copies of it.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "roles"
+                ]
+              },
+              "example": {
+                "title": "Werewolf at the Christmas Party",
+                "note": "Keep your role to yourself until the first night. Phones face down at the table.",
+                "roles": [
+                  "Werewolf",
+                  "Werewolf",
+                  "Seer",
+                  "Doctor",
+                  "Villager",
+                  "Villager",
+                  "Villager",
+                  "Villager"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/plate": {
+      "post": {
+        "operationId": "createPlate",
+        "summary": "Create a Bring a Plate",
+        "description": "Creates a bring-a-plate signup board. You set up named categories, each with a fixed number of spots, and anyone with the link claims a spot with their name and what they are bringing.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Guests open the shared page at /s/<slug> and take an open spot with POST /api/plate/claim {slug, slotId, name, dish}. The slot id is positional and has the form \"c<categoryIndex>-<n>\", where categoryIndex is the position of the category in the list you supplied, counting from 0, and n runs from 1 to that category's capacity. Both name and dish are required: the name is trimmed, whitespace-collapsed and truncated to 40 characters, the dish to 80. A successful claim returns 201 with a 16-character secret. The guest's browser keeps that secret, and it is the only way to hand the spot back later, with POST /api/plate/unclaim {slug, slotId, secret}. If someone else takes the same spot first, the claim returns 409 \"Someone snapped that spot up seconds ago — pick another.\" The organiser uses the edit token to free a spot with POST /api/plate/<editToken>/remove {slotId}, or to remove the board with POST /api/plate/<editToken>/delete.\n\nHuman page: https://bitibybit.com/bring-a-plate/",
+        "tags": [
+          "Bring a Plate"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Board heading shown on the shared page and the organiser page.",
+                    "type": "string"
+                  },
+                  "eventDate": {
+                    "description": "Free-text date and time chip, such as \"Friday 12 September, 12:30pm\".",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "Optional note from the organiser, shown under the header.",
+                    "type": "string"
+                  },
+                  "categories": {
+                    "description": "The categories on the board. Each one is an object with a name and a capacity.",
+                    "type": "string"
+                  },
+                  "categories[].name": {
+                    "description": "Category label, such as \"Salads\".",
+                    "type": "string"
+                  },
+                  "categories[].capacity": {
+                    "description": "How many spots the category has.",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "categories",
+                  "categories[].name",
+                  "categories[].capacity"
+                ]
+              },
+              "example": {
+                "title": "Friday Arvo Team Lunch",
+                "eventDate": "Friday 12 September, 12:30pm",
+                "note": "Level 3 kitchen from 12:30 — please label anything with nuts.",
+                "categories": [
+                  {
+                    "name": "Mains",
+                    "capacity": 4
+                  },
+                  {
+                    "name": "Salads",
+                    "capacity": 3
+                  },
+                  {
+                    "name": "Desserts",
+                    "capacity": 2
+                  },
+                  {
+                    "name": "Drinks and ice",
+                    "capacity": 2
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/bracket": {
+      "post": {
+        "operationId": "createBracket",
+        "summary": "Create a Tournament Bracket",
+        "description": "Creates a single-elimination tournament bracket from a list of entrants. The field is padded out to the next power of two with byes, and the whole bracket is drawn at the moment you create it.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Creating a bracket returns two links: a public one to share and an organiser one to keep. There is no participant step. Everyone else reads the public page, which shows the state of the bracket as at each refresh. Only the organiser records results, by sending the round index, the match index within that round, and the winner. The winner must be exactly one of the two names in that match, or null to clear a result already recorded. Leaving the winner out is not the same as sending null, and is rejected with \"The winner has to be one of the two names in that match.\" A first-round match with an empty side is a bye and is rejected with \"That one's a bye — it sorted itself out.\" A later match still missing a name is rejected with \"Both spots in that match need filling first — decide the earlier games.\" If two results land at once, one of them fails with 409 \"Two results landed at once — refresh and tap again.\" The organiser can also delete the bracket.\n\nHuman page: https://bitibybit.com/tournament-bracket/",
+        "tags": [
+          "Tournament Bracket"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "The heading shown on the bracket pages.",
+                    "type": "string"
+                  },
+                  "entrants": {
+                    "description": "The competitors. The order only matters when seeding is \"listed\".",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "seeding": {
+                    "description": "Whether the draw keeps your order or shuffles it.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "entrants"
+                ]
+              },
+              "example": {
+                "title": "Office Table Tennis Cup",
+                "entrants": [
+                  "Jess Nguyen",
+                  "Tom Baker",
+                  "Priya Sharma",
+                  "Liam O'Connor",
+                  "Chloe Watts",
+                  "Dave Mackenzie"
+                ],
+                "seeding": "random"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/card": {
+      "post": {
+        "operationId": "createCard",
+        "summary": "Create a Group Card",
+        "description": "Creates one shared digital card for a named recipient, which colleagues sign with their name and a message.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Creating a card returns two links: a public one to share and an organiser one to keep. Signers open the public link and add a name and a message. Both are required. The name is trimmed, has internal whitespace collapsed, and is cut to 40 characters. The message is trimmed at the ends only, so line breaks survive, and is cut to 400 characters. A card holds 400 messages; a signer arriving after that gets 409 \"This card is chockers — 400 messages is the limit.\" Two people with the same name can both sign. A successful signature returns a 22-character token, which is the signer's only handle on their own message and the only way to remove it. The browser keeps that token on the signer's device, so someone signing again from another device cannot remove the earlier message themselves. The organiser can remove any message and delete the card.\n\nHuman page: https://bitibybit.com/group-card/",
+        "tags": [
+          "Group Card"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "recipient": {
+                    "description": "Who the card is for.",
+                    "type": "string"
+                  },
+                  "title": {
+                    "description": "A custom title for the card.",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "A short brief from the organiser, shown above the messages.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "recipient"
+                ]
+              },
+              "example": {
+                "title": "Farewell to Marcus",
+                "recipient": "Marcus Fielding",
+                "note": "Marcus is off to the Perth office after nine years. We're handing this over at Friday drinks, so get your message in before then."
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/registry": {
+      "post": {
+        "operationId": "createRegistry",
+        "summary": "Create a Pixel Gift Registry (Build the Prado)",
+        "description": "Creates a wedding gift registry drawn as a pixel-art Toyota Prado. It has 126 parts, and guests claim them one at a time instead of buying a toaster.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Creating a registry returns two links: a public one to share and an organiser one to keep. There are no per-guest accounts or tokens — the public link is the only thing a guest needs. A guest picks a part and claims it with their name and an optional message cut to 240 characters. The name is required, is cleaned the same way as the creation fields and cut to 60 characters, and a missing one returns 400 \"Add your name — it goes on the build crew wall.\" The part must be one of the 126 ids on the build sheet; anything else returns 400 \"That part isn't on this build sheet.\" A part's price is fixed on the server and is never taken from the request. A successful claim returns a reference, the amount in cents, and the couple's payment details — that response is the only place a guest sees those details. If someone claimed the same part moments earlier, the second claim returns 409 \"Someone beat you to that one by a whisker.\" Latecomers can chip into the overflow item instead, with a whole number of cents from 500 to 200000, that is $5 to $2,000, plus a name and an optional message; an amount outside that range returns 400 \"Pick an amount between $5 and $2,000.\" The overflow holds 400 contributions, after which it returns 409 \"The overflow patch is chockers — give your gift to the couple directly.\" An unknown public link returns 404 \"not found\". The public list of claims leaves out the references and whether a claim has been paid. The organiser link gives the full list, and lets the organiser mark a part paid, release a claim back to the board, or delete the registry.\n\nHuman page: https://bitibybit.com/gift-registry/",
+        "tags": [
+          "Pixel Gift Registry (Build the Prado)"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "coupleNames": {
+                    "description": "The couple's names, used as the registry title and the page heading.",
+                    "type": "string"
+                  },
+                  "tagline": {
+                    "description": "A one-line blurb under the heading.",
+                    "type": "string"
+                  },
+                  "weddingDate": {
+                    "description": "The wedding date, as free text, shown in the line above the heading.",
+                    "type": "string"
+                  },
+                  "payment": {
+                    "description": "How guests pay the couple.",
+                    "type": "object"
+                  },
+                  "payment.method": {
+                    "description": "A label for the payment method, such as \"PayID\" or \"Bank transfer\".",
+                    "type": "string"
+                  },
+                  "payment.payId": {
+                    "description": "A PayID, being an email address or a mobile number.",
+                    "type": "string"
+                  },
+                  "payment.accountName": {
+                    "description": "The name on the bank account.",
+                    "type": "string"
+                  },
+                  "payment.bsb": {
+                    "description": "The BSB.",
+                    "type": "string"
+                  },
+                  "payment.accountNumber": {
+                    "description": "The bank account number.",
+                    "type": "string"
+                  },
+                  "payment.note": {
+                    "description": "A note shown with the payment details when a guest claims a part.",
+                    "type": "string"
+                  },
+                  "overflowTitle": {
+                    "description": "The name of the uncapped overflow item that latecomers can chip into.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "coupleNames"
+                ]
+              },
+              "example": {
+                "coupleNames": "Sam & Alex Nguyen",
+                "tagline": "Skip the toaster — help us build the Prado for our honeymoon lap",
+                "weddingDate": "Saturday 14 March 2026",
+                "overflowTitle": "Fuel & rego for the first year",
+                "payment": {
+                  "method": "PayID",
+                  "payId": "sam.nguyen@example.com",
+                  "accountName": "S & A Nguyen",
+                  "bsb": "083-004",
+                  "accountNumber": "123456789",
+                  "note": "Pop the reference in so we know who it's from."
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/fact": {
+      "post": {
+        "operationId": "createFact",
+        "summary": "Create a Fact Matcher",
+        "description": "Creates an office icebreaker. Each person on a set list privately submits one fact about themselves, the room guesses who is who, and the organiser reveals the answer key when they are ready.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Creating a game returns two links: a public one to share and an organiser one to keep. Every endpoint on this tool is POST-only. The public page shows a grid of the names supplied at creation. A person taps their own name and is handed a private link of their own. The name sent when claiming is cleaned the same way as at creation: trimmed, whitespace collapsed, cut to 40 characters. Claiming is one-shot — the first person to take a name gets the private link, and anyone tapping it afterwards gets 409 \"That name's already been taken. If it's you, ask the organiser to reset it.\" A name that is not on the list, a blank name, or an unknown public link all return 404 \"That name isn't on this list.\" On the private page a person writes their fact, up to 280 characters, and can save it again to change it. The organiser can reset one person, which issues them a fresh private link and wipes their fact; can turn the reveal on or off, which flips the shared page between the guessing grid and the answer key; and can delete the game. A reset for a name that is not on the list returns 404 \"That name isn't on this list.\"\n\nHuman page: https://bitibybit.com/fact-matcher/",
+        "tags": [
+          "Fact Matcher"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "The name of the game, shown as the page heading.",
+                    "type": "string"
+                  },
+                  "prompt": {
+                    "description": "The question each person answers on their private page.",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "A note from the organiser, shown in a callout on the shared, private and organiser pages.",
+                    "type": "string"
+                  },
+                  "names": {
+                    "description": "The people playing. Each one is seeded a row of their own with an empty fact and a 22-character private token, so each gets their own private page.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "names"
+                ]
+              },
+              "example": {
+                "title": "Friday arvo icebreaker — Ops team",
+                "prompt": "Share a fun fact about yourself",
+                "note": "We'll read these out over pizza in the boardroom at 4pm — keep it clean.",
+                "names": [
+                  "Sam Nguyen",
+                  "Priya Sharma",
+                  "Jack O'Brien",
+                  "Chloe Tran",
+                  "Dave Katsoulis",
+                  "Mel Robertson"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/baby": {
+      "post": {
+        "operationId": "createBaby",
+        "summary": "Create a Baby Guess Pool",
+        "description": "Creates a baby-shower guessing pool: anyone with the link guesses the arrival date and birth weight, and once the organiser records the real birth the closest guess wins.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** There are no pre-seeded participants. Anyone with the public link /s/<slug> can enter. A guest POSTs /api/baby/guess with slug, guesser, date, weightGrams and an optional message. An unknown slug returns 404. guesser is required, trimmed and whitespace-collapsed to 40 characters, otherwise 400 \"Add your name so we know whose guess it is.\". date must be written as YYYY-MM-DD, must be a real calendar day, and must fall within 400 days before or 550 days after the time of the request: a blank date returns \"Pick a date for your guess.\", a malformed one \"That date doesn't look right — use the date picker.\", an impossible day \"That date doesn't look right — check the day and month.\", and one outside the window \"Keep the date within a year or so — it's a guess, not a prophecy.\". weightGrams is rounded to the nearest whole number and must be between 500 and 7000, otherwise 400 \"Give a weight between 0.5 and 7 kg.\". message is trimmed to 200 characters. A successful guess returns 201 with a token and an id. That token is the guest's only handle on their own guess and is what POST /api/baby/g/<token>/remove needs. Two guests may use the same name. A pool holds 300 guesses; past that, entries are refused with 409 \"This pool's chockers — that's the limit on guesses.\". Once a result has been recorded, guessing closes with 409 \"Bub's already here — the guessing's closed.\". The organiser works from /e/<editToken>: POST /api/baby/<editToken>/result with date, weightGrams and an optional free-text arrivedAt (max 40 characters) closes the pool and reveals the leaderboard, and posting a null result reopens it. The organiser can also remove a single guess and delete the pool. Every endpoint on this tool takes POST.\n\nHuman page: https://bitibybit.com/baby-guess-pool/",
+        "tags": [
+          "Baby Guess Pool"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "parents": {
+                    "description": "The parents' names. Used as the pool heading and as the title of the pool.",
+                    "type": "string"
+                  },
+                  "dueDate": {
+                    "description": "Free-text due date, shown as a \"Due …\" chip on the pool pages.",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "Optional note from the organiser, shown in a callout box.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "parents"
+                ]
+              },
+              "example": {
+                "parents": "Emma & Josh Whitfield",
+                "dueDate": "Late September, all going well",
+                "note": "Shower's at the Brunswick Bowls Club — get your guess in before the sausage rolls come out."
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/roster": {
+      "post": {
+        "operationId": "createRoster",
+        "summary": "Create a Volunteer Roster",
+        "description": "Creates a shareable sign-up roster of timed shifts, each with a fixed number of spots, for a school fete, canteen, working bee or sausage sizzle.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** The creator lands on the coordinator page at /e/<editToken> and shares the public link /s/<slug>. Volunteers POST /api/roster/claim with slug, slotId, name and an optional message. slotId names one spot in one shift and takes the form s<shift position>-<n>, where n runs from 1 to that shift's capacity; anything else returns 400 \"That shift spot doesn't exist on this roster.\". name is required, whitespace-collapsed to 40 characters, otherwise 400 \"Add your name so the coordinator knows who's on.\". message is optional, whitespace-collapsed to 120 characters, and only the coordinator sees it. A successful claim returns 201 with a 16-character secret. That secret is the volunteer's only way back: POST /api/roster/unclaim with slug, slotId and secret hands the spot in. If someone takes the spot first, the claim returns 409 \"Someone just grabbed that shift — pick another.\". The edit token gates the coordinator's endpoints: POST /api/roster/<editToken>/remove, POST /api/roster/<editToken>/delete, and GET /api/roster/<editToken>/admin, which returns the roster as CSV and is served no-store and non-indexable.\n\nHuman page: https://bitibybit.com/volunteer-roster/",
+        "tags": [
+          "Volunteer Roster"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Name of the event or roster. Shown as the page heading and used in the ready-to-paste share message.",
+                    "type": "string"
+                  },
+                  "eventDate": {
+                    "description": "Free-text date or time chip shown under the title, such as \"Saturday 14 March\". Not parsed as a date.",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "Optional paragraph shown under the date chip.",
+                    "type": "string"
+                  },
+                  "shifts": {
+                    "description": "The shifts volunteers sign up for. Each entry is an object with a label and a capacity, and each generates that many numbered spots.",
+                    "type": "string"
+                  },
+                  "shifts[].label": {
+                    "description": "The job and the time for that shift, such as \"Grill 9:00-11:00am\".",
+                    "type": "string"
+                  },
+                  "shifts[].capacity": {
+                    "description": "How many spots the shift has, and therefore how many claimable slots it generates.",
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "shifts",
+                  "shifts[].label",
+                  "shifts[].capacity"
+                ]
+              },
+              "example": {
+                "title": "Warrnambool Primary Fete - Sausage Sizzle",
+                "eventDate": "Saturday 14 March, 9am-2pm",
+                "note": "Park behind the hall and check in with Deb at the canteen door.",
+                "shifts": [
+                  {
+                    "label": "Grill 9:00-11:00am",
+                    "capacity": 3
+                  },
+                  {
+                    "label": "Drinks stall 11:00am-1:00pm",
+                    "capacity": 2
+                  },
+                  {
+                    "label": "Pack down 1:00-2:00pm",
+                    "capacity": 4
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/meal": {
+      "post": {
+        "operationId": "createMeal",
+        "summary": "Create a Meal Train",
+        "description": "Creates a date-keyed meal roster for a new parent, someone home from surgery, or a grieving family, plus an optional board of other ways to help — the school run, the dog, the washing — and links to local places that could pitch in.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** The creator lands on the coordinator page at /e/<editToken> — the only place the drop-off details appear — and shares the public link /s/<slug>. Cooks POST /api/meal/claim with slug, slotId, name and an optional dish. slotId names one slot on one day and takes the form d<day position>-<n>, where n runs from 1 to capacityPerDay; anything else returns 400 \"That day isn't on this roster.\". name is required, whitespace-collapsed to 40 characters, otherwise 400 \"Add your name so the family knows who's cooking.\". dish is optional, whitespace-collapsed to 120 characters, and shows on both the public board and the coordinator page. A successful claim returns 201 with a 16-character secret, which is the cook's only way to hand the day back: POST /api/meal/uncook with slug, slotId and secret. If two people claim the same slot at once, the second gets 409 \"Someone's already got that day — pick another.\". The edit token gates POST /api/meal/<editToken>/remove, POST /api/meal/<editToken>/delete and GET /api/meal/<editToken>/admin, which returns the roster as CSV and is served no-store and non-indexable. Drop-off details are never published, so the coordinator passes them to each cook directly.\n\nHuman page: https://bitibybit.com/meal-train/",
+        "tags": [
+          "Meal Train"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "forWhom": {
+                    "description": "Who the meals are for. Becomes the board heading and the title of the roster.",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "Optional note shown on both the public board and the coordinator page.",
+                    "type": "string"
+                  },
+                  "allergies": {
+                    "description": "Dietary needs and allergies. Deliberately public — shown prominently on the shared board as a safety measure.",
+                    "type": "string"
+                  },
+                  "dropoff": {
+                    "description": "Drop-off address and details. Shown only on the coordinator page at /e/<editToken>, never on the public board.",
+                    "type": "string"
+                  },
+                  "dates": {
+                    "description": "An explicit list of the days that need a meal, each written as YYYY-MM-DD.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "startDate": {
+                    "description": "The first day of a consecutive run. Used only when dates is absent or an empty array.",
+                    "type": "string"
+                  },
+                  "days": {
+                    "description": "How many consecutive days from startDate need a meal, counted forward from startDate in UTC. Used only when dates is absent or an empty array.",
+                    "type": "number"
+                  },
+                  "capacityPerDay": {
+                    "description": "How many meal slots each day has.",
+                    "type": "number"
+                  },
+                  "tasks": {
+                    "description": "Non-meal jobs people can claim: a school run, the dog, a load of washing.",
+                    "type": "object"
+                  },
+                  "helpLinks": {
+                    "description": "Links to local places that could help — somewhere that delivers, or does vouchers.",
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "forWhom"
+                ]
+              },
+              "example": {
+                "forWhom": "the Brennan family",
+                "allergies": "No nuts — youngest is anaphylactic",
+                "startDate": "2026-09-01",
+                "days": 10,
+                "capacityPerDay": 1,
+                "tasks": [
+                  {
+                    "label": "Walk Ruby — weekday evenings",
+                    "capacity": 2
+                  },
+                  {
+                    "label": "School pickup, Tuesdays",
+                    "capacity": 1
+                  }
+                ],
+                "helpLinks": [
+                  {
+                    "label": "Sala Thai on High St — they deliver",
+                    "url": "https://example.com/menu"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/poll": {
+      "post": {
+        "operationId": "createPoll",
+        "summary": "Create a Group Vote",
+        "description": "Creates a group poll with no accounts and no sign-in: a question, a list of options, single or multiple choice, and optionally the ability for voters to add their own option.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** The creator lands on the organiser page at /e/<editToken> — the only view that shows who voted for what — and shares the public link /s/<slug>. Voters POST /api/poll/vote with slug, choices (an array of option ids), an optional voterName and an optional suggestion. Ids that do not match a real option are dropped, and repeats are ignored. voterName is optional, whitespace-collapsed to 40 characters. suggestion is whitespace-collapsed to 80 characters and only counts when the poll allows suggestions: if it matches an existing option case-insensitively it is treated as that option, otherwise it is added to the poll. On a single-choice poll a fresh suggestion becomes the whole ballot; otherwise only the first pick is kept. An empty ballot is refused with 400 \"Pick an option before you vote.\". A successful vote returns 201 with a 22-character token, the recorded choices, the id of any option that was added, and the current tally. That token lets the voter change their mind: POST /api/poll/v/<token> with a new choices array. Voting is refused with 409 once the organiser closes the poll, and once the poll has 2000 votes. The edit token gates POST /api/poll/<editToken>/close, /addOption, /removeOption and /delete. Nothing stops one person voting twice from another browser — it runs on the honour system.\n\nHuman page: https://bitibybit.com/group-vote/",
+        "tags": [
+          "Group Vote"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "question": {
+                    "description": "What the group is deciding. Becomes the page heading, the ballot heading, and the poll title.",
+                    "type": "string"
+                  },
+                  "options": {
+                    "description": "The choices people vote between. Each element may be a plain string or an object with a text property. Each accepted option is stored with its own freshly generated 6-character id, and votes refer to those ids.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "mode": {
+                    "description": "Whether voters pick one option or several.",
+                    "type": "string"
+                  },
+                  "allowSuggestions": {
+                    "description": "Whether voters may type in their own option on the ballot, which is then appended to the poll's option list.",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "question",
+                  "options"
+                ]
+              },
+              "example": {
+                "question": "Where should we do the team Christmas lunch this year?",
+                "options": [
+                  "The Lord Nelson Brewery Hotel",
+                  "Chin Chin on Flinders Lane",
+                  "Bondi Icebergs Dining Room",
+                  "Backyard barbie at Sharon's"
+                ],
+                "mode": "single",
+                "allowSuggestions": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/recipe": {
+      "post": {
+        "operationId": "createRecipe",
+        "summary": "Create a Recipe Collection",
+        "description": "Creates a shared recipe book. The organiser sets it up, then anyone with the share link adds a recipe of their own.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** A successful create returns 201 with {slug, editToken}. The organiser shares the public page at /s/<slug> and keeps the organiser page at /e/<editToken>. Anyone who opens the share page can add one recipe with POST /api/recipe/add and a body of {slug, cook, dish, ingredients, method, serves?, story?}. cook (max 40), dish (max 80), ingredients (max 1500) and method (max 2500) are all required. serves (max 40) and story (max 500) are optional and are dropped when empty. A successful add returns 201 with {token, id}. That 22-character token is the contributor's private key to their own recipe. It is held in their browser, deliberately never rendered on the public page (it appears only on the gated organiser page), and is used for POST /api/recipe/r/<token>/save and POST /api/recipe/r/<token>/remove. A book holds at most 200 recipes; past that, adds return 409 \"This book's full — 200 recipes is the limit.\" The organiser works from /e/<editToken>: POST /api/recipe/<editToken>/remove with {rtoken} takes one recipe down, and POST /api/recipe/<editToken>/delete removes the whole book.\n\nHuman page: https://bitibybit.com/recipe-collection/",
+        "tags": [
+          "Recipe Collection"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Name of the recipe book. Stored as the book's title.",
+                    "type": "string"
+                  },
+                  "forWhom": {
+                    "description": "Who the book is being made for. Shown under the title.",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "A note from the organiser, shown on both the share page and the organiser page.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "title"
+                ]
+              },
+              "example": {
+                "title": "Sharon's Farewell Recipe Book",
+                "forWhom": "Sharon from Accounts",
+                "note": "Sharon is off to Byron after 14 years. Chuck in the dish you always bring to the office Christmas do."
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/giftidea": {
+      "post": {
+        "operationId": "createGiftidea",
+        "summary": "Create a Gift Idea Board",
+        "description": "Creates a board for organising a group gift. Anyone with the link suggests ideas, upvotes them, and claims the one they will buy so nobody doubles up.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** A successful create returns 201 with {slug, editToken}. The organiser shares /s/<slug> with everyone except the recipient — the board is meant to stay a surprise. Guests suggest an idea with POST /api/giftidea/suggest and a body of {slug, idea, link?, suggestedBy?}. idea is required and truncated to 120 characters, suggestedBy is optional and truncated to 40. link is optional but strictly checked: an address that cannot be parsed returns 400 \"That link doesn't look right — paste the full web address, or leave it blank.\", anything that is not http or https returns 400 \"Links need to start with http:// or https://.\", and the maximum length is 300 characters. A successful suggestion returns 201 with {token, id}; that 22-character token is held in the suggester's browser and lets them take their own idea down with POST /api/giftidea/i/<token>/remove, which also clears any claim on it. Upvotes are POST /api/giftidea/upvote with {slug, ideaId} and return {ok, votes}; the count is incremented atomically, but the vote itself is deliberately soft — deduplicated only in the voter's own browser, so a determined person can vote twice. Claiming an idea to buy is POST /api/giftidea/claim with {slug, ideaId, name}, which returns 201 with a 16-character {secret}. name is required, maximum 40 characters, and 400 \"Add your name so nobody else buys it too.\" comes back without it. Only one person can claim a given idea; the second gets 409 \"Someone's already getting that one.\" The claimer undoes it with POST /api/giftidea/unclaim and {slug, ideaId, secret}. A board holds at most 200 ideas; past that, suggestions return 409. The organiser works from /e/<editToken>: POST /api/giftidea/<editToken>/removeIdea with {itoken} removes one idea, and POST /api/giftidea/<editToken>/delete removes the board.\n\nHuman page: https://bitibybit.com/gift-ideas/",
+        "tags": [
+          "Gift Idea Board"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "recipient": {
+                    "description": "Who the gift is for.",
+                    "type": "string"
+                  },
+                  "occasion": {
+                    "description": "What the gift is for, shown as a chip on the board.",
+                    "type": "string"
+                  },
+                  "budget": {
+                    "description": "Rough budget, shown as a chip. Text only; the tool never handles money.",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "A note from the organiser, shown under the chips.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "recipient"
+                ]
+              },
+              "example": {
+                "recipient": "Dave from the warehouse",
+                "occasion": "His 50th and 20 years on the floor",
+                "budget": "$25 a head, about $400 all up",
+                "note": "Whip-round closes Friday arvo. Do not mention any of this to Dave."
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/hens": {
+      "post": {
+        "operationId": "createHens",
+        "summary": "Create a Hens & Shower Planner",
+        "description": "Creates a planning board for a hens, bridal shower or baby shower — the details, an optional running order, and a \"who brings what\" board of named lists with a fixed number of spots each.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** A successful create returns 201 with {slug, editToken}. The organiser shares /s/<slug>. Guests claim a spot with POST /api/hens/claim and a body of {slug, slotId, name, message?}. slotId is a positional id of the form \"c<categoryIndex>-<n>\", where the category index starts at 0 and n runs from 1 to that category's capacity. An id that does not exist on the board returns 400 \"That spot doesn't exist on this board.\" and a missing name returns 400 \"Add your name so people know who's got it.\" name is limited to 40 characters and the optional message to 120; both are trimmed and have internal whitespace collapsed. A successful claim returns 201 with a 16-character {secret}. Each spot can only be claimed once, so a second person claiming the same spot gets 409 \"Someone grabbed that spot seconds ago — pick another.\" The secret lives only in the claimant's browser and is what lets them let the spot go again with POST /api/hens/unclaim and {slug, slotId, secret}. The organiser works from /e/<editToken>: POST /api/hens/<editToken>/remove with {slotId} force-clears anyone's claim, and POST /api/hens/<editToken>/delete removes the board.\n\nHuman page: https://bitibybit.com/hens-planner/",
+        "tags": [
+          "Hens & Shower Planner"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Name of the do. Also used in the paste-ready share nudge.",
+                    "type": "string"
+                  },
+                  "forWhom": {
+                    "description": "Guest of honour.",
+                    "type": "string"
+                  },
+                  "when": {
+                    "description": "Date and time, shown as a chip.",
+                    "type": "string"
+                  },
+                  "where": {
+                    "description": "Venue or address, shown as a chip.",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "A note from the organiser.",
+                    "type": "string"
+                  },
+                  "kitty": {
+                    "description": "Plain-text explanation of how costs get split. No money is captured or moved by the tool.",
+                    "type": "string"
+                  },
+                  "categories": {
+                    "description": "The \"who brings what\" lists. Each becomes a column of claimable spots.",
+                    "type": "string"
+                  },
+                  "categories[].name": {
+                    "description": "Label of one list, for example \"Grazing platters\".",
+                    "type": "string"
+                  },
+                  "categories[].capacity": {
+                    "description": "How many claimable spots that list has.",
+                    "type": "number"
+                  },
+                  "activities": {
+                    "description": "Running order for the day, shown as a numbered list. Display only — nothing is claimable here.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "title",
+                  "categories",
+                  "categories[].name",
+                  "categories[].capacity"
+                ]
+              },
+              "example": {
+                "title": "Mia's Hens Weekend",
+                "forWhom": "Mia",
+                "when": "Saturday 18 October, from 2pm",
+                "where": "The Boathouse, Balmoral Beach, Mosman",
+                "note": "Wear something you can actually dance in. Mia's mum is joining us for the first hour only.",
+                "kitty": "$60 each covers the boat and the grazing platters. Square up with Steph on the day, cash or transfer.",
+                "categories": [
+                  {
+                    "name": "Grazing platters",
+                    "capacity": 3
+                  },
+                  {
+                    "name": "Bubbles and mixers",
+                    "capacity": 4
+                  },
+                  {
+                    "name": "Decorations and sashes",
+                    "capacity": 2
+                  }
+                ],
+                "activities": [
+                  "2pm - bubbles on the deck",
+                  "3pm - cocktail making class",
+                  "6pm - dinner at the pub",
+                  "8pm - karaoke, non-negotiable"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/qotd": {
+      "post": {
+        "operationId": "createQotd",
+        "summary": "Create a Question of the Day",
+        "description": "Creates a recurring question of the day for a team. One share link that never changes, with a two-option question that rotates on its own at midnight, Sydney time.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** There are no invitations and no per-person setup. The creator gets back {slug, editToken}: they bookmark the organiser page at /e/<editToken> and share the single public page at /s/<slug>. That link stays the same forever, because the question is worked out from the calendar. Anyone who opens the share page votes with POST /api/qotd/vote and a body of {slug, choice, day, qi, voterName}, where choice is \"a\" or \"b\" and qi identifies the question being answered. The slug is the only credential — no account or token is needed to vote. The response is 201 with {token, day, qi, choice, tally}. That vote token is kept in the voter's browser and lets them change their mind with POST /api/qotd/v/<token> and {choice, day, qi}. GET /api/qotd/<slug>/tally returns the current day's split; the page loads with its bars empty on purpose so early votes are not swayed. Organiser-only actions all use the edit token: POST /api/qotd/<editToken>/skip, /add, /remove and /delete.\n\nHuman page: https://bitibybit.com/question-of-the-day/",
+        "tags": [
+          "Question of the Day"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "teamName": {
+                    "description": "Team or office label. Used for the board's title and the line above the question.",
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "teamName": "Level 3 Finance"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/coffee": {
+      "post": {
+        "operationId": "createCoffee",
+        "summary": "Create a Coffee Roulette",
+        "description": "Pairs a team up for a coffee, one round at a time. Each person claims their name once and keeps a private link that shows their new partner every round.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Everyone opens the shared page, taps their own name once and lands on a private page at /p/{token}. That page is permanent — each new round it shows a different partner, so nobody claims their name more than once. The organiser draws the next round from /e/{editToken}; it re-pairs everyone without touching anyone's link. Odd numbers form one group of three. Recent pairings are avoided for a few rounds. The organiser can see who has claimed a name but never who is paired with whom.\n\nHuman page: https://bitibybit.com/coffee-roulette/",
+        "tags": [
+          "Coffee Roulette"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Name of the roulette, shown on every page.",
+                    "type": "string"
+                  },
+                  "names": {
+                    "description": "Everyone taking part.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "cadence": {
+                    "description": "How often you intend to run a round. A label only.",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "A note shown to everyone on the shared page.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "names"
+                ]
+              },
+              "example": {
+                "title": "Product team coffee",
+                "names": [
+                  "Priya",
+                  "Tom H",
+                  "Meredith",
+                  "Jules",
+                  "Sam N",
+                  "Alex",
+                  "Bec"
+                ],
+                "cadence": "Every second Monday"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/pulse": {
+      "post": {
+        "operationId": "createPulse",
+        "summary": "Create a Weekly Pulse",
+        "description": "An anonymous weekly team check-in on one standing link. Responses come back as an average, a trend and a word cloud, never as individuals.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Everyone opens the same shared link and taps 1 to 5, optionally adding a few words. Nothing identifies a respondent: no account, no email, no cookie beyond this browser remembering it already answered this week. Score and comment are stored as separate rows so a phrase can never be tied to the number beside it. A week with fewer than four responses shows a count and nothing else — to the team and to the organiser alike, because there is no organiser view of responses at all. About six months of weeks are kept, dropped whole weeks at a time.\n\nHuman page: https://bitibybit.com/weekly-pulse/",
+        "tags": [
+          "Weekly Pulse"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "team": {
+                    "description": "Team name, used in the heading.",
+                    "type": "string"
+                  },
+                  "question": {
+                    "description": "What to ask each week.",
+                    "type": "string"
+                  },
+                  "askWords": {
+                    "description": "Whether to also ask for a few words, which is what builds the word cloud.",
+                    "type": "boolean"
+                  }
+                }
+              },
+              "example": {
+                "team": "Platform team",
+                "question": "How was your week?",
+                "askWords": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/kudos": {
+      "post": {
+        "operationId": "createKudos",
+        "summary": "Create a Kudos Wall",
+        "description": "A standing wall of short, signed thank-yous for a team. Notes roll over weekly and older weeks fold into an archive.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Anyone with the link posts a note: who it is for, what they did, and who it is from. All three are required — a note cannot be anonymous, because the name is what gives it value. The poster's browser keeps a token so they can take their own note down; the organiser can remove any note. This week's notes sit at the top and the previous six weeks fold into an archive. Anything older than about three months is dropped automatically, whole weeks at a time.\n\nHuman page: https://bitibybit.com/kudos-wall/",
+        "tags": [
+          "Kudos Wall"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "team": {
+                    "description": "Team name, used in the heading.",
+                    "type": "string"
+                  },
+                  "intro": {
+                    "description": "A line shown at the top of the wall.",
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "team": "Platform team",
+                "intro": "We read these out on Monday."
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/poker": {
+      "post": {
+        "operationId": "createPoker",
+        "summary": "Create a Scrum Poker",
+        "description": "Planning poker for a sprint team. Everyone picks a card privately, the facilitator reveals them all at once, and the summary names the high and the low rather than an average.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\nHuman page: https://bitibybit.com/scrum-poker/",
+        "tags": [
+          "Scrum Poker"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "team": {
+                    "description": "Team name, used in the heading.",
+                    "type": "string"
+                  },
+                  "story": {
+                    "description": "What is being sized first. Can be set or changed later by the facilitator.",
+                    "type": "string"
+                  },
+                  "deck": {
+                    "description": "Which card deck the board uses.",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "Created": {
+        "description": "Created. Both capability URLs for the new instance.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "slug",
+                "editToken"
+              ],
+              "properties": {
+                "slug": {
+                  "type": "string",
+                  "description": "Public share link is /s/{slug}. Safe to give to the whole group.",
+                  "example": "lucky-wombat-4kq2m9xrbt7vec"
+                },
+                "editToken": {
+                  "type": "string",
+                  "description": "Organiser link is /e/{editToken}. Secret — treat it like an API key.",
+                  "example": "h3n8pquzr4wmd2fkjt6xayb95s"
+                }
+              }
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Validation failed. The `error` string is written for humans — show it to the user.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            },
+            "example": {
+              "error": "Add at least two names."
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "Too many requests from this IP this hour.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

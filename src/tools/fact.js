@@ -20,8 +20,7 @@
 import {
   esc, json, html, randomString, badInput, pageShell,
   getBySlug, getByToken, getParticipant, getInstanceById,
-  createInstance, updateInstanceData, deleteInstance, logEvent, shareNudge,
-} from "../lib.js";
+  createInstance, updateInstanceData, deleteInstance, logEvent, shareNudge, viewedBeacon} from "../lib.js";
 
 const MAX_TITLE = 80;
 const MAX_PROMPT = 140;
@@ -245,7 +244,7 @@ function revealedPage(row, data, parts) {
     <p><a class="quiet-link" href="/via/fact">made with biti by bit →</a></p>
   </footer>
 </main>`;
-  return html(pageShell({ title: row.title || "Fact Matcher", body }));
+  return html(pageShell({ title: row.title || "Fact Matcher", body, shareType: "fact", shareSlug: row.slug }));
 }
 
 function collectionPage(row, data, parts) {
@@ -347,17 +346,12 @@ function collectionPage(row, data, parts) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: row.title || "Fact Matcher", body }));
+  return html(pageShell({ title: row.title || "Fact Matcher", body, shareType: "fact", shareSlug: row.slug }));
 }
 
 /* ---------- participant page (/p/:token) -------------------- */
 
 async function participantPage(prow, row, env) {
-  if (!prow.viewed_at) {
-    await env.DB.prepare(
-      "UPDATE participants SET viewed_at = ? WHERE id = ? AND viewed_at IS NULL"
-    ).bind(new Date().toISOString(), prow.id).run();
-  }
   const data = JSON.parse(row.data);
   const pdata = JSON.parse(prow.data);
 
@@ -419,7 +413,7 @@ async function participantPage(prow, row, env) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: `${row.title || "Fact Matcher"} — your card`, body }));
+  return html(pageShell({ title: `${row.title || "Fact Matcher"} — your card`, body: body + viewedBeacon(prow.token) }));
 }
 
 /* ---------- organiser page (/e/:token) ---------------------- */

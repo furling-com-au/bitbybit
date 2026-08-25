@@ -436,7 +436,7 @@ async function publicPage(row, env) {
   }
 })();
 </script>`;
-  return html(pageShell({ title: `${data.parents} — baby guess pool`, body }));
+  return html(pageShell({ title: `${data.parents} — baby guess pool`, body, shareType: "baby", shareSlug: row.slug }));
 }
 
 /* ---------- organiser page ---------------------------------- */

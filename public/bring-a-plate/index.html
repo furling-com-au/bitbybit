@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bring a Plate — potluck signup board, free | biti by bit</title>
-<meta name="description" content="The free potluck signup sheet. Set categories like mains, salads and desserts, share one link, and everyone claims a spot with what they're bringing. No accounts, no six-pavlova surprises.">
+<title>Bring a Plate — potluck signup board, free</title>
+<meta name="description" content="Free potluck signup sheet, no accounts. Set the categories, share one link, everyone claims a spot with what they're bringing. No six-pavlova surprises.">
 <link rel="canonical" href="https://bitibybit.com/bring-a-plate/">
 <meta property="og:title" content="Bring a Plate — the potluck board">
 <meta property="og:description" content="Set the categories, share the link, everyone claims what they're bringing. Free, no signup.">
@@ -48,16 +48,29 @@
     <p class="lede">The potluck board that prevents six pavlovas and no salad.
     Set the categories, share the link, and everyone puts their name on a spot
     with what they're bringing. The board fills in; the doubling-up doesn't.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/plate-hero.png"
-           alt="Pixel art trestle table laden with a glazed ham, salad, jug, pavlova and lamingtons, with an esky underneath"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example is-one-tap">Six categories are already filled in, Mains through Wildcards. <a href="/s/demo-bring-a-plate">See a finished list &rarr;</a></p>
+    <p class="one-tap"><button type="submit" form="plateForm" id="makeBtnTop" class="btn primary">Make the board now &rarr;</button><a class="fine" href="#plateForm">or change them below</a></p>
+
   </section>
 
   <section class="builder panel">
     <form id="plateForm" novalidate>
       <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Categories <em>(one per line — "Name x spots")</em></span>
+            <textarea id="categories" rows="9" spellcheck="false">Mains x6
+Salads x5
+Desserts x4
+Drinks x4
+Ice and esky x2
+Wildcards x3</textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Set the table →</button>
+        </div>
         <div>
           <label class="field">
             <span>Board title <em>(optional)</em></span>
@@ -72,22 +85,8 @@
             <textarea id="note" rows="4" maxlength="300" placeholder="BYO chairs. The oven at number 12 is free if anything needs heating."></textarea>
           </label>
         </div>
-        <div>
-          <label class="field">
-            <span>Categories <em>(one per line — "Name x spots")</em></span>
-            <textarea id="categories" rows="9" spellcheck="false">Mains x6
-Salads x5
-Desserts x4
-Drinks x4
-Ice and esky x2
-Wildcards x3</textarea>
-          </label>
-          <p class="status-line" id="statusLine"></p>
-        </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Set the table →</button>
     </form>
 
     <div class="prev-sweeps" id="prevBoards" hidden>
@@ -95,6 +94,13 @@ Wildcards x3</textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/plate-hero.png"
+           alt="Pixel art trestle table laden with a glazed ham, salad, jug, pavlova and lamingtons, with an esky underneath"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>"Bring a plate"?</h2>
@@ -172,14 +178,46 @@ Wildcards x3</textarea>
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type": "Question", "name": "Is the Bring a Plate potluck board free?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You make a board and share one link with the group."}},
-    {"@type": "Question", "name": "Do guests need accounts?",
-     "acceptedAnswer": {"@type": "Answer", "text": "No. Guests tap the link, tap an open spot, type their name and what they're bringing, done. Their browser remembers which spots are theirs."}},
-    {"@type": "Question", "name": "Can I change what I'm bringing?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes — take your name off your own spot and pick another. The spot opens up for everyone else instantly."}},
-    {"@type": "Question", "name": "Does it handle money?",
-     "acceptedAnswer": {"@type": "Answer", "text": "No, deliberately. It organises who brings what — anything involving money stays between you and the group."}}
+    {
+      "@type": "Question",
+      "name": "Is it actually free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. No account, no trial, no card. It's a small tool, not a platform."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do guests need accounts?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — tap the link, tap a spot, type your name, done. Their browser remembers which spots are theirs, so they can undo their own claims too."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I change what I'm bringing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Your own spot has a \"changed plans?\" button — take your name off and pick another. The spot opens up for everyone else instantly."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it handle money?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — deliberately. It sorts out who brings what; anything involving dollars stays between you and the group, same as always."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What if someone claims a spot and doesn't show?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The organiser link can remove any claim, which opens the spot straight back up. The tool can't make Uncle Rob actually cook the snags, though. Nothing can."
+      }
+    }
   ]
 }
 </script>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fact Matcher — fun facts icebreaker generator, free | biti by bit</title>
-<meta name="description" content="A fun facts icebreaker for work. Everyone secretly submits a fact about themselves, the team guesses who's who, then you reveal the answers. Free, no signup — a two truths and a lie alternative that beats the email thread.">
+<title>Fact Matcher — fun facts icebreaker generator, free</title>
+<meta name="description" content="Free fun facts icebreaker, no signup. Everyone submits a fact privately via one link, the group guesses out loud, then you reveal the answers.">
 <link rel="canonical" href="https://bitibybit.com/fact-matcher/">
 <meta property="og:title" content="Fact Matcher — the office icebreaker">
 <meta property="og:description" content="Everyone submits a secret fun fact, the team guesses who's who, then you reveal. Free, no signup.">
@@ -49,16 +49,28 @@
     Everyone secretly submits one fun fact about themselves; the team guesses
     who's who; then you reveal the answers. New starters, offsites, that first
     all-hands where nobody knows anybody.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/fact-hero.png"
-           alt="Pixel art of a few little people with speech bubbles full of question marks, and a disguise mask"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-fact-matcher">See a finished game &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
     <form id="factForm" novalidate>
       <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Who's playing? <em>(one name per line)</em></span>
+            <textarea id="names" rows="11" spellcheck="false" placeholder="Sam
+Priya
+Jordan
+Alex
+Mia
+Tom"></textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Collect the facts →</button>
+        </div>
         <div>
           <label class="field">
             <span>Game title <em>(optional)</em></span>
@@ -73,22 +85,8 @@
             <textarea id="note" rows="4" maxlength="300" placeholder="Keep it work-appropriate and guessable. We'll do the reveal at Friday drinks."></textarea>
           </label>
         </div>
-        <div>
-          <label class="field">
-            <span>Who's playing? <em>(one name per line)</em></span>
-            <textarea id="names" rows="11" spellcheck="false" placeholder="Sam
-Priya
-Jordan
-Alex
-Mia
-Tom"></textarea>
-          </label>
-          <p class="status-line" id="statusLine"></p>
-        </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Collect the facts →</button>
     </form>
 
     <div class="prev-sweeps" id="prevGames" hidden>
@@ -96,6 +94,13 @@ Tom"></textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/fact-hero.png"
+           alt="Pixel art of a few little people with speech bubbles full of question marks, and a disguise mask"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>How it works</h2>
@@ -169,14 +174,46 @@ Tom"></textarea>
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type": "Question", "name": "Is the Fact Matcher icebreaker free?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Yes — free, with no account or signup. You make a game and share one link with the group."}},
-    {"@type": "Question", "name": "Can people see each other's facts before the reveal?",
-     "acceptedAnswer": {"@type": "Answer", "text": "No. Each fact lives on that person's private link and appears nowhere else until the organiser reveals the answers. The guessing only works because the submissions stay secret."}},
-    {"@type": "Question", "name": "Someone lost their private link — what happens?",
-     "acceptedAnswer": {"@type": "Answer", "text": "The organiser page has a reset next to every name. Reset it and that person can claim their name again from the shared link. Their fact is kept."}},
-    {"@type": "Question", "name": "How many people can play Fact Matcher?",
-     "acceptedAnswer": {"@type": "Answer", "text": "From three up to sixty. With fewer than three it isn't much of a guessing game; for a bigger crowd, run two rounds and reveal them separately."}}
+    {
+      "@type": "Question",
+      "name": "Is it actually free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. No account, no trial, no card. It's a small tool, not a platform."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can people see each other's facts before the reveal?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Each fact lives on that person's private link and shows up nowhere else until the organiser reveals. That's the whole point — the guessing only works if the answers stay hidden."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Someone lost their private link — now what?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The organiser page has a reset next to every name. Reset it, and that person can claim their name again from the shared link and pick up where they left off. Their fact is kept."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How many people can play?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Three at a minimum — with fewer it's not much of a guessing game — and up to sixty. For a bigger crowd, run two rounds and reveal them separately."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are some good icebreaker questions for work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Plenty — sorted by situation and by how much time you have, on the icebreaker questions page, along with a long list of fun-fact examples for the people who freeze."
+      }
+    }
   ]
 }
 </script>

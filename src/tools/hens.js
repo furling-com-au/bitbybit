@@ -412,7 +412,7 @@ async function publicPage(row, env) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: row.title || "Hens & shower planner", body }));
+  return html(pageShell({ title: row.title || "Hens & shower planner", body, shareType: "hens", shareSlug: row.slug }));
 }
 
 async function editPage(row, env, origin) {

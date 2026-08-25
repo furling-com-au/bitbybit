@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>How to seed a tournament bracket — byes, formats and timing | biti by bit</title>
-<meta name="description" content="How tournament seeding actually works: why brackets are powers of two, how byes are allocated, standard seed pairing, random draw vs ranked vs snake seeding, single vs double elimination vs round robin, and how long each one really takes.">
+<title>How to seed a tournament bracket — byes, formats and timing</title>
+<meta name="description" content="How to seed a tournament bracket: why draws are powers of two, where the byes go, the three ways to seed, and how long each format actually takes.">
 <link rel="canonical" href="https://bitibybit.com/tournament-bracket/how-to-seed/">
 <meta property="og:title" content="How to seed a tournament bracket">
 <meta property="og:description" content="Byes, seed pairing, random vs ranked draws, and how long your format will actually take.">
@@ -33,7 +33,7 @@
   .content .status-table td { color: var(--ink-soft); }
 </style>
 </head>
-<body>
+<body class="article">
 <div class="scanlines" aria-hidden="true"></div>
 <header class="site-head wrap">
   <a class="wordmark" href="/" aria-label="biti by bit — home">
@@ -292,18 +292,54 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type": "Question", "name": "Why do brackets have to be a power of two?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Because single elimination halves the field each round. Only 2, 4, 8, 16, 32 and 64 can be halved all the way down to one winner. Any other entrant count is padded up to the next power of two, and the empty slots become byes."}},
-    {"@type": "Question", "name": "How do byes work in a tournament bracket?",
-     "acceptedAnswer": {"@type": "Answer", "text": "A bye is a free pass into round two, given when the bracket has more slots than entrants. The number of byes is bracket size minus entrants - ten players in a bracket of sixteen means six byes. A bye is not a win and not a walkover; the player simply starts in round two."}},
-    {"@type": "Question", "name": "Who should get the byes?",
-     "acceptedAnswer": {"@type": "Answer", "text": "In a seeded draw, the top seeds: seed 1 gets the first bye, seed 2 the second, and so on, because the purpose of seeding is keeping the strongest entrants apart until late. In a random draw, allocate them randomly and say so before drawing. Either way, spread them across the bracket rather than stacking them in one half."}},
-    {"@type": "Question", "name": "How many games are in a single elimination tournament?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Entrants minus one, always. Every game eliminates exactly one player and you need to eliminate everyone but the winner. Twelve players is eleven games regardless of how many byes there are."}},
-    {"@type": "Question", "name": "Single or double elimination?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Single if time is short or the field is big - it is the only format that reliably fits a lunch hour. Double if the result matters and you have eight to sixteen entrants, since it takes roughly twice as many games but stops one bad start ending someone's day."}},
-    {"@type": "Question", "name": "How long will a tournament actually take?",
-     "acceptedAnswer": {"@type": "Answer", "text": "Multiply games by your realistic game length including changeover. On one table, twelve players in single elimination at ten minutes a game is about two hours. Extra tables only parallelise within a round, so the floor is rounds times game length - four rounds at ten minutes is forty minutes no matter how many tables you have."}}
+    {
+      "@type": "Question",
+      "name": "Why do brackets have to be a power of two?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Because single elimination halves the field each round. Only 2, 4, 8, 16, 32 and 64 can be halved all the way down to one winner. Any other entrant count gets padded up to the next power of two, and the empty slots become byes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do byes work in a tournament bracket?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A bye is a free pass into round two, given to a player when the bracket has more slots than entrants. The number of byes is bracket size minus entrants — ten players in a bracket of sixteen means six byes. A bye isn't a win and isn't a walkover; the player simply starts in round two."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who should get the byes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In a seeded draw, the top seeds: seed 1 gets the first bye, seed 2 the second, and so on. That's the whole purpose of seeding — keeping the strongest entrants apart until late. In a random draw, allocate them randomly and say so before you draw. Either way, spread them across the bracket rather than stacking them in one half."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How many games are in a single elimination tournament?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Entrants minus one, always. Every game eliminates exactly one player, and you need to eliminate everyone but the winner. Twelve players is eleven games regardless of how many byes there are."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Single or double elimination?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Single if time is short or the field is big — it's the only format that reliably fits a lunch hour. Double if the result matters and you have eight to sixteen entrants, since it takes roughly twice as many games but stops one bad start ending someone's day."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long will a tournament actually take?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Multiply games by your realistic game length including changeover. On one table, twelve players in single elimination at ten minutes a game is about two hours. With extra tables you can only parallelise within a round, so the absolute floor is rounds times game length — four rounds at ten minutes is forty minutes, no matter how many tables you have."
+      }
+    }
   ]
 }
 </script>

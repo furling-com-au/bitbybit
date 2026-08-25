@@ -347,7 +347,7 @@ async function publicPage(row, env) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: row.title || "Bring a plate", body }));
+  return html(pageShell({ title: row.title || "Bring a plate", body, shareType: "plate", shareSlug: row.slug }));
 }
 
 async function editPage(row, env, origin) {

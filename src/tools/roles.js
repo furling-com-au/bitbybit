@@ -8,8 +8,7 @@
 import {
   esc, json, html, randomString, badInput, pageShell,
   getBySlug, getByToken, createInstance, deleteInstance,
-  logEvent, fmtDate, shareNudge,
-} from "../lib.js";
+  logEvent, fmtDate, shareNudge, viewedBeacon} from "../lib.js";
 
 const MAX_TITLE = 80;
 const MAX_ROLES = 40;
@@ -221,14 +220,10 @@ async function publicPage(row, env) {
   });
 })();
 </script>`;
-  return html(pageShell({ title: row.title || "Secret roles", body }));
+  return html(pageShell({ title: row.title || "Secret roles", body, shareType: "roles", shareSlug: row.slug }));
 }
 
 async function participantPage(prow, row, env) {
-  if (!prow.viewed_at) {
-    await env.DB.prepare("UPDATE participants SET viewed_at = ? WHERE id = ?")
-      .bind(new Date().toISOString(), prow.id).run();
-  }
   const data = JSON.parse(row.data);
   const role = JSON.parse(prow.data).role;
 
@@ -251,7 +246,7 @@ async function participantPage(prow, row, env) {
     <p><a class="quiet-link" href="/via/roles">made with biti by bit →</a></p>
   </footer>
 </main>`;
-  return html(pageShell({ title: "Your role", body }));
+  return html(pageShell({ title: "Your role", body: body + viewedBeacon(prow.token) }));
 }
 
 async function editPage(row, env, url) {

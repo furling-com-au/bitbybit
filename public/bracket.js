@@ -3,6 +3,22 @@
   "use strict";
 
   const $ = (id) => document.getElementById(id);
+  /* People type a list two ways: one per line, or comma-separated on a single
+     line. The second used to be a dead end — splitting on newlines returned
+     one item, and the tool refused it with "add at least three names", which
+     reads as though the names were wrong rather than the separator.
+
+     Falling back to commas ONLY when the whole input is a single line is what
+     makes this safe: one line is already a useless input for this field, so
+     the fallback can only turn a certain refusal into a likely success.
+     Multi-line input is left alone, so an entry that legitimately contains a
+     comma keeps it as long as it sits on its own line. Fields where a single
+     item IS valid — bring-a-plate categories, volunteer-roster shifts,
+     hens-planner categories and activities — deliberately do not do this. */
+  const listPieces = (v) => {
+    const lines = v.split("\n").filter((s) => s.trim());
+    return lines.length === 1 && lines[0].includes(",") ? lines[0].split(",") : v.split("\n");
+  };
   const LS_KEY = "bbb:bracket-made:v1";
   const MAX_ENTRANTS = 64;
 
@@ -12,7 +28,7 @@
 
   /* ---- entrants: one per line -------------------------------- */
   const lines = () =>
-    $("entrants").value.split("\n")
+    listPieces($("entrants").value)
       .map((s) => s.trim().replace(/\s+/g, " ").slice(0, 40))
       .filter(Boolean);
 
