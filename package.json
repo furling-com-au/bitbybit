@@ -16,7 +16,7 @@
     "examples": "node scripts/sync-example-links.mjs",
     "seed:demos": "node scripts/seed-demos.mjs",
     "faq": "node scripts/sync-faq-schema.mjs",
-    "build": "npm run eol && npm run robots && npm run apidocs && npm run templates && npm run pages && npm run faq && npm run fold && npm run examples && npm run articleface && npm run cardcopy && npm run names && npm run pressfacts && npm run sitemap && npm run herolcp && npm run sharenudge",
+    "build": "npm run eol && npm run robots && npm run apidocs && npm run templates && npm run pages && npm run faq && npm run fold && npm run examples && npm run articleface && npm run cardcopy && npm run names && npm run pressfacts && npm run sitemap && npm run markdown && npm run syntax && npm run accept && npm run herolcp && npm run sharenudge",
     "stats": "node scripts/stats.mjs",
     "fold": "node scripts/builder-above-fold.mjs",
     "articleface": "node scripts/sync-article-face.mjs",
@@ -24,6 +24,9 @@
     "sitemap": "node scripts/gen-sitemap.mjs",
     "names": "node scripts/sync-example-names.mjs",
     "eol": "node scripts/check-line-endings.mjs",
+    "markdown": "node scripts/gen-markdown.mjs",
+    "syntax": "node --check src/worker.js && node --check src/lib.js",
+    "accept": "node scripts/check-accept.mjs",
     "herolcp": "node scripts/check-hero-loading.mjs",
     "sharenudge": "node scripts/check-share-nudge.mjs",
     "pressfacts": "node scripts/sync-press-facts.mjs"

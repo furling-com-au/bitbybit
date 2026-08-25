@@ -143,6 +143,81 @@ const VIA = {
   kudos: "/kudos-wall/",
   poker: "/scrum-poker/",
 };
+/* ---------- markdown for agents ------------------------------
+   Content negotiation: an agent asking for text/markdown gets the clean
+   Markdown twin gen-markdown.mjs builds; everyone else gets HTML, which
+   stays the default.
+
+   Cloudflare sells this as a zone feature needing no code, but it starts at
+   the Pro plan and works by converting whatever HTML the origin returned.
+   Building the Markdown ourselves is both free and better: the builder form,
+   the presets and the site chrome never enter it.
+
+   Only whole-page paths negotiate. /s/, /e/ and /p/ are handled and returned
+   long before this point and have no Markdown twin by design — they are
+   Disallow-ed in robots.txt, and a second representation of a page someone
+   shared with their group rather than with the web would quietly widen it. */
+const PAGE_RE = /^\/(?:[a-z0-9-]+\/)*$/;
+
+/* True only when text/markdown is named EXPLICITLY and wanted at least as
+   much as HTML. The wildcard case is the whole difficulty: every browser
+   sends "*\/*;q=0.8" somewhere in its Accept, so any implementation that
+   asks "does this accept markdown?" answers yes for Chrome and serves a .md
+   to a person. A wildcard is a fallback, never a request. */
+function acceptsMarkdown(header) {
+  if (!header) return false;
+  let md = -1, html = -1;
+  for (const part of header.split(",")) {
+    const bits = part.trim().split(";");
+    const type = bits[0].trim().toLowerCase();
+    let q = 1;
+    for (const param of bits.slice(1)) {
+      const m = param.trim().match(/^q=([0-9.]+)$/i);
+      if (m) { const v = parseFloat(m[1]); q = Number.isFinite(v) ? v : 0; }
+    }
+    if (type === "text/markdown") md = Math.max(md, q);
+    else if (type === "text/html") html = Math.max(html, q);
+  }
+  return md > 0 && md >= html;
+}
+
+/* Vary: Accept is load-bearing, not decoration. Without it Cloudflare may
+   cache whichever representation it saw first and hand that to everyone
+   after — a Markdown file to a browser, or HTML to an agent. Any dimension
+   the assets layer already declared is preserved. */
+function withVary(res) {
+  const out = new Response(res.body, res);
+  const prev = out.headers.get("vary");
+  if (!prev) out.headers.set("vary", "Accept");
+  else if (!/(^|,)\s*accept\s*(,|$)/i.test(prev)) out.headers.set("vary", prev + ", Accept");
+  return out;
+}
+
+async function markdownResponse(request, env, path) {
+  if (!PAGE_RE.test(path)) return null;
+  if (!acceptsMarkdown(request.headers.get("accept"))) return null;
+
+  const mdUrl = new URL(request.url);
+  mdUrl.pathname = path + "index.md";
+  const res = await env.ASSETS.fetch(new Request(mdUrl.toString(), { method: "GET" }));
+  if (!res.ok) return null;                  // no twin here: fall through to HTML
+
+  const text = await res.text();
+  /* Same approximation as the generator: words plus punctuation runs. A
+     budgeting hint for the caller, not a tokeniser's output. */
+  const tokens = (text.match(/[A-Za-z0-9']+|[^\sA-Za-z0-9']/g) || []).length;
+
+  return new Response(request.method === "HEAD" ? null : text, {
+    status: 200,
+    headers: {
+      "content-type": "text/markdown; charset=utf-8",
+      "vary": "Accept",
+      "x-markdown-tokens": String(tokens),
+      "cache-control": "public, max-age=3600",
+    },
+  });
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -284,8 +359,20 @@ export default {
 
       /* Everything else is a static page. run_worker_first is true, so the
          www -> apex redirect above sees HTML requests too; from here the
-         assets layer takes over — pages, _headers, and its own 404 page. */
-      return env.ASSETS.fetch(request);
+         assets layer takes over — pages, _headers, and its own 404 page.
+
+         Markdown negotiation happens here and nowhere else, so it can only
+         ever apply to public pages: every capability URL has already
+         returned above. Vary is added to the HTML too — a cache told that
+         one representation varies and the other does not still mixes them
+         up — but only for page paths, so a CSS or image request is not
+         needlessly fragmented across every Accept header a browser sends. */
+      if (request.method === "GET" || request.method === "HEAD") {
+        const md = await markdownResponse(request, env, path);
+        if (md) return md;
+      }
+      const assetRes = await env.ASSETS.fetch(request);
+      return PAGE_RE.test(path) ? withVary(assetRes) : assetRes;
     } catch (e) {
       const status = e.status || 500;
       if (status >= 500) console.error(e);
