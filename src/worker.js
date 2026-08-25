@@ -185,11 +185,20 @@ function acceptsMarkdown(header) {
    cache whichever representation it saw first and hand that to everyone
    after — a Markdown file to a browser, or HTML to an agent. Any dimension
    the assets layer already declared is preserved. */
-function withVary(res) {
+function withVary(res, path) {
   const out = new Response(res.body, res);
   const prev = out.headers.get("vary");
   if (!prev) out.headers.set("vary", "Accept");
   else if (!/(^|,)\s*accept\s*(,|$)/i.test(prev)) out.headers.set("vary", prev + ", Accept");
+
+  /* Advertise the twin. Negotiation only helps a caller that already knows to
+     ask; this tells one that does not, and hands anything that cannot set
+     request headers at all a plain URL to fetch instead. Relative on purpose
+     — RFC 8288 resolves the target against the request, so it stays correct
+     on the www host as well as the apex. Only on a 200: a 404 has no twin. */
+  if (res.ok && path) {
+    out.headers.append("link", `<${path}index.md>; rel="alternate"; type="text/markdown"`);
+  }
   return out;
 }
 
@@ -372,7 +381,7 @@ export default {
         if (md) return md;
       }
       const assetRes = await env.ASSETS.fetch(request);
-      return PAGE_RE.test(path) ? withVary(assetRes) : assetRes;
+      return PAGE_RE.test(path) ? withVary(assetRes, path) : assetRes;
     } catch (e) {
       const status = e.status || 500;
       if (status >= 500) console.error(e);
