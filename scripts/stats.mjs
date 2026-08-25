@@ -25,6 +25,18 @@
  *
  * sweep and bracket write to neither table. They are structurally
  * unmeasurable here and are labelled as such rather than reported as zero.
+ *
+ * REACHED has no time threshold, and on 26 Aug 2026 that made it lie. It
+ * reported 5 of 11 instances as reaching a second person. Every one of those
+ * five claims landed 0-41 seconds after the instance was created (25s, 41s,
+ * 0s, 24s, 0s) - one person making a thing and immediately clicking their own
+ * link to check it works. Correct by the predicate, useless as a signal.
+ *
+ * So COLD is reported alongside it: the same three participation shapes, but
+ * only counting action more than COLD_MINUTES after creation. That is the
+ * number that separates a tool being USED from a tool being TRIED, and it is
+ * the one to watch. It reads 0 today. Do not average the two or quote REACHED
+ * on its own again.
  */
 import { execSync } from "node:child_process";
 
@@ -58,9 +70,22 @@ const REACHED =
   ` OR EXISTS (SELECT 1 FROM participants p WHERE p.instance_id = i.id AND p.claimed_at IS NOT NULL)` +
   ` OR (i.tool_type IN (${NO_STAMP}) AND EXISTS (SELECT 1 FROM participants p2 WHERE p2.instance_id = i.id)))`;
 
+/* Anything sooner than this after creation is the maker checking their own
+   link, not a second person arriving. Five minutes is deliberately generous:
+   the observed self-tests all landed inside 41 seconds, so the threshold has
+   a lot of headroom before it starts discarding real early participation. */
+const COLD_MINUTES = 5;
+const LATE = (t) => `julianday(${t}) - julianday(i.created_at) > ${COLD_MINUTES}.0/1440`;
+
+const COLD =
+  `(EXISTS (SELECT 1 FROM claims c WHERE c.instance_id = i.id AND ${LATE("c.created_at")})` +
+  ` OR EXISTS (SELECT 1 FROM participants p WHERE p.instance_id = i.id AND p.claimed_at IS NOT NULL AND ${LATE("p.claimed_at")})` +
+  ` OR (i.tool_type IN (${NO_STAMP}) AND EXISTS (SELECT 1 FROM participants p2 WHERE p2.instance_id = i.id AND ${LATE("p2.created_at")})))`;
+
 const rows = sql(
   `SELECT i.tool_type AS tool, COUNT(*) AS made,` +
   ` SUM(CASE WHEN ${REACHED} THEN 1 ELSE 0 END) AS reached,` +
+  ` SUM(CASE WHEN ${COLD} THEN 1 ELSE 0 END) AS cold,` +
   ` SUM(CASE WHEN i.updated_at > i.created_at THEN 1 ELSE 0 END) AS touched` +
   ` FROM instances i WHERE i.slug NOT LIKE 'demo-%' GROUP BY i.tool_type ORDER BY reached DESC, made DESC`
 );
@@ -81,16 +106,22 @@ const pad = (s, n) => String(s).padEnd(n);
 const num = (s, n) => String(s).padStart(n);
 
 console.log(`\n  ${LOCAL ? "LOCAL" : "PRODUCTION"} — demo-* excluded\n`);
-console.log(`  ${pad("tool", 11)}${num("made", 5)}${num("reached", 9)}${num("edited", 8)}`);
-console.log("  " + "-".repeat(32));
-let made = 0, reached = 0;
+console.log(`  ${pad("tool", 11)}${num("made", 5)}${num("reached", 9)}${num("cold", 7)}${num("edited", 8)}`);
+console.log("  " + "-".repeat(39));
+let made = 0, reached = 0, cold = 0;
 for (const r of rows) {
-  made += r.made; reached += r.reached;
+  made += r.made; reached += r.reached; cold += r.cold;
   const note = UNMEASURABLE.has(r.tool) ? "   (reach not recorded)" : "";
-  console.log(`  ${pad(r.tool, 11)}${num(r.made, 5)}${num(r.reached, 9)}${num(r.touched, 8)}${note}`);
+  console.log(`  ${pad(r.tool, 11)}${num(r.made, 5)}${num(r.reached, 9)}${num(r.cold, 7)}${num(r.touched, 8)}${note}`);
 }
-console.log("  " + "-".repeat(32));
-console.log(`  ${pad("total", 11)}${num(made, 5)}${num(reached, 9)}\n`);
+console.log("  " + "-".repeat(39));
+console.log(`  ${pad("total", 11)}${num(made, 5)}${num(reached, 9)}${num(cold, 7)}`);
+console.log("");
+console.log("  reached = anyone claimed, at any time.");
+console.log(`  cold    = claimed more than ${COLD_MINUTES} min after creation, so plausibly`);
+console.log("            NOT the maker clicking their own link to check it.");
+console.log("  cold is the real number. reached on its own overstates badly.");
+console.log("");
 
 console.log("  refused creates (a person pressed the button and got nothing):");
 if (!fails.length) console.log("    none recorded");
