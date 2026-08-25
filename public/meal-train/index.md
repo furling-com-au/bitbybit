@@ -36,6 +36,8 @@ People tap a day, add their name and (if they like) what they're bringing, done.
 
 **Cooking rather than organising?** [Meal train ideas](https://bitibybit.com/meal-train/meal-ideas/) covers what actually helps once it lands on someone's bench — meals that freeze and reheat properly, how to portion and label them, what to skip, the breakfast and snacks everyone forgets, and the help that isn't food.
 
+**Used MealTrain.com before?** [Here is an honest comparison](https://bitibybit.com/meal-train/alternative/) — what each one asks for, what each one costs, and the things theirs does better.
+
 ## FAQ
 
 ### Is it actually free?
