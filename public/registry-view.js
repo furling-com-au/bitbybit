@@ -89,7 +89,7 @@
     const raised = partCents + overflowCents();
     const claimed = RP.SLOTS.filter((s) => state.claims[s.id]).length;
     let pct = Math.floor((partCents / RP.GRAND_TOTAL) * 100);
-    if (pct === 100 && claimedCount !== RP.SLOTS.length) pct = 99; // finished means finished
+    if (pct === 100 && claimed !== RP.SLOTS.length) pct = 99; // finished means finished
 
     $("rgMeterFill").style.width = pct + "%";
     // Numbers only — nothing user-typed goes through innerHTML.
@@ -138,7 +138,7 @@
       el.type = "button";
       el.className = "rg-sect" +
         (state.filterGroup === g.id ? " is-on" : "") +
-        (claimedCount === RP.SLOTS.length ? " is-done" : "");
+        (claimed === total.slots ? " is-done" : "");
       el.setAttribute("aria-pressed", String(state.filterGroup === g.id));
       el.innerHTML =
         '<span class="rg-sect-top">' +

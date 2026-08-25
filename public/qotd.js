@@ -55,14 +55,24 @@
   /* ---- submit ------------------------------------------------ */
   async function submit(e) {
     e.preventDefault();
-    const btn = $("makeBtn");
+    /* Two buttons submit this form: the one inside it, and the one above
+       the fold that the example strip emits. Both must show the same busy
+       state — a top button that stays idle while a request is in flight
+       looks broken, because its only feedback sits ~1,400px below the
+       finger, and the natural response is a second tap and a second
+       instance. Each keeps its own resting label ("... now" up top). */
+    const btns = ["makeBtn", "makeBtnTop"].map($).filter(Boolean);
+    btns.forEach((b) => { if (b.dataset.rest === undefined) b.dataset.rest = b.textContent; });
+    const setBusy = (on, label) => btns.forEach((b) => {
+      b.disabled = on;
+      b.textContent = on ? label : b.dataset.rest;
+    });
     const err = $("formError");
     err.hidden = true;
 
     const teamName = $("teamName").value.trim().replace(/\s+/g, " ").slice(0, 60);
 
-    btn.disabled = true;
-    btn.textContent = "Setting it up…";
+    setBusy(true, "Setting it up…");
 
     try {
       const res = await fetch("/api/qotd", {
@@ -79,8 +89,11 @@
     } catch (ex) {
       err.textContent = ex.message || "Something went wrong — try again.";
       err.hidden = false;
-      btn.disabled = false;
-      btn.textContent = "Start today's question →";
+      // The error banner lives beside the button inside the form. Someone who
+      // tapped the button above the fold is ~1,000px away from it, so a silent
+      // failure would look like nothing happened at all.
+      if (window.scrollY < 200) err.scrollIntoView({ block: "center" });
+      setBusy(false);
     }
   }
 
