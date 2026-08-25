@@ -32,6 +32,7 @@ const MAX_MESSAGE = 280;
 
 const MAX_ROWS = 3000;
 const PRUNE_AT = 2200;
+const PRUNE_TARGET = 1800;   // shed down to here, so one prune buys many writes
 const KEEP_WEEKS = 12;        // a quarter of history
 
 const ARCHIVE_WEEKS = 6;      // how many past weeks the page shows
@@ -83,19 +84,48 @@ const allNotes = async (env, instanceId) =>
 
 const parse = (r) => { try { return JSON.parse(r.data || "{}"); } catch { return {}; } };
 
-async function prune(env, instanceId, rows, keepFrom) {
-  const ids = rows.filter((r) => {
+/* Shed by ROW BUDGET, oldest whole weeks first — never the current
+   week. The age rule is a retention policy, not the only lever.
+
+   The first version sheds by age alone while the cap counted total
+   rows, which is the deadlock qotd.js documents in its own history:
+   once the cap is reached with nothing old enough to drop, every
+   write is refused and only the calendar can fix it. Whole weeks
+   rather than individual rows, so a surviving week is never a
+   partial sample of itself. */
+async function prune(env, instanceId, rows, week, target, keepFrom) {
+  const byW = new Map();
+  for (const r of rows) {
     const d = parse(r);
-    return typeof d.w === "number" && d.w < keepFrom;
-  }).map((r) => r.id);
-  if (!ids.length) return 0;
-  for (let i = 0; i < ids.length; i += 200) {
-    const part = ids.slice(i, i + 200);
+    if (typeof d.w !== "number") continue;
+    if (!byW.has(d.w)) byW.set(d.w, []);
+    byW.get(d.w).push(r.id);
+  }
+
+  const weeks = [...byW.keys()].filter((w) => w !== week).sort((a, b) => a - b);
+  const doomed = [];
+  let remaining = rows.length;
+
+  // anything past the retention window goes regardless of budget
+  for (const w of weeks) {
+    if (w < keepFrom) { doomed.push(...byW.get(w)); remaining -= byW.get(w).length; }
+  }
+  // then oldest whole weeks until the budget is met
+  for (const w of weeks) {
+    if (remaining <= target) break;
+    if (w < keepFrom) continue;                 // already taken above
+    doomed.push(...byW.get(w));
+    remaining -= byW.get(w).length;
+  }
+  if (!doomed.length) return 0;
+
+  for (let i = 0; i < doomed.length; i += 200) {
+    const part = doomed.slice(i, i + 200);
     await env.DB.prepare(
       `DELETE FROM participants WHERE id IN (${part.map(() => "?").join(",")})`
     ).bind(...part).run();
   }
-  return ids.length;
+  return doomed.length;
 }
 
 /* ---------- validation --------------------------------------- */
@@ -133,22 +163,29 @@ async function postNote(request, env) {
 
   const rows = await allNotes(env, row.id);
   const week = currentWeek();
-  if (rows.length >= MAX_ROWS) {
-    const pruned = await prune(env, row.id, rows, week - KEEP_WEEKS);
-    if (!pruned) return json({ error: "This wall is full — start a fresh one." }, 409);
-  } else if (rows.length >= PRUNE_AT) {
-    await prune(env, row.id, rows, week - KEEP_WEEKS);
+  /* Age sweep runs whenever anything is actually expired, not only
+     when the wall is nearly full — otherwise a quiet wall of forty
+     notes keeps every note it has ever held, forever. */
+  const expired = rows.some((r) => { const d = parse(r); return typeof d.w === "number" && d.w < week - KEEP_WEEKS; });
+  if (rows.length >= PRUNE_AT || expired) {
+    const left = rows.length - await prune(env, row.id, rows, week, PRUNE_TARGET, week - KEEP_WEEKS);
+    if (left >= MAX_ROWS)
+      return json({ error: "This wall has had a huge week — try again in a moment." }, 409);
   }
 
   /* The token is the note's own capability: whoever posted it holds
      the only handle that can take it down again. */
   const secret = randomString(22);
-  await env.DB.prepare(
+  const res = await env.DB.prepare(
     `INSERT INTO participants (instance_id, token, name, data, created_at)
      VALUES (?, ?, '', ?, ?)`
   ).bind(row.id, secret, JSON.stringify({ w: week, to, from, m: message }), new Date().toISOString()).run();
 
-  return json({ ok: true, secret }, 201);
+  /* The id goes back with the secret so the browser can tie a token to
+     the note it actually created. Without it the client can only hold
+     a bag of anonymous secrets and guess which one to spend — which is
+     precisely the bug this used to have. */
+  return json({ ok: true, id: res.meta.last_row_id, secret }, 201);
 }
 
 /** Take down your own note, using the token you were given. */
@@ -195,7 +232,7 @@ function noteCard(r, d, organiser) {
       </li>`;
 }
 
-function wall(rows, week, organiser) {
+function wall(rows, week, organiser, allWeeks) {
   const byWeek = new Map();
   for (const r of rows) {
     const d = parse(r);
@@ -210,8 +247,16 @@ function wall(rows, week, organiser) {
     </ul>`
     : `<p class="meal-intro">Nothing up yet this week. Be the first.</p>`;
 
+  /* The team sees a few weeks back; the organiser sees everything
+     still stored. The Remove control only exists on a rendered note,
+     so anything the organiser cannot see is something they cannot
+     take down — which is no good on the one tool here where a note
+     names a colleague. */
+  const oldest = allWeeks
+    ? Math.min(...[...byWeek.keys()], week)
+    : week - ARCHIVE_WEEKS;
   const past = [];
-  for (let w = week - 1; w >= week - ARCHIVE_WEEKS; w--) {
+  for (let w = week - 1; w >= oldest; w--) {
     const items = byWeek.get(w);
     if (!items || !items.length) continue;
     past.push(`
@@ -300,7 +345,7 @@ async function publicPage(row, env) {
     }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (d) {
         if (!r.ok) throw new Error(d.error || "That didn't post — try again.");
-        save(mine().concat([d.secret]));
+        save(mine().concat([{ id: d.id, secret: d.secret }]));
         location.reload();
       });
     }).catch(function (e) {
@@ -309,34 +354,34 @@ async function publicPage(row, env) {
     });
   });
 
-  /* Anything this browser posted gets its own take-down button. The
-     secret is the only handle to it, so nobody else sees this. */
-  var secrets = mine();
-  if (secrets.length) {
-    document.querySelectorAll(".kudo").forEach(function (li) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "btn ghost meal-mini kudo-mine";
-      btn.textContent = "Take mine down";
-      btn.addEventListener("click", function () {
-        if (!confirm("Take this note down?")) return;
-        var tried = 0;
-        function attempt(i) {
-          if (i >= secrets.length) { alert("That one wasn't yours."); return; }
-          fetch("/api/kudos/unpost", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify({ slug: slug, secret: secrets[i] }),
-          }).then(function (r) {
-            if (r.ok) { save(secrets.filter(function (s, j) { return j !== i; })); location.reload(); }
-            else attempt(i + 1);
-          });
-        }
-        attempt(0);
+  /* A take-down button appears only on a note this browser actually
+     posted, and spends that note's own secret. The first version
+     attached a button to every note and then tried stored secrets in
+     order, which deleted whoever's note came first regardless of
+     which one you clicked. */
+  var mineList = mine().filter(function (m) { return m && m.id && m.secret; });
+  mineList.forEach(function (m) {
+    var li = document.querySelector('.kudo[data-id="' + m.id + '"]');
+    if (!li) return;                       // already gone, or aged out of view
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn ghost meal-mini kudo-mine";
+    btn.textContent = "Take mine down";
+    btn.addEventListener("click", function () {
+      if (!confirm("Take this note down?")) return;
+      fetch("/api/kudos/unpost", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ slug: slug, secret: m.secret }),
+      }).then(function (r) {
+        if (!r.ok) { alert("That didn't work — try again."); return; }
+        save(mine().filter(function (x) { return x.id !== m.id; }));
+        location.reload();
       });
-      li.appendChild(btn);
     });
-  }
+    li.appendChild(btn);
+  });
+
 })();
 </script>`;
   return html(pageShell({ title: row.title || "Kudos wall", body,
@@ -349,7 +394,7 @@ async function editPage(row, env, origin) {
   const data = JSON.parse(row.data);
   const rows = await allNotes(env, row.id);
   const week = currentWeek();
-  const { thisWeek, past, count } = wall(rows, week, true);
+  const { thisWeek, past, count } = wall(rows, week, true, true);
   const shareUrl = `${origin}/s/${row.slug}`;
 
   const body = `

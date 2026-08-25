@@ -39,6 +39,7 @@ const MAX_QUESTION = 120;
 const MAX_COMMENT = 140;
 const MAX_ROWS = 4000;        // hard cap on stored rows per instance
 const PRUNE_AT = 3000;
+const PRUNE_TARGET = 2400;   // shed down to here, so one prune buys many writes
 const KEEP_WEEKS = 26;        // half a year of history is plenty
 
 /* Below this many responses in a week, results are withheld. Four is
@@ -185,23 +186,48 @@ async function addComment(env, instanceId, week, comment) {
   return false;   // a comment is optional; losing one is not worth a 500
 }
 
-/* Drop whole weeks, oldest first, once the row count gets large.
-   Whole weeks rather than individual rows, so a surviving week is
-   never a biased sample of itself. */
-async function prune(env, instanceId, rows, keepFrom) {
-  const ids = rows.filter((r) => {
+/* Shed by ROW BUDGET, oldest whole weeks first — never the current
+   week. The age rule is a retention policy, not the only lever.
+
+   The first version sheds by age alone while the cap counted total
+   rows, which is the deadlock qotd.js documents in its own history:
+   once the cap is reached with nothing old enough to drop, every
+   write is refused and only the calendar can fix it. Whole weeks
+   rather than individual rows, so a surviving week is never a
+   partial sample of itself. */
+async function prune(env, instanceId, rows, week, target, keepFrom) {
+  const byW = new Map();
+  for (const r of rows) {
     const d = parseRow(r);
-    return typeof d.w === "number" && d.w < keepFrom;
-  }).map((r) => r.id);
-  if (!ids.length) return 0;
-  const chunk = 200;
-  for (let i = 0; i < ids.length; i += chunk) {
-    const part = ids.slice(i, i + chunk);
+    if (typeof d.w !== "number") continue;
+    if (!byW.has(d.w)) byW.set(d.w, []);
+    byW.get(d.w).push(r.id);
+  }
+
+  const weeks = [...byW.keys()].filter((w) => w !== week).sort((a, b) => a - b);
+  const doomed = [];
+  let remaining = rows.length;
+
+  // anything past the retention window goes regardless of budget
+  for (const w of weeks) {
+    if (w < keepFrom) { doomed.push(...byW.get(w)); remaining -= byW.get(w).length; }
+  }
+  // then oldest whole weeks until the budget is met
+  for (const w of weeks) {
+    if (remaining <= target) break;
+    if (w < keepFrom) continue;                 // already taken above
+    doomed.push(...byW.get(w));
+    remaining -= byW.get(w).length;
+  }
+  if (!doomed.length) return 0;
+
+  for (let i = 0; i < doomed.length; i += 200) {
+    const part = doomed.slice(i, i + 200);
     await env.DB.prepare(
       `DELETE FROM participants WHERE id IN (${part.map(() => "?").join(",")})`
     ).bind(...part).run();
   }
-  return ids.length;
+  return doomed.length;
 }
 
 /* ---------- word cloud --------------------------------------- */
@@ -274,11 +300,11 @@ async function respond(request, env) {
   const rows = await allRows(env, row.id);
   const week = currentWeek();
 
-  if (rows.length >= MAX_ROWS) {
-    const pruned = await prune(env, row.id, rows, week - KEEP_WEEKS);
-    if (!pruned) return json({ error: "This pulse is full — start a fresh one." }, 409);
-  } else if (rows.length >= PRUNE_AT) {
-    await prune(env, row.id, rows, week - KEEP_WEEKS);
+  const expired = rows.some((r) => { const d = parseRow(r); return typeof d.w === "number" && d.w < week - KEEP_WEEKS; });
+  if (rows.length >= PRUNE_AT || expired) {
+    const left = rows.length - await prune(env, row.id, rows, week, PRUNE_TARGET, week - KEEP_WEEKS);
+    if (left >= MAX_ROWS)
+      return json({ error: "This pulse has had a huge week — try again in a moment." }, 409);
   }
 
   /* The score gets its own row. The comment goes into the week's
@@ -366,21 +392,46 @@ async function publicPage(row, env) {
 
   const question = data.question || "How was your week?";
 
-  const results = enough ? `
-  <h2 class="meal-section-h">This week so far</h2>
-  <p class="pulse-big">${avg(now.scores).toFixed(1)}<span class="pulse-of"> / 5</span></p>
-  <p class="page-sub">${n} response${n === 1 ? "" : "s"} · week of ${esc(weekLabel(week))}</p>
-  <ul class="pulse-bars">${distribution(now.scores)}
+  /* RESULTS ARE PUBLISHED ONLY FOR CLOSED WEEKS.
+
+     The in-progress week shows a count and nothing else. This is not
+     caution, it is the only thing that works: any figure that moves
+     when one person answers hands you that person's answer. Load the
+     page, wait for a colleague to respond, load it again, and the bar
+     that changed is theirs — no arithmetic required. A threshold of
+     four does not help, because it gates the FIRST reveal and every
+     response after it still moves a visible number.
+
+     A closed week is a fixed set. Nothing about it can be differenced,
+     and padding it after the fact changes nothing anyone can watch. */
+  const lastClosed = week - 1;
+  const closed = weeks.get(lastClosed) || { scores: [], words: [] };
+  const closedN = closed.scores.length;
+  const showClosed = closedN >= MIN_SHOW;
+
+  const liveCount = `
+  <div class="pulse-hold">
+    <p class="pulse-hold-n">${n} response${n === 1 ? "" : "s"} this week</p>
+    <p class="fine">This week's numbers stay closed until Monday. A figure that
+    moves every time somebody answers tells you what they answered — so the week
+    is published once it is finished and can no longer be watched.</p>
+  </div>`;
+
+  const results = showClosed ? `
+  <h2 class="meal-section-h">Week of ${esc(weekLabel(lastClosed))}</h2>
+  <p class="pulse-big">${avg(closed.scores).toFixed(1)}<span class="pulse-of"> / 5</span></p>
+  <p class="page-sub">${closedN} response${closedN === 1 ? "" : "s"}</p>
+  <ul class="pulse-bars">${distribution(closed.scores)}
   </ul>
-  ${cloudBlock(now.words)}
+  ${cloudBlock(closed.words)}
   <h2 class="meal-section-h">Recent weeks</h2>
-  ${trend(weeks, week)}`
+  ${trend(weeks, lastClosed)}`
     : `
   <div class="pulse-hold">
-    <p class="pulse-hold-n">${n} response${n === 1 ? "" : "s"} so far</p>
-    <p class="fine">Results appear once ${MIN_SHOW} people have answered. On a small
-    team, showing an average of two or three answers is the same as naming who
-    said what — so it waits.</p>
+    <p class="pulse-hold-n">Nothing published yet</p>
+    <p class="fine">A week is published once it has closed and at least
+    ${MIN_SHOW} people have answered. Below that, an average points straight at
+    whoever gave the low one.</p>
   </div>`;
 
   const body = `
@@ -409,6 +460,8 @@ async function publicPage(row, env) {
   <div id="pulseDone" hidden>
     <p class="pulse-thanks">Thanks — that's in.</p>
   </div>
+
+  ${liveCount}
 
   ${results}
 
@@ -493,13 +546,15 @@ async function editPage(row, env, origin) {
   const shareUrl = `${origin}/s/${row.slug}`;
 
   const history = [];
-  for (let w = week; w > week - TREND_WEEKS * 2; w--) {
+  /* Starts at week-1: the in-progress week's average is exactly the
+     number an organiser could difference to read one person's score. */
+  for (let w = week - 1; w > week - TREND_WEEKS * 2; w--) {
     const b = weeks.get(w);
     if (!b || !b.scores.length) continue;
     const n = b.scores.length;
     history.push(`
         <tr>
-          <td>${esc(weekLabel(w))}${w === week ? " <span class=\"fine\">(this week)</span>" : ""}</td>
+          <td>${esc(weekLabel(w))}</td>
           <td>${n}</td>
           <td>${n >= MIN_SHOW ? avg(b.scores).toFixed(1) : "<span class=\"fine\">withheld</span>"}</td>
         </tr>`);

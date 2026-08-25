@@ -89,15 +89,19 @@ function pickStarters(count, lastUsed) {
 
 /** Build the next round in place. Returns the new data object. */
 function nextRound(data) {
-  const history = (data.history || []).slice(-(MEMORY - 1));
-  const avoid = new Set(history.flat());
+  /* Avoid is built from the FULL retained history, then the stored
+     array is trimmed. Trimming first meant only MEMORY-1 rounds were
+     ever consulted while MEMORY were kept — the oldest entry was
+     written on every redraw and never read. */
+  const prior = (data.history || []).slice(-MEMORY);
+  const avoid = new Set(prior.flat());
   const groups = drawGroups(data.names.length, avoid);
   return {
     ...data,
     round: (data.round || 0) + 1,
     groups,
     starters: pickStarters(groups.length, data.starters || []),
-    history: [...history, keysFor(groups)],
+    history: [...prior, keysFor(groups)].slice(-MEMORY),
     drawnAt: new Date().toISOString(),
   };
 }
@@ -184,11 +188,25 @@ async function claim(request, env) {
 async function orgNext(token, env) {
   const row = await getByToken(env, token);
   if (!row || row.tool_type !== "coffee") return json({ error: "not found" }, 404);
-  const data = nextRound(JSON.parse(row.data));
-  await env.DB.prepare("UPDATE instances SET data = ?, updated_at = ? WHERE id = ?")
-    .bind(JSON.stringify(data), new Date().toISOString(), row.id).run();
-  await logEvent(env, row.id, "coffee", "redrawn");
-  return json({ ok: true, round: data.round });
+  /* Compare-and-swap on updated_at, like meal/poll/qotd/bracket. Two
+     draws racing would otherwise compute two complete rounds and
+     silently keep one, advancing the round number once for two draws
+     and showing somebody a partner that no longer exists. */
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const cur = await env.DB.prepare(
+      "SELECT data, updated_at FROM instances WHERE id = ?"
+    ).bind(row.id).first();
+    if (!cur) return json({ error: "not found" }, 404);
+    const data = nextRound(JSON.parse(cur.data));
+    const res = await env.DB.prepare(
+      "UPDATE instances SET data = ?, updated_at = ? WHERE id = ? AND updated_at = ?"
+    ).bind(JSON.stringify(data), new Date().toISOString(), row.id, cur.updated_at).run();
+    if (res.meta.changes) {
+      await logEvent(env, row.id, "coffee", "redrawn");
+      return json({ ok: true, round: data.round });
+    }
+  }
+  return json({ error: "Two draws at once — try again in a moment." }, 409);
 }
 
 /* Reopen one person's claim and rotate their token — for the person
@@ -262,8 +280,9 @@ async function publicPage(row, env) {
   </ul>
 
   <footer class="page-foot">
-    <p class="fine">Only you can see who you're paired with. The organiser can't
-    see it either — they can see who has claimed a name, and that's all.</p>
+    <p class="fine">Your pairing shows only on your own page. The organiser sees
+    who has claimed a name, not who got who — though they can reset a name, which
+    frees it for whoever taps it next, so a reset is worth asking about.</p>
     <p><a class="quiet-link" href="/via/coffee">made with biti by bit →</a></p>
   </footer>
 </main>
@@ -334,8 +353,9 @@ async function participantPage(prow, row, env) {
     : `<p class="fine">Keep this link — it updates itself each round.</p>`}
 
   <footer class="page-foot">
-    <p class="fine">This page is yours. Nobody else sees it, including whoever set
-    this up. Bookmark it rather than re-claiming your name each time.</p>
+    <p class="fine">This page is yours — bookmark it rather than re-claiming your
+    name each round. If this link ever stops working, the organiser has reset your
+    name, and whoever claims it next lands on this page.</p>
     <p><a class="quiet-link" href="/via/coffee">made with biti by bit →</a></p>
   </footer>
 </main>`;
@@ -388,8 +408,10 @@ async function editPage(row, env, origin) {
   </div>
 
   <h2 class="meal-section-h">Who has claimed a name</h2>
-  <p class="meal-intro">You can see who has picked up their link. You cannot see
-  who anyone is paired with — that only exists on their own page.</p>
+  <p class="meal-intro">You can see who has picked up their link, not who they
+  were paired with — that lives only on their own page. Resetting is the one
+  exception: it frees that name for whoever taps it next, including you, so use
+  it when somebody has genuinely lost their link.</p>
   <div class="table-scroll">
     <table class="api-table">
       <thead><tr><th>Name</th><th>Claimed</th><th></th></tr></thead>
