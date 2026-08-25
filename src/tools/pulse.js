@@ -16,16 +16,21 @@
      1. SMALL WEEKS ARE SUPPRESSED. Under MIN_SHOW responses a week
         shows a count and nothing else. On a team of six, three
         responses and one visible "2" identifies the dissenter.
-     2. SCORES AND WORDS ARE STORED SEPARATELY. A row holds either
-        a score or a comment, never both, so a distinctive phrase
-        can never be tied back to the 1 it came with.
+     2. A COMMENT IS NEVER A ROW OF ITS OWN. Each week's comments
+        live together in one array that is reshuffled on every
+        write, so there is no per-person comment record and no
+        insertion order to line up against the scores. The first
+        version got this wrong — see the storage section below.
+     3. A WORD SAID ONCE IS NOT SHOWN. The cloud needs two people,
+        with no small-team exception, because one person's unusual
+        word is a fingerprint.
 
    Same standing-link shape as Question of the Day: one link the
    team bookmarks, bucketed by week instead of by day, so it never
    needs re-creating. A week is Monday-anchored in Australia/Sydney.
    ============================================================ */
 import {
-  esc, json, html, randomString, badInput, pageShell,
+  esc, json, html, randomString, shuffle, badInput, pageShell,
   getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge,
 } from "../lib.js";
 
@@ -101,9 +106,22 @@ function weekLabel(week) {
 
 /* ---------- storage ------------------------------------------ */
 
-/* Responses live in the participants table, one row each, with an
-   empty name so the partial unique index on (instance_id, name)
-   never applies. A row carries EITHER a score OR a comment. */
+/* Scores live in the participants table, one row each, with an empty
+   name so the partial unique index on (instance_id, name) never
+   applies.
+
+   COMMENTS DO NOT GET THEIR OWN ROW, and that is the whole point.
+   The first version of this stored a score row and a comment row per
+   response. They came from the same DB.batch(), so they got
+   consecutive AUTOINCREMENT ids — which meant a single SELECT
+   relinked every comment to the score beside it. "Stored separately"
+   achieved nothing, because the ordering WAS the link.
+
+   Now every week has ONE row holding all of that week's comments in
+   an array, reshuffled on every write. There is no per-person comment
+   row to line up against anything, and no insertion order to read
+   off. The row is keyed by a deterministic token so it can be found
+   and updated without a second lookup. */
 const allRows = async (env, instanceId) =>
   (await env.DB.prepare(
     "SELECT id, data FROM participants WHERE instance_id = ? ORDER BY id"
@@ -113,18 +131,58 @@ function parseRow(r) {
   try { return JSON.parse(r.data || "{}"); } catch { return {}; }
 }
 
+/** The deterministic key for a week's shared comment row. */
+const wordsToken = (instanceId, week) => `pw${instanceId}x${week}`;
+
 /** Group rows by week: scores array and words array per week. */
 function byWeek(rows) {
   const m = new Map();
+  const bucket = (w) => {
+    if (!m.has(w)) m.set(w, { scores: [], words: [] });
+    return m.get(w);
+  };
   for (const r of rows) {
     const d = parseRow(r);
     if (typeof d.w !== "number") continue;
-    if (!m.has(d.w)) m.set(d.w, { scores: [], words: [] });
-    const bucket = m.get(d.w);
-    if (typeof d.s === "number") bucket.scores.push(d.s);
-    if (typeof d.c === "string" && d.c) bucket.words.push(d.c);
+    if (typeof d.s === "number") bucket(d.w).scores.push(d.s);
+    // the week's shared comment row
+    if (Array.isArray(d.cs)) bucket(d.w).words.push(...d.cs.filter((x) => typeof x === "string" && x));
   }
   return m;
+}
+
+/* Append a comment to the week's shared row, reshuffling the whole
+   array each time so position carries no information. Compare-and-
+   swap on the row's own data, because two people can answer at once. */
+async function addComment(env, instanceId, week, comment) {
+  const token = wordsToken(instanceId, week);
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const row = await env.DB.prepare(
+      "SELECT id, data FROM participants WHERE token = ?"
+    ).bind(token).first();
+
+    if (!row) {
+      try {
+        await env.DB.prepare(
+          `INSERT INTO participants (instance_id, token, name, data, created_at)
+           VALUES (?, ?, '', ?, ?)`
+        ).bind(instanceId, token, JSON.stringify({ w: week, cs: [comment] }),
+          new Date().toISOString()).run();
+        return true;
+      } catch (e) {
+        if (!/UNIQUE/.test(String(e))) throw e;
+        continue;  // someone else created it first — re-read and append
+      }
+    }
+
+    const cur = parseRow(row);
+    const next = shuffle([...(Array.isArray(cur.cs) ? cur.cs : []), comment]);
+    const res = await env.DB.prepare(
+      "UPDATE participants SET data = ? WHERE id = ? AND data = ?"
+    ).bind(JSON.stringify({ w: week, cs: next }), row.id, row.data).run();
+    if (res.meta.changes) return true;
+  }
+  return false;   // a comment is optional; losing one is not worth a 500
 }
 
 /* Drop whole weeks, oldest first, once the row count gets large.
@@ -223,17 +281,17 @@ async function respond(request, env) {
     await prune(env, row.id, rows, week - KEEP_WEEKS);
   }
 
-  /* Two rows, never one. A single row holding {score, comment} would
-     tie a distinctive phrase to the number beside it, which is
-     exactly the link this tool promises does not exist. */
-  const now = new Date().toISOString();
-  const stmt = env.DB.prepare(
+  /* The score gets its own row. The comment goes into the week's
+     shared, reshuffled array — never a row of its own, because a row
+     of its own lands next to the score in id order and relinks the
+     two. Score first, so a failed comment append cannot lose a vote. */
+  await env.DB.prepare(
     `INSERT INTO participants (instance_id, token, name, data, created_at)
-     VALUES (?, ?, '', ?, ?)`);
-  const batch = [stmt.bind(row.id, randomString(22), JSON.stringify({ w: week, s: score }), now)];
-  if (comment)
-    batch.push(stmt.bind(row.id, randomString(22), JSON.stringify({ w: week, c: comment }), now));
-  await env.DB.batch(batch);
+     VALUES (?, ?, '', ?, ?)`
+  ).bind(row.id, randomString(22), JSON.stringify({ w: week, s: score }),
+    new Date().toISOString()).run();
+
+  if (comment) await addComment(env, row.id, week, comment);
 
   return json({ ok: true, week });
 }
@@ -358,8 +416,9 @@ async function publicPage(row, env) {
     <p class="fine"><strong>Nobody can tell it was you.</strong> There are no
     accounts here, no email addresses and no cookies, so there is nothing to
     identify you with — not for your manager, not for whoever set this up, and
-    not for us. Your number and your words are stored separately, so a phrase
-    can never be matched to the score beside it.</p>
+    not for us. Your words never get a record of their own either — each week's
+    comments go into one shuffled list, so there is no entry of yours sitting
+    beside your score for anyone to line up.</p>
     <p><a class="quiet-link" href="/via/pulse">made with biti by bit →</a></p>
   </footer>
 </main>
