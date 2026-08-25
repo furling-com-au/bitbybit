@@ -2231,3 +2231,34 @@ body.is-demo { padding-bottom: 6rem; }
 .pk-agreed { border-left-color: var(--sage-dark); }
 @media (prefers-color-scheme: dark) { .pk-agreed { border-left-color: var(--sage); } }
 .pk-controls { display: flex; flex-wrap: wrap; gap: .7rem; margin: 0 0 1.6rem; }
+
+/* ---- the completion CTA --------------------------------------------
+   Sits at the foot of a shared page, after somebody has watched the
+   thing work. Deliberately quieter than the tool itself: this is a
+   shared page belonging to whoever made it, and a loud advert in the
+   middle of someone else's meal train is a good way to never be shared
+   again. */
+.own-cta {
+  border-top: 3px solid var(--line);
+  margin: 2.6rem 0 1.4rem;
+  padding: 1.3rem 0 0;
+  max-width: 46ch;
+}
+.own-cta-line {
+  font-size: .95rem; line-height: 1.5; margin: 0 0 .8rem; color: var(--ink);
+}
+.own-cta .btn { text-decoration: none; }
+.own-cta-fine { margin: .7rem 0 0; }
+@media print { .own-cta { display: none; } }
+
+/* ---- the share composer --------------------------------------------
+   The textarea is now editable, so it needs to read as a field the
+   organiser owns rather than a read-only receipt. On a phone the buttons
+   stack under it: side-by-side at 375px leaves the text about 40% of the
+   width, which is not enough to see the sentence you are editing. */
+.nudge-actions { display: flex; gap: .5rem; flex-shrink: 0; }
+@media (max-width: 34rem) {
+  .share-nudge .share-row { flex-direction: column; }
+  .nudge-actions { flex-direction: row; }
+  .nudge-actions .btn { flex: 1; }
+}

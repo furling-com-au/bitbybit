@@ -70,8 +70,11 @@ const fails = sql(
   ` WHERE kind LIKE 'fail:%' GROUP BY tool_type, kind ORDER BY n DESC`
 );
 
+/* via:foot and via:cta since the placement split; plain 'via' is the
+   pre-split history and still counts. */
 const via = sql(
-  `SELECT tool_type AS tool, COUNT(*) AS n FROM events WHERE kind = 'via' GROUP BY tool_type ORDER BY n DESC`
+  `SELECT tool_type AS tool, kind, COUNT(*) AS n FROM events` +
+  ` WHERE kind LIKE 'via%' GROUP BY tool_type, kind ORDER BY n DESC`
 );
 
 const pad = (s, n) => String(s).padEnd(n);
@@ -93,9 +96,15 @@ console.log("  refused creates (a person pressed the button and got nothing):");
 if (!fails.length) console.log("    none recorded");
 for (const f of fails) console.log(`    ${pad(f.tool, 11)} ${pad(f.kind, 10)} ${f.n}`);
 
-console.log("\n  clicks back through the 'made with' credit on a shared page:");
+console.log("\n  clicks back from a shared page (foot = credit line, cta = completion prompt):");
 if (!via.length) console.log("    none recorded");
-for (const v of via) console.log(`    ${pad(v.tool, 11)} ${v.n}`);
+const place = (k) => k.replace("via:", "").replace(/^via$/, "foot");
+for (const v of via) console.log(`    ${pad(v.tool, 11)} ${pad(place(v.kind), 6)} ${v.n}`);
+const byPlacement = via.reduce((a, v) => { const k = place(v.kind); a[k] = (a[k] || 0) + v.n; return a; }, {});
+const top = Math.max(0, ...Object.values(byPlacement));
+/* Written down before the data exists so it cannot be rationalised later. */
+if (top && top < 50)
+  console.log(`\n    Best placement has ${top} clicks. Do not change either until one has 50.`);
 
 console.log(
   `\n  Note: sweep and bracket store no claims or participants, so their\n` +

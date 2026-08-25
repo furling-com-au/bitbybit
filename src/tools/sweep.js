@@ -6,7 +6,7 @@
 import {
   esc, json, html, shuffle, badInput, pageShell,
   getByToken, createInstance, updateInstanceData, deleteInstance,
-  logEvent, fmtDate, shareNudge,
+  logEvent, fmtDate, ownCta, shareNudge,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -157,6 +157,9 @@ function publicPage(row) {
   <p class="page-sub">${subLine(data)}</p>
   ${grid(data, { reveal: true })}
   ${seasonBanner(data.kind)}
+  ${ownCta(data.kind === "cup" ? "cup" : "gf",
+    "Running one for another game, or for the office?",
+    "Make your own sweep")}
   <footer class="page-foot">
     <p><a class="quiet-link" href="/via/${data.kind === "cup" ? "cup" : "gf"}">made with biti by bit →</a></p>
   </footer>

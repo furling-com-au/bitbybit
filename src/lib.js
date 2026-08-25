@@ -164,25 +164,98 @@ export async function deleteInstance(env, id) {
 /* A paste-ready group-chat message on organiser pages. The share
    link is the product's whole distribution channel; this writes the
    message so the organiser doesn't have to. */
+/* The loop's only real recruiting moment.
+ *
+ * Every shared page is seen by five to thirty people who are, by
+ * definition, in a group that organises things — and until now the only
+ * thing offered to them was a footer credit. This is the ask, placed
+ * where they have just watched the thing work.
+ *
+ * Three rules, each learned the expensive way:
+ *   - it names THEIR group, not the product. What makes someone create
+ *     is recognising a situation of their own ("another game", "a team
+ *     lunch"), not curiosity about a tool.
+ *   - it never appears on an organiser's own /e/ page. They already made
+ *     one; inviting them to make one reads as a machine talking.
+ *   - it is hidden in print. Half these pages get printed for a fridge or
+ *     a noticeboard, and an ad on a fridge is somebody else's brand.
+ * It links to the tool being read, never the homepage, because a homepage
+ * is one more decision at the exact moment intent is highest. */
+export function ownCta(tool, prompt, cta) {
+  return `
+  <aside class="own-cta">
+    <p class="own-cta-line">${esc(prompt)}</p>
+    <a class="btn primary" href="/via/${esc(tool)}/cta">${esc(cta)} &rarr;</a>
+    <p class="fine own-cta-fine">Free, about a minute, and no email addresses &mdash; same as this one.</p>
+  </aside>`;
+}
+
+/* The organiser's share step. Two things matter here.
+ *
+ * EDITABLE. It used to be readonly, which quietly told the organiser this
+ * sentence was ours rather than theirs. They know their group; let them
+ * change it. The default is built from what they already typed.
+ *
+ * navigator.share() WHERE IT EXISTS. 67% of visits are mobile, and on a
+ * phone the native sheet is the difference between "copy, leave, open
+ * WhatsApp, find the group, paste" and one tap. Three details are
+ * load-bearing:
+ *   - a single `text` member, with the URL inside it. NOT `url`, NOT
+ *     `title`. Android concatenates the members inconsistently and can
+ *     silently drop `text` when `url` is present — which would send the
+ *     bare link and strip the instruction, the exact thing this exists to
+ *     prevent.
+ *   - called synchronously inside the click handler, or the browser
+ *     rejects it as not user-activated.
+ *   - AbortError is someone changing their mind, not a failure. Swallow it.
+ * The copy button stays visible everywhere as a peer, not a fallback:
+ * desktop has no share sheet and plenty of people prefer the clipboard. */
 export function shareNudge(message) {
   return `
   <div class="share-nudge">
-    <span class="share-label">Paste-ready for the group chat</span>
+    <span class="share-label">Paste-ready for the group chat &mdash; edit it however you like</span>
     <div class="share-row">
-      <textarea id="nudgeText" class="nudge-text" rows="2" readonly>${esc(message)}</textarea>
-      <button class="btn" id="nudgeCopy" type="button">Copy</button>
+      <textarea id="nudgeText" class="nudge-text" rows="3">${esc(message)}</textarea>
+      <div class="nudge-actions">
+        <button class="btn primary" id="nudgeShare" type="button" hidden>Share&hellip;</button>
+        <button class="btn" id="nudgeCopy" type="button">Copy</button>
+      </div>
     </div>
   </div>
   <script>
-  document.getElementById("nudgeCopy").addEventListener("click", function () {
+  (function () {
     var t = document.getElementById("nudgeText");
-    t.select();
-    navigator.clipboard.writeText(t.value).then(function () {
-      var b = document.getElementById("nudgeCopy");
-      b.textContent = "Copied";
-      setTimeout(function () { b.textContent = "Copy"; }, 1500);
+    var copy = document.getElementById("nudgeCopy");
+    var share = document.getElementById("nudgeShare");
+
+    function flash(btn, word) {
+      var was = btn.dataset.rest || btn.textContent;
+      btn.dataset.rest = was;
+      btn.textContent = word;
+      clearTimeout(btn._t);
+      btn._t = setTimeout(function () { btn.textContent = was; }, 1500);
+    }
+
+    copy.addEventListener("click", function () {
+      t.select();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(t.value).then(function () { flash(copy, "Copied"); },
+          function () { try { document.execCommand("copy"); flash(copy, "Copied"); } catch (e) {} });
+      } else {
+        try { document.execCommand("copy"); flash(copy, "Copied"); } catch (e) {}
+      }
     });
-  });
+
+    if (navigator.share) {
+      share.hidden = false;
+      share.addEventListener("click", function () {
+        navigator.share({ text: t.value }).catch(function (e) {
+          if (e && e.name === "AbortError") return;   // they closed the sheet
+          flash(share, "Couldn't share");
+        });
+      });
+    }
+  })();
   </script>`;
 }
 

@@ -12,7 +12,7 @@
    ============================================================ */
 import {
   esc, json, html, randomString, badInput, pageShell,
-  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge,
+  getBySlug, getByToken, createInstance, deleteInstance, logEvent, ownCta, shareNudge,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -250,6 +250,9 @@ async function publicPage(row, env) {
   <p class="page-sub">${subLine(data, claims.length)}</p>
   ${topMeta(data)}
   ${board(data, bySlot, false)}
+  ${ownCta("roster",
+    "Got a canteen, a fete or a sausage sizzle to fill?",
+    "Make your own roster")}
   <footer class="page-foot">
     <p class="fine">No accounts — this browser remembers which spots are yours,
     and your own cards get an undo. On someone else's phone? Just ask the

@@ -18,7 +18,7 @@
    ============================================================ */
 import {
   esc, json, html, randomString, badInput, pageShell,
-  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge,
+  getBySlug, getByToken, createInstance, deleteInstance, logEvent, ownCta, shareNudge,
 } from "../lib.js";
 
 const MAX_FORWHOM = 80;
@@ -595,6 +595,9 @@ async function publicPage(row, env) {
 
   ${linksBlock(data)}
 
+  ${ownCta("meal",
+    "Someone else in your circle going through it?",
+    "Start a meal train")}
   <footer class="page-foot">
     <p class="fine">No accounts — this browser remembers the days you took, and
     you can hand one back if life gets in the way. On someone else's phone? Ask

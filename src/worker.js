@@ -215,19 +215,30 @@ export default {
       }
 
       let m;
-      if ((m = path.match(new RegExp("^/via/([a-z]+)/?$"))) && VIA[m[1]]) {
+      /* /via/:tool and /via/:tool/:placement. The optional second segment
+         distinguishes the quiet footer credit from the completion CTA, so
+         it is possible to tell which of the two actually recruits anybody.
+         Attribution only — both go to the same page.
+
+         The decision rule, written down before the data exists so it
+         cannot be rationalised later: DO NOT change either placement
+         until one of them has 50 clicks. At five lifetime clicks, reading
+         noise as a result and shipping the losing version into December
+         is worse than having no data at all. */
+      if ((m = path.match(new RegExp("^/via/([a-z]+)(?:/(cta|foot))?/?$"))) && VIA[m[1]]) {
         if ((request.method === "GET" || request.method === "HEAD") && !(env && env.DEV_MODE === "1")) {
-          // Log at most one event per IP per tool per hour (Cache API
-          // dedupe) so a curl loop can't burn D1 writes through this route.
+          // Log at most one event per IP per tool per placement per hour
+          // (Cache API dedupe) so a curl loop can't burn D1 writes here.
           try {
+            const placement = m[2] || "foot";
             const ip = request.headers.get("cf-connecting-ip") || "unknown";
             const hour = Math.floor(Date.now() / 3600000);
-            const seenKey = new Request(`https://via.internal/${m[1]}/${ip}/${hour}`);
+            const seenKey = new Request(`https://via.internal/${m[1]}/${placement}/${ip}/${hour}`);
             if (!(await caches.default.match(seenKey))) {
               await caches.default.put(seenKey, new Response("1", {
                 headers: { "cache-control": "max-age=3600" },
               }));
-              await logEvent(env, null, m[1], "via");
+              await logEvent(env, null, m[1], `via:${placement}`);
             }
           } catch (e) { /* never block the redirect */ }
         }
