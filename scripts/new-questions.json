@@ -1,0 +1,132 @@
+[
+  {
+    "text": "Would you rather have a stapler that never jams or a printer that always works first time?",
+    "a": "Perfect stapler",
+    "b": "Perfect printer"
+  },
+  {
+    "text": "Would you rather have an extra hour every morning or an extra Saturday every month?",
+    "a": "Extra hour",
+    "b": "Extra Saturday"
+  },
+  {
+    "text": "Would you rather all your pens be slightly too heavy or all your notebooks slightly too small?",
+    "a": "Heavy pens",
+    "b": "Small notebooks"
+  },
+  {
+    "text": "Would you rather have a coat that folds into a matchbox or boots that walk themselves home?",
+    "a": "Matchbox coat",
+    "b": "Self-walking boots"
+  },
+  {
+    "text": "Would you rather everything you own be a little bigger than it should be or a little smaller?",
+    "a": "A little bigger",
+    "b": "A little smaller"
+  },
+  {
+    "text": "Would you rather everything you say appear as subtitles or everything you type be read aloud?",
+    "a": "Subtitles",
+    "b": "Read aloud"
+  },
+  {
+    "text": "Would you rather live one floor above a bakery or one floor above a brass band rehearsal?",
+    "a": "Above the bakery",
+    "b": "Above the brass band"
+  },
+  {
+    "text": "Would you rather have a helper who is always right but very slow, or always fast but sometimes wrong?",
+    "a": "Slow and right",
+    "b": "Fast and sometimes wrong"
+  },
+  {
+    "text": "Would you rather be handed the answer to any question or the exact right question to ask?",
+    "a": "The answer",
+    "b": "The question"
+  },
+  {
+    "text": "Would you rather every door you open creak dramatically or every chair you sit on sigh?",
+    "a": "Creaking doors",
+    "b": "Sighing chairs"
+  },
+  {
+    "text": "Would you rather have a kettle that boils instantly or a laptop that starts up instantly?",
+    "a": "Instant kettle",
+    "b": "Instant laptop"
+  },
+  {
+    "text": "Would you rather have a window that shows any view you choose or a ceiling that shows tonight's sky?",
+    "a": "Any view",
+    "b": "Night sky ceiling"
+  },
+  {
+    "text": "Would you rather your notes wrote themselves or your calendar arranged itself?",
+    "a": "Self-writing notes",
+    "b": "Self-arranging calendar"
+  },
+  {
+    "text": "Would you rather every parcel arrive by pelican or every letter arrive by wombat?",
+    "a": "Pelican parcels",
+    "b": "Wombat letters"
+  },
+  {
+    "text": "Would you rather have a bookshelf that reshelves itself or a desk that tidies itself?",
+    "a": "Self-shelving bookshelf",
+    "b": "Self-tidying desk"
+  },
+  {
+    "text": "Is a stopped escalator stairs or a broken escalator?",
+    "a": "Stairs",
+    "b": "A broken escalator"
+  },
+  {
+    "text": "Is midday the end of the morning or the start of the afternoon?",
+    "a": "End of the morning",
+    "b": "Start of the afternoon"
+  },
+  {
+    "text": "Do two people talking count as a meeting?",
+    "a": "It's a meeting",
+    "b": "It's a chat"
+  },
+  {
+    "text": "Is a to-do list a plan?",
+    "a": "It's a plan",
+    "b": "Just a list"
+  },
+  {
+    "text": "Is a spreadsheet a document or a database?",
+    "a": "A document",
+    "b": "A database"
+  },
+  {
+    "text": "Is a pile of paper filed if you know exactly where everything in it is?",
+    "a": "Filed",
+    "b": "Not filed"
+  },
+  {
+    "text": "Sandwich cut: triangles or rectangles?",
+    "a": "Triangles",
+    "b": "Rectangles"
+  },
+  {
+    "text": "New instructions: read them all first or start and check as you go?",
+    "a": "Read first",
+    "b": "Start and check"
+  },
+  {
+    "text": "Somewhere new: follow the map or follow the signs?",
+    "a": "The map",
+    "b": "The signs"
+  },
+  {
+    "text": "Packing for a trip: the night before or the morning of?",
+    "a": "Night before",
+    "b": "Morning of"
+  },
+  {
+    "text": "Long drive: music or a podcast?",
+    "a": "Music",
+    "b": "Podcast"
+  }
+]
