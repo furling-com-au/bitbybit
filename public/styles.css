@@ -1995,3 +1995,20 @@ h1.qotd-q {
 .kudo-week[open] summary { margin-bottom: .4rem; }
 
 @media print { .kudo { box-shadow: none; } .kudo-form, .kudo-del, .kudo-mine { display: none; } }
+
+/* ------------------------------------------------------------
+   press kit images
+   The <img> tags carry their intrinsic 1200x630 so the browser
+   reserves the right space before the file arrives — without that
+   the page jumped a full viewport when they loaded, which is what
+   the analytics recorded as a CLS of 1 on html>body. Declaring the
+   real width then makes max-width mandatory, or they overflow the
+   moment the viewport is narrower than 1200px.
+   ------------------------------------------------------------ */
+.press-imgs { display: grid; gap: 1rem; margin: 1rem 0 0; }
+@media (min-width: 700px) { .press-imgs { grid-template-columns: 1fr 1fr; } }
+.press-imgs img {
+  display: block;
+  width: 100%; max-width: 100%; height: auto;
+  border: 3px solid var(--ink);
+}
