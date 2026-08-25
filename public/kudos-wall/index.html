@@ -42,6 +42,9 @@
   shift. Somebody explained the thing patiently for the fourth time. This is
   where that gets said, where the rest of the team can see it.</p>
 
+  <p class="see-example is-one-tap">Nothing needs filling in — the team name is optional. <a href="/s/demo-kudos-wall">See a finished wall &rarr;</a></p>
+  <p class="one-tap"><button type="submit" form="kudosForm" id="makeBtnTop" class="btn primary">Start the wall now &rarr;</button><a class="fine" href="#kudosForm">or name it first</a></p>
+
   <section class="builder">
     <form id="kudosForm" novalidate>
       <div class="builder-cols">
@@ -50,6 +53,8 @@
             <span>Team name <em>(optional)</em></span>
             <input type="text" id="team" maxlength="60" placeholder="Platform team" autocomplete="off">
           </label>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Start the wall →</button>
         </div>
         <div>
           <label class="field">
@@ -58,8 +63,6 @@
           </label>
         </div>
       </div>
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Start the wall →</button>
     </form>
 
     <div class="prev-sweeps" id="prevBoards" hidden>

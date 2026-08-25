@@ -49,11 +49,9 @@
     to desk. Start a card, share the link with everyone except the person it's
     for, and the messages pile up as sticky notes. Hand it over as a link — or
     print it.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/card-hero.png"
-           alt="Pixel art of a big greeting card with a heart, an envelope beside it, and colourful sticky notes scattered around under a string of bunting"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-group-card">See a finished card &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
@@ -68,6 +66,8 @@
             <span>Card title <em>(optional)</em></span>
             <input type="text" id="title" maxlength="80" placeholder="A card for…">
           </label>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Start the card →</button>
         </div>
         <div>
           <label class="field">
@@ -77,8 +77,6 @@
         </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Start the card →</button>
     </form>
 
     <div class="prev-sweeps" id="prevCards" hidden>
@@ -86,6 +84,13 @@
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/card-hero.png"
+           alt="Pixel art of a big greeting card with a heart, an envelope beside it, and colourful sticky notes scattered around under a string of bunting"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>How it works</h2>

@@ -113,6 +113,7 @@
       <li><a href="#coffee">Coffee Roulette</a></li>
       <li><a href="#pulse">Weekly Pulse</a></li>
       <li><a href="#kudos">Kudos Wall</a></li>
+      <li><a href="#poker">Scrum Poker</a></li>
     </ul>
 
   <section class="api-tool" id="sweep">
@@ -1167,6 +1168,40 @@
 }</code></pre>
     <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — A note is posted without a recipient. <span class="msg">“Who&#39;s it for?”</span></li><li><code>400</code> — A note is posted without a message. <span class="msg">“Add a line about what they did.”</span></li><li><code>400</code> — A note is posted without a sender. Notes are signed by design. <span class="msg">“Put your name on it — an anonymous thank-you isn&#39;t worth much.”</span></li><li><code>429</code> — More than 20 creation requests from the same connection within the current clock hour.</li></ul>
     <p class="flow"><strong>How people take part:</strong> Anyone with the link posts a note: who it is for, what they did, and who it is from. All three are required — a note cannot be anonymous, because the name is what gives it value. The poster&#39;s browser keeps a token so they can take their own note down; the organiser can remove any note. This week&#39;s notes sit at the top and the previous six weeks fold into an archive. Anything older than about three months is dropped automatically, whole weeks at a time.</p>
+  </section>
+
+  <section class="api-tool" id="poker">
+    <h3>Scrum Poker</h3>
+    <p>Planning poker for a sprint team. Everyone picks a card privately, the facilitator reveals them all at once, and the summary names the high and the low rather than an average. — <a href="/scrum-poker/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/poker</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>team</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, whitespace-collapsed, truncated to 60 characters.</td>
+        </tr>
+        <tr>
+          <td><code>story</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, whitespace-collapsed, truncated to 120 characters.</td>
+        </tr>
+        <tr>
+          <td><code>deck</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. One of &quot;fib&quot; (1, 2, 3, 5, 8, 13, 21, ?, coffee) or &quot;tshirt&quot; (XS to XXL, ?, coffee). Anything else falls back to &quot;fib&quot;.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>undefined</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — A vote names a card that is not in this board&#39;s deck. <span class="msg">“That card isn&#39;t in this deck.”</span></li><li><code>400</code> — A vote arrives after the facilitator has revealed the round. <span class="msg">“The cards are already on the table — wait for the next story.”</span></li><li><code>400</code> — The facilitator reveals a round in which nobody has voted. <span class="msg">“Nobody has voted yet — nothing to turn over.”</span></li><li><code>409</code> — A 61st voter joins one board. <span class="msg">“Sixty voters is the limit for one game.”</span></li><li><code>429</code> — More than 20 boards are created from one connection in an hour. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
+    
   </section>
   </section>
 

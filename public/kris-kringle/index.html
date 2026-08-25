@@ -48,16 +48,27 @@
     <p class="lede">The name-drawing hat, minus the hat and the reply-all.
     Type the names, share one link in the group chat, and everyone quietly
     finds out who they're buying for. Wishlists included.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/kringle-hero.png"
-           alt="Pixel art of a string of fairy lights over a row of wrapped presents against an evening sky"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-kris-kringle">See a finished Kris Kringle &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
     <form id="kringleForm" novalidate>
       <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Who's in? <em>(one name per line, three minimum)</em></span>
+            <textarea id="names" rows="12" spellcheck="false" placeholder="Sam
+Priya
+Jordan
+Alex
+Mia"></textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="drawBtn">Draw the names →</button>
+        </div>
         <div>
           <label class="field">
             <span>Title <em>(optional)</em></span>
@@ -78,21 +89,8 @@
             <textarea id="note" rows="4" maxlength="300" placeholder="Nothing scented — Dave's allergic."></textarea>
           </label>
         </div>
-        <div>
-          <label class="field">
-            <span>Who's in? <em>(one name per line, three minimum)</em></span>
-            <textarea id="names" rows="12" spellcheck="false" placeholder="Sam
-Priya
-Jordan
-Alex
-Mia"></textarea>
-          </label>
-          <p class="status-line" id="statusLine"></p>
-        </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="drawBtn">Draw the names →</button>
     </form>
 
     <div class="prev-sweeps" id="prevDraws" hidden>
@@ -100,6 +98,13 @@ Mia"></textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/kringle-hero.png"
+           alt="Pixel art of a string of fairy lights over a row of wrapped presents against an evening sky"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>How it works</h2>

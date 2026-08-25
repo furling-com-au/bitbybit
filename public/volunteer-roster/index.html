@@ -48,16 +48,28 @@
     <p class="lede">The sign-up sheet for the fete, the canteen, the working bee,
     the sausage sizzle. Set the shifts, share one link, and volunteers put their
     own name down. You watch it fill in — and print or export the lot when it's done.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/roster-hero.png"
-           alt="Pixel art canteen marquee with a sign-up clipboard and a sausage-sizzle grill with a couple of snags on it"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example is-one-tap">Five shifts are already filled in, setup through pack-down. <a href="/s/demo-volunteer-roster">See a finished roster &rarr;</a></p>
+    <p class="one-tap"><button type="submit" form="rosterForm" id="makeBtnTop" class="btn primary">Build the roster now &rarr;</button><a class="fine" href="#rosterForm">or change them below</a></p>
+
   </section>
 
   <section class="builder panel">
     <form id="rosterForm" novalidate>
       <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Shifts <em>(one per line — "Job time xN")</em></span>
+            <textarea id="shifts" rows="9" spellcheck="false">Setup 8-9am x2
+Grill 9-11am x3
+Grill 11am-1pm x3
+Serving 9am-1pm x4
+Pack down 1-2pm x4</textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Build the roster →</button>
+        </div>
         <div>
           <label class="field">
             <span>Roster title <em>(optional)</em></span>
@@ -72,21 +84,8 @@
             <textarea id="note" rows="4" maxlength="300" placeholder="Wear closed-in shoes. Hi-vis and aprons are in the canteen. Park behind the hall."></textarea>
           </label>
         </div>
-        <div>
-          <label class="field">
-            <span>Shifts <em>(one per line — "Job time xN")</em></span>
-            <textarea id="shifts" rows="9" spellcheck="false">Setup 8-9am x2
-Grill 9-11am x3
-Grill 11am-1pm x3
-Serving 9am-1pm x4
-Pack down 1-2pm x4</textarea>
-          </label>
-          <p class="status-line" id="statusLine"></p>
-        </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Build the roster →</button>
     </form>
 
     <div class="prev-sweeps" id="prevRosters" hidden>
@@ -94,6 +93,13 @@ Pack down 1-2pm x4</textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/roster-hero.png"
+           alt="Pixel art canteen marquee with a sign-up clipboard and a sausage-sizzle grill with a couple of snags on it"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>A sign-up sheet without the clipboard</h2>

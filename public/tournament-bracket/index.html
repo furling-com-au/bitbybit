@@ -49,16 +49,28 @@
     names, get a single elimination bracket, and tap the winners as games
     finish. Everyone watches it fill in from one shared link — no accounts,
     no whiteboard, no arguments about who plays whom.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/bracket-hero.png"
-           alt="Pixel art tournament bracket lines converging left to right into a gold trophy"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-tournament-bracket">See a finished bracket &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
     <form id="bracketForm" novalidate>
       <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Who's in? <em>(one name per line, 2–64)</em></span>
+            <textarea id="entrants" rows="12" spellcheck="false" placeholder="Sam
+Priya
+Jordan
+Alex
+Mia
+Noah"></textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="buildBtn">Build the bracket →</button>
+        </div>
         <div>
           <label class="field">
             <span>Tournament title <em>(optional)</em></span>
@@ -78,22 +90,8 @@
             </div>
           </div>
         </div>
-        <div>
-          <label class="field">
-            <span>Who's in? <em>(one name per line, 2–64)</em></span>
-            <textarea id="entrants" rows="12" spellcheck="false" placeholder="Sam
-Priya
-Jordan
-Alex
-Mia
-Noah"></textarea>
-          </label>
-          <p class="status-line" id="statusLine"></p>
-        </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="buildBtn">Build the bracket →</button>
     </form>
 
     <div class="prev-sweeps" id="prevBrackets" hidden>
@@ -101,6 +99,13 @@ Noah"></textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/bracket-hero.png"
+           alt="Pixel art tournament bracket lines converging left to right into a gold trophy"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>How it works</h2>

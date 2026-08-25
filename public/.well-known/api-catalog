@@ -59,6 +59,9 @@
     },
     {
      "href": "https://bitibybit.com/api/kudos"
+    },
+    {
+     "href": "https://bitibybit.com/api/poker"
     }
    ],
    "service-desc": [
@@ -361,6 +364,21 @@
    "service-doc": [
     {
      "href": "https://bitibybit.com/api-docs/#kudos",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/poker",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#poker",
      "type": "text/html"
     }
    ]

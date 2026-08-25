@@ -49,11 +49,9 @@
     celebration. Set who's bringing what, lay out the plan for the day, and add a
     plain-language note about how the kitty gets split. Share one link; everyone
     puts their name down. No accounts, no chasing.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/hens-hero.png"
-           alt="Pixel art party table with a tiered cake, cocktails, a champagne bottle and a wrapped gift, under a string of bunting"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-hens-planner">See a finished plan &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
@@ -64,6 +62,19 @@
             <span>Name of the do</span>
             <input type="text" id="title" maxlength="80" placeholder="Mia's Hens Weekend">
           </label>
+          <label class="field">
+            <span>Who's bringing what <em>(one per line — "Name x spots")</em></span>
+            <textarea id="categories" rows="7" spellcheck="false">Drinks x3
+Decorations x2
+Cake x1
+Games x2
+Nibbles x4</textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Start planning →</button>
+        </div>
+        <div>
           <label class="field">
             <span>Guest of honour <em>(optional)</em></span>
             <input type="text" id="forWhom" maxlength="80" placeholder="Mia">
@@ -84,16 +95,6 @@
             <span>Note for the group <em>(optional)</em></span>
             <textarea id="note" rows="3" maxlength="400" placeholder="Dress code is garden-party. Keep it a surprise until 12:30 — meet out the front."></textarea>
           </label>
-        </div>
-        <div>
-          <label class="field">
-            <span>Who's bringing what <em>(one per line — "Name x spots")</em></span>
-            <textarea id="categories" rows="7" spellcheck="false">Drinks x3
-Decorations x2
-Cake x1
-Games x2
-Nibbles x4</textarea>
-          </label>
           <label class="field">
             <span>The plan <em>(optional — one item per line)</em></span>
             <textarea id="activities" rows="6" spellcheck="false">Meet for lunch, 12:30
@@ -101,12 +102,9 @@ High tea at 3
 Cocktail class, 5pm
 Dinner &amp; dancing, 7:30</textarea>
           </label>
-          <p class="status-line" id="statusLine"></p>
         </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Start planning →</button>
     </form>
 
     <div class="prev-sweeps" id="prevBoards" hidden>
@@ -114,6 +112,13 @@ Dinner &amp; dancing, 7:30</textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/hens-hero.png"
+           alt="Pixel art party table with a tiered cake, cocktails, a champagne bottle and a wrapped gift, under a string of bunting"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>One link, no group-chat chaos</h2>

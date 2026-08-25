@@ -49,11 +49,9 @@
     ideas and upvotes the good ones, then claims the one they'll buy — so three
     of you don't turn up with the same candle. A surprise board: you share the
     link with everyone <strong>except</strong> the person it's for.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/giftidea-hero.png"
-           alt="Pixel art of a glowing lightbulb between a wrapped gift and a green tick"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-gift-ideas">See a finished list &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
@@ -72,6 +70,8 @@
             <span>Budget <em>(optional — any wording)</em></span>
             <input type="text" id="budget" maxlength="40" placeholder="$40–60 each, or one big joint gift">
           </label>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Start the board →</button>
         </div>
         <div>
           <label class="field">
@@ -81,8 +81,6 @@
         </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Start the board →</button>
     </form>
 
     <div class="prev-sweeps" id="prevBoards" hidden>
@@ -90,6 +88,13 @@
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/giftidea-hero.png"
+           alt="Pixel art of a glowing lightbulb between a wrapped gift and a green tick"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>The group-gift problem</h2>

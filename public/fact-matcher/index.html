@@ -49,16 +49,28 @@
     Everyone secretly submits one fun fact about themselves; the team guesses
     who's who; then you reveal the answers. New starters, offsites, that first
     all-hands where nobody knows anybody.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/fact-hero.png"
-           alt="Pixel art of a few little people with speech bubbles full of question marks, and a disguise mask"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-fact-matcher">See a finished game &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
     <form id="factForm" novalidate>
       <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Who's playing? <em>(one name per line)</em></span>
+            <textarea id="names" rows="11" spellcheck="false" placeholder="Sam
+Priya
+Jordan
+Alex
+Mia
+Tom"></textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Collect the facts →</button>
+        </div>
         <div>
           <label class="field">
             <span>Game title <em>(optional)</em></span>
@@ -73,22 +85,8 @@
             <textarea id="note" rows="4" maxlength="300" placeholder="Keep it work-appropriate and guessable. We'll do the reveal at Friday drinks."></textarea>
           </label>
         </div>
-        <div>
-          <label class="field">
-            <span>Who's playing? <em>(one name per line)</em></span>
-            <textarea id="names" rows="11" spellcheck="false" placeholder="Sam
-Priya
-Jordan
-Alex
-Mia
-Tom"></textarea>
-          </label>
-          <p class="status-line" id="statusLine"></p>
-        </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Collect the facts →</button>
     </form>
 
     <div class="prev-sweeps" id="prevGames" hidden>
@@ -96,6 +94,13 @@ Tom"></textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/fact-hero.png"
+           alt="Pixel art of a few little people with speech bubbles full of question marks, and a disguise mask"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>How it works</h2>

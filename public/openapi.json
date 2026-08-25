@@ -156,6 +156,13 @@
       "externalDocs": {
         "url": "https://bitibybit.com/kudos-wall/"
       }
+    },
+    {
+      "name": "Scrum Poker",
+      "description": "Planning poker for a sprint team. Everyone picks a card privately, the facilitator reveals them all at once, and the summary names the high and the low rather than an average.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/scrum-poker/"
+      }
     }
   ],
   "paths": {
@@ -1447,6 +1454,51 @@
               "example": {
                 "team": "Platform team",
                 "intro": "We read these out on Monday."
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/poker": {
+      "post": {
+        "operationId": "createPoker",
+        "summary": "Create a Scrum Poker",
+        "description": "Planning poker for a sprint team. Everyone picks a card privately, the facilitator reveals them all at once, and the summary names the high and the low rather than an average.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\nHuman page: https://bitibybit.com/scrum-poker/",
+        "tags": [
+          "Scrum Poker"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "team": {
+                    "description": "Team name, used in the heading.",
+                    "type": "string"
+                  },
+                  "story": {
+                    "description": "What is being sized first. Can be set or changed later by the facilitator.",
+                    "type": "string"
+                  },
+                  "deck": {
+                    "description": "Which card deck the board uses.",
+                    "type": "string"
+                  }
+                }
               }
             }
           }

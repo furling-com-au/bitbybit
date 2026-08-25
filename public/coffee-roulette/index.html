@@ -42,9 +42,20 @@
   Everyone taps their name once and gets a private link — bookmark it, and each
   round it shows who they're sitting down with and something to talk about.</p>
 
+  <p class="see-example">Not sure what you get? <a href="/s/demo-coffee-roulette">See a finished round &rarr;</a></p>
+
   <section class="builder">
     <form id="coffeeForm" novalidate>
       <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Who's in? <em>(one name per line)</em></span>
+            <textarea id="names" rows="9" placeholder="Priya&#10;Tom H&#10;Meredith&#10;Jules&#10;Sam N&#10;Alex"></textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Pair them up →</button>
+        </div>
         <div>
           <label class="field">
             <span>What's it called?</span>
@@ -59,17 +70,8 @@
             <textarea id="note" rows="3" maxlength="300" placeholder="Twenty minutes, on you, anywhere you like. Coffee optional — a walk counts."></textarea>
           </label>
         </div>
-        <div>
-          <label class="field">
-            <span>Who's in? <em>(one name per line)</em></span>
-            <textarea id="names" rows="9" placeholder="Priya&#10;Tom H&#10;Meredith&#10;Jules&#10;Sam N&#10;Alex"></textarea>
-          </label>
-          <p class="status-line" id="statusLine"></p>
-        </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Pair them up →</button>
     </form>
 
     <div class="prev-sweeps" id="prevBoards" hidden>

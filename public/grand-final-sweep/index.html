@@ -48,11 +48,9 @@
     <p class="lede">The office margin sweep, minus the whiteboard. Put in the
     two teams and everyone's names, hit draw, and share the link. Everyone
     gets an outcome; closest to the final margin wins.</p>
-    <div class="tool-hero-art">
-      <img class="pixel" src="/art/sweep-hero.png"
-           alt="Pixel art footy field with goal posts, a crowd, and a ball sailing through"
-           width="1120" height="320">
-    </div>
+
+    <p class="see-example">Not sure what you get? <a href="/s/demo-grand-final-sweep">See a finished sweep &rarr;</a></p>
+
   </section>
 
   <section class="builder panel">
@@ -77,6 +75,8 @@
             <span>Outcomes <em>(one per line — edit freely)</em></span>
             <textarea id="outcomes" rows="9" spellcheck="false"></textarea>
           </label>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="drawBtn">Draw the sweep →</button>
         </div>
         <div>
           <label class="field">
@@ -91,8 +91,6 @@ Mia"></textarea>
         </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="drawBtn">Draw the sweep →</button>
     </form>
 
     <div class="prev-sweeps" id="prevSweeps" hidden>
@@ -100,6 +98,13 @@ Mia"></textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+
+    <div class="tool-hero-art">
+      <img class="pixel" loading="lazy" decoding="async" src="/art/sweep-hero.png"
+           alt="Pixel art footy field with goal posts, a crowd, and a ball sailing through"
+           width="1120" height="320">
+    </div>
 
   <section class="content">
     <h2>How it works</h2>

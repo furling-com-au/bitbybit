@@ -43,6 +43,9 @@
   and a word cloud — and no way of telling who said what, because there is
   nothing stored that could tell you.</p>
 
+  <p class="see-example is-one-tap">Nothing needs filling in — it ships with a question ready to go. <a href="/s/demo-weekly-pulse">See a finished pulse &rarr;</a></p>
+  <p class="one-tap"><button type="submit" form="pulseForm" id="makeBtnTop" class="btn primary">Start the pulse now &rarr;</button><a class="fine" href="#pulseForm">or write your own question</a></p>
+
   <section class="builder">
     <form id="pulseForm" novalidate>
       <div class="builder-cols">
@@ -55,6 +58,8 @@
             <span>The question <em>(optional — there's a default)</em></span>
             <input type="text" id="question" maxlength="120" placeholder="How was your week?">
           </label>
+          <p class="form-error" id="formError" hidden></p>
+          <button type="submit" class="btn primary big" id="makeBtn">Start the pulse →</button>
         </div>
         <div>
           <label class="field checkbox-field">
@@ -67,8 +72,6 @@
         </div>
       </div>
 
-      <p class="form-error" id="formError" hidden></p>
-      <button type="submit" class="btn primary big" id="makeBtn">Start the pulse →</button>
     </form>
 
     <div class="prev-sweeps" id="prevBoards" hidden>
