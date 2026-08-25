@@ -1,10 +1,19 @@
-# bit by bit
+# biti by bit
 
 **Small free tools for getting a group of people to do something.**
 
-A shelf of tiny, no-signup utilities — make a thing, share a link, done.
-The first tool on the shelf is the **Grand Final Sweep**: run an office
-margin sweep in under a minute, share one link, print it for the fridge.
+### → [bitibybit.com](https://bitibybit.com)
+
+Twenty-two tiny no-signup utilities — make a thing, share one link, done.
+No accounts, no email addresses, no app, no ads, no cookies, and nothing
+for an administrator to approve.
+
+A Kris Kringle that needs no email addresses, a potluck board that stops
+six pavlovas and no salad, a meal train, a school fete roster, an office
+sweep you can print for the fridge, and planning poker where nobody sees
+a number before they commit their own.
+
+Australian, and free. The site never handles money.
 
 Cosy pixel aesthetic throughout: every icon and scene is generated from
 declarative shapes by `scripts/gen-art.mjs` — no image editor involved.
