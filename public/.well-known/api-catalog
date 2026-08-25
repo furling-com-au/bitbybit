@@ -56,6 +56,9 @@
     },
     {
      "href": "https://bitibybit.com/api/pulse"
+    },
+    {
+     "href": "https://bitibybit.com/api/kudos"
     }
    ],
    "service-desc": [
@@ -343,6 +346,21 @@
    "service-doc": [
     {
      "href": "https://bitibybit.com/api-docs/#pulse",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/kudos",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#kudos",
      "type": "text/html"
     }
    ]

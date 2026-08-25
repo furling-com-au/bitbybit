@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>API — create any tool in one request | biti by bit</title>
-<meta name="description" content="A free, no-account API for creating group tools — sweeps, gift registries, meal trains, polls. One unauthenticated POST returns a share link and an organiser link.">
+<meta name="description" content="A free, no-account API for creating group tools — sweeps, registries, meal trains, polls. One POST returns a share link and an organiser link.">
 <link rel="canonical" href="https://bitibybit.com/api-docs/">
 <meta property="og:title" content="biti by bit API — no account, one request">
 <meta property="og:description" content="Create a sweep, a registry, a meal train or a poll with a single unauthenticated POST. No API key, no OAuth.">
@@ -112,6 +112,7 @@
       <li><a href="#qotd">Question of the Day</a></li>
       <li><a href="#coffee">Coffee Roulette</a></li>
       <li><a href="#pulse">Weekly Pulse</a></li>
+      <li><a href="#kudos">Kudos Wall</a></li>
     </ul>
 
   <section class="api-tool" id="sweep">
@@ -1135,6 +1136,37 @@
 }</code></pre>
     <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — A response is submitted with a score outside 1 to 5. <span class="msg">“Pick a number from 1 to 5.”</span></li><li><code>429</code> — More than 20 creation requests from the same connection within the current clock hour.</li></ul>
     <p class="flow"><strong>How people take part:</strong> Everyone opens the same shared link and taps 1 to 5, optionally adding a few words. Nothing identifies a respondent: no account, no email, no cookie beyond this browser remembering it already answered this week. Score and comment are stored as separate rows so a phrase can never be tied to the number beside it. A week with fewer than four responses shows a count and nothing else — to the team and to the organiser alike, because there is no organiser view of responses at all. About six months of weeks are kept, dropped whole weeks at a time.</p>
+  </section>
+
+  <section class="api-tool" id="kudos">
+    <h3>Kudos Wall</h3>
+    <p>A standing wall of short, signed thank-yous for a team. Notes roll over weekly and older weeks fold into an archive. — <a href="/kudos-wall/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/kudos</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>team</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed, whitespace-collapsed, truncated to 60 characters.</td>
+        </tr>
+        <tr>
+          <td><code>intro</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed and truncated to 300 characters.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;team&quot;: &quot;Platform team&quot;,
+  &quot;intro&quot;: &quot;We read these out on Monday.&quot;
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — A note is posted without a recipient. <span class="msg">“Who&#39;s it for?”</span></li><li><code>400</code> — A note is posted without a message. <span class="msg">“Add a line about what they did.”</span></li><li><code>400</code> — A note is posted without a sender. Notes are signed by design. <span class="msg">“Put your name on it — an anonymous thank-you isn&#39;t worth much.”</span></li><li><code>429</code> — More than 20 creation requests from the same connection within the current clock hour.</li></ul>
+    <p class="flow"><strong>How people take part:</strong> Anyone with the link posts a note: who it is for, what they did, and who it is from. All three are required — a note cannot be anonymous, because the name is what gives it value. The poster&#39;s browser keeps a token so they can take their own note down; the organiser can remove any note. This week&#39;s notes sit at the top and the previous six weeks fold into an archive. Anything older than about three months is dropped automatically, whole weeks at a time.</p>
   </section>
   </section>
 

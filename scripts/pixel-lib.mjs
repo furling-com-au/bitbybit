@@ -106,6 +106,11 @@ export function drawText(grid, x, y, text, colour, scale = 1) {
   const missing = [...new Set([...String(text).toUpperCase()])].filter((c) => !(c in FONT));
   if (missing.length)
     throw new Error(`drawText: the pixel font cannot draw ${JSON.stringify(missing.join(""))} in ${JSON.stringify(text)}`);
+  /* Text wider than the canvas used to be clipped silently, which is
+     how a subtitle ships with both ends missing. */
+  const w = textWidth(text, scale);
+  if (x < 0 || x + w > grid.w)
+    throw new Error(`drawText: ${JSON.stringify(text)} runs off the canvas — ${w}px wide at x=${x} on a ${grid.w}px grid`);
   let cx = x;
   for (const ch of text.toUpperCase()) {
     const rows = (FONT[ch] || FONT[" "]).split(",");

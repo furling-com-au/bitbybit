@@ -1177,6 +1177,53 @@
       ],
       "exampleRequestBody": "{\"team\": \"Platform team\", \"question\": \"How was your week?\", \"askWords\": true}",
       "participantFlow": "Everyone opens the same shared link and taps 1 to 5, optionally adding a few words. Nothing identifies a respondent: no account, no email, no cookie beyond this browser remembering it already answered this week. Score and comment are stored as separate rows so a phrase can never be tied to the number beside it. A week with fewer than four responses shows a count and nothing else — to the team and to the organiser alike, because there is no organiser view of responses at all. About six months of weeks are kept, dropped whole weeks at a time."
+    },
+    {
+      "toolType": "kudos",
+      "displayName": "Kudos Wall",
+      "summary": "A standing wall of short, signed thank-yous for a team. Notes roll over weekly and older weeks fold into an archive.",
+      "landingPath": "/kudos-wall/",
+      "createPath": "/api/kudos",
+      "fields": [
+        {
+          "name": "team",
+          "type": "string",
+          "required": false,
+          "description": "Team name, used in the heading.",
+          "constraints": "Optional. Trimmed, whitespace-collapsed, truncated to 60 characters."
+        },
+        {
+          "name": "intro",
+          "type": "string",
+          "required": false,
+          "description": "A line shown at the top of the wall.",
+          "constraints": "Optional. Trimmed and truncated to 300 characters."
+        }
+      ],
+      "successResponse": "201 {\"slug\": string, \"editToken\": string}. The slug is a standing link the team bookmarks; it never needs recreating.",
+      "errorResponses": [
+        {
+          "status": 400,
+          "when": "A note is posted without a recipient.",
+          "message": "Who's it for?"
+        },
+        {
+          "status": 400,
+          "when": "A note is posted without a message.",
+          "message": "Add a line about what they did."
+        },
+        {
+          "status": 400,
+          "when": "A note is posted without a sender. Notes are signed by design.",
+          "message": "Put your name on it — an anonymous thank-you isn't worth much."
+        },
+        {
+          "status": 429,
+          "when": "More than 20 creation requests from the same connection within the current clock hour."
+        }
+      ],
+      "exampleRequestBody": "{\"team\": \"Platform team\", \"intro\": \"We read these out on Monday.\"}",
+      "participantFlow": "Anyone with the link posts a note: who it is for, what they did, and who it is from. All three are required — a note cannot be anonymous, because the name is what gives it value. The poster's browser keeps a token so they can take their own note down; the organiser can remove any note. This week's notes sit at the top and the previous six weeks fold into an archive. Anything older than about three months is dropped automatically, whole weeks at a time."
     }
   ]
 }

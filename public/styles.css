@@ -1966,3 +1966,32 @@ h1.qotd-q {
 .wordcloud { display: flex; flex-wrap: wrap; gap: .3rem .8rem; align-items: baseline;
   padding: 1.1rem 1.2rem; border: 3px solid var(--ink); background: var(--paper-2); margin: 1rem 0 0; }
 .cw { line-height: 1.15; font-weight: 700; color: var(--ink); }
+
+/* ------------------------------------------------------------
+   kudos wall
+   ------------------------------------------------------------ */
+.kudo-form { margin: 1.4rem 0 0; }
+.kudo-fields { display: grid; gap: .8rem; }
+@media (min-width: 520px) { .kudo-fields { grid-template-columns: 1fr 1fr; } }
+
+.kudo-list {
+  list-style: none; margin: 1rem 0 0; padding: 0;
+  display: grid; gap: .8rem;
+}
+@media (min-width: 620px) { .kudo-list { grid-template-columns: 1fr 1fr; } }
+.kudo {
+  border: 3px solid var(--ink); background: var(--paper);
+  box-shadow: 5px 5px 0 0 var(--ink); padding: .9rem 1rem;
+  display: flex; flex-direction: column; gap: .35rem;
+}
+.kudo-to { margin: 0; font-weight: 700; font-size: .95rem; }
+.kudo-msg { margin: 0; font-size: .88rem; line-height: 1.5; color: var(--ink-soft); word-break: break-word; }
+.kudo-from { margin: .2rem 0 0; font-size: .76rem; color: var(--ink-faint); }
+.kudo-del, .kudo-mine { align-self: flex-start; margin-top: .3rem; }
+
+.kudo-week { border-top: 1px solid var(--line); padding: .7rem 0 0; margin: .8rem 0 0; }
+.kudo-week summary { cursor: pointer; font-size: .85rem; font-weight: 700; }
+.kudo-week summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.kudo-week[open] summary { margin-bottom: .4rem; }
+
+@media print { .kudo { box-shadow: none; } .kudo-form, .kudo-del, .kudo-mine { display: none; } }

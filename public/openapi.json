@@ -149,6 +149,13 @@
       "externalDocs": {
         "url": "https://bitibybit.com/weekly-pulse/"
       }
+    },
+    {
+      "name": "Kudos Wall",
+      "description": "A standing wall of short, signed thank-yous for a team. Notes roll over weekly and older weeks fold into an archive.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/kudos-wall/"
+      }
     }
   ],
   "paths": {
@@ -1395,6 +1402,51 @@
                 "team": "Platform team",
                 "question": "How was your week?",
                 "askWords": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/kudos": {
+      "post": {
+        "operationId": "createKudos",
+        "summary": "Create a Kudos Wall",
+        "description": "A standing wall of short, signed thank-yous for a team. Notes roll over weekly and older weeks fold into an archive.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Anyone with the link posts a note: who it is for, what they did, and who it is from. All three are required — a note cannot be anonymous, because the name is what gives it value. The poster's browser keeps a token so they can take their own note down; the organiser can remove any note. This week's notes sit at the top and the previous six weeks fold into an archive. Anything older than about three months is dropped automatically, whole weeks at a time.\n\nHuman page: https://bitibybit.com/kudos-wall/",
+        "tags": [
+          "Kudos Wall"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "team": {
+                    "description": "Team name, used in the heading.",
+                    "type": "string"
+                  },
+                  "intro": {
+                    "description": "A line shown at the top of the wall.",
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "team": "Platform team",
+                "intro": "We read these out on Monday."
               }
             }
           }
