@@ -17,6 +17,25 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 const ORIGIN = "https://bitibybit.com";
 const TOOLS = JSON.parse(readFileSync("scripts/api-tools.json", "utf8")).tools;
 
+/* A tool the worker serves but this file has never heard of is worse than a
+   missing page: the catalog and the OpenAPI spec both quietly come out one
+   endpoint short, and an agent reading them concludes the endpoint does not
+   exist. That happened when Scrum Poker was added, so it now fails the build
+   instead. Read straight from the worker's TOOLS array, which is the only
+   real list. */
+{
+  const worker = readFileSync("src/worker.js", "utf8");
+  const line = worker.match(/^const TOOLS = \[([^\]]*)\]/m);
+  if (!line) throw new Error("could not find the TOOLS array in src/worker.js");
+  const registered = line[1].split(",").map((s) => s.trim()).filter(Boolean);
+  const documented = new Set(TOOLS.map((t) => t.toolType));
+  /* The module variable name matches the tool type everywhere except the
+     sweep module, which serves both sweeps under one type. */
+  const missing = registered.filter((name) => !documented.has(name));
+  if (missing.length)
+    throw new Error(`src/worker.js registers [${missing}] but scripts/api-tools.json does not document them`);
+}
+
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));

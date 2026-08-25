@@ -1224,6 +1224,65 @@
       ],
       "exampleRequestBody": "{\"team\": \"Platform team\", \"intro\": \"We read these out on Monday.\"}",
       "participantFlow": "Anyone with the link posts a note: who it is for, what they did, and who it is from. All three are required — a note cannot be anonymous, because the name is what gives it value. The poster's browser keeps a token so they can take their own note down; the organiser can remove any note. This week's notes sit at the top and the previous six weeks fold into an archive. Anything older than about three months is dropped automatically, whole weeks at a time."
+    },
+    {
+      "toolType": "poker",
+      "displayName": "Scrum Poker",
+      "summary": "Planning poker for a sprint team. Everyone picks a card privately, the facilitator reveals them all at once, and the summary names the high and the low rather than an average.",
+      "landingPath": "/scrum-poker/",
+      "createPath": "/api/poker",
+      "fields": [
+        {
+          "name": "team",
+          "type": "string",
+          "required": false,
+          "description": "Team name, used in the heading.",
+          "constraints": "Optional. Trimmed, whitespace-collapsed, truncated to 60 characters."
+        },
+        {
+          "name": "story",
+          "type": "string",
+          "required": false,
+          "description": "What is being sized first. Can be set or changed later by the facilitator.",
+          "constraints": "Optional. Trimmed, whitespace-collapsed, truncated to 120 characters."
+        },
+        {
+          "name": "deck",
+          "type": "string",
+          "required": false,
+          "description": "Which card deck the board uses.",
+          "constraints": "Optional. One of \"fib\" (1, 2, 3, 5, 8, 13, 21, ?, coffee) or \"tshirt\" (XS to XXL, ?, coffee). Anything else falls back to \"fib\"."
+        }
+      ],
+      "successResponse": "201 {\"slug\": string, \"editToken\": string}. The slug is a standing link the team bookmarks; the same board is reused for every story and every sprint.",
+      "errorResponses": [
+        {
+          "status": 400,
+          "when": "A vote names a card that is not in this board's deck.",
+          "message": "That card isn't in this deck."
+        },
+        {
+          "status": 400,
+          "when": "A vote arrives after the facilitator has revealed the round.",
+          "message": "The cards are already on the table — wait for the next story."
+        },
+        {
+          "status": 400,
+          "when": "The facilitator reveals a round in which nobody has voted.",
+          "message": "Nobody has voted yet — nothing to turn over."
+        },
+        {
+          "status": 409,
+          "when": "A 61st voter joins one board.",
+          "message": "Sixty voters is the limit for one game."
+        },
+        {
+          "status": 429,
+          "when": "More than 20 boards are created from one connection in an hour.",
+          "message": "Steady on — too many requests from this connection. Give it a few minutes."
+        }
+      ],
+      "notes": "No card value is served to anyone before the facilitator reveals: GET /api/poker/{slug}/state returns only the round, the story, a count and the names of those who have voted. The facilitator's page polls that same public endpoint and has no extra visibility, which is the point of the tool."
     }
   ]
 }
