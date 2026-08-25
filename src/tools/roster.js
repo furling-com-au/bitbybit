@@ -18,8 +18,20 @@ import {
 const MAX_TITLE = 80;
 const MAX_DATE = 60;
 const MAX_NOTE = 300;
-const MAX_SHIFTS = 20;
-const MAX_LABEL = 50;
+/* A real Little Athletics Saturday rosters 33 duties and a centre
+   championships day 41 — starters, timekeepers, place judges, rakers,
+   spikers and an age manager per age group. Twenty was a sanity bound
+   written before anyone had looked at an actual club duty sheet, and it
+   refused the exact documents this tool exists to replace.
+
+   The label cap mattered more and failed more quietly: at 50 characters
+   "Water Safety Supervisor — proficient Bronze Medallion, does the Surf
+   Risk Rating before the session" arrived as "Water Safety Supervisor —
+   proficient Bronze Medall". No error, just the accreditation silently
+   gone from a safety-critical shift. 65% of the club presets were being
+   cut. 120 fits the real ones and still refuses an essay. */
+const MAX_SHIFTS = 50;
+const MAX_LABEL = 120;
 const MAX_CAP = 30;
 const MAX_NAME = 40;
 const MAX_MESSAGE = 120;
@@ -38,7 +50,7 @@ function parseCreate(body) {
 
   const raw = Array.isArray(body.shifts) ? body.shifts : [];
   if (!raw.length) throw badInput("Add at least one shift.");
-  if (raw.length > MAX_SHIFTS) throw badInput("Twenty shifts is the limit — split the day if you need more.");
+  if (raw.length > MAX_SHIFTS) throw badInput("Fifty shifts is the limit — split the day if you need more.");
 
   const shifts = raw.map((s) => {
     const label = String((s && s.label) || "").trim().replace(/\s+/g, " ").slice(0, MAX_LABEL);

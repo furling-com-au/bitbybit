@@ -2276,3 +2276,18 @@ body.is-demo { padding-bottom: 6rem; }
   background: var(--paper); color: var(--ink); border: 2px solid var(--line);
   max-width: 15rem;
 }
+
+/* Shift headings. These used to be short tags — "Setup 8-9am" — so the
+   global h2 treatment (uppercase, .24em letterspacing, .82rem) suited them.
+   They are now real duty lines carrying times and accreditation
+   requirements, and a hundred characters of letterspaced uppercase is four
+   lines of shouting that nobody reads, on exactly the text a volunteer needs
+   to read before claiming a safety-critical slot. */
+.rost-shift-head {
+  text-transform: none;
+  letter-spacing: .01em;
+  font-size: .95rem;
+  line-height: 1.4;
+  color: var(--ink);
+  margin: 1.8rem 0 .6rem;
+}
