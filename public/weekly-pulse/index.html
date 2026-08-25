@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly Pulse — anonymous team check-in, free</title>
+<meta name="description" content="A free weekly team check-in. One link, one tap, and a word cloud of what people said. No accounts and no cookies, so nobody can tell who answered what.">
+<link rel="canonical" href="https://bitibybit.com/weekly-pulse/">
+<meta property="og:title" content="Weekly Pulse — one tap, and nobody knows who">
+<meta property="og:description" content="A free anonymous weekly check-in for a team. Same link every week, a 1–5 tap and a few words. No accounts, no cookies, nothing that could identify anyone.">
+<meta property="og:image" content="https://bitibybit.com/art/og-pulse.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bitibybit.com/weekly-pulse/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Weekly Pulse — one tap, and nobody knows who">
+<meta name="twitter:description" content="A free anonymous weekly check-in for a team. One link, one tap, a word cloud. No accounts, no cookies.">
+<meta name="twitter:image" content="https://bitibybit.com/art/og-pulse.png">
+<meta name="theme-color" content="#f4ead8">
+<link rel="icon" href="/favicon.svg">
+<link rel="stylesheet" href="/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Weekly Pulse","url":"https://bitibybit.com/weekly-pulse/",
+"applicationCategory":"BusinessApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"AUD"},
+"description":"An anonymous weekly team check-in. One standing link, a 1-5 tap and an optional few words, shown back as an average, a trend and a word cloud. No accounts, no cookies."}
+</script>
+</head>
+<body>
+<div class="scanlines" aria-hidden="true"></div>
+<header class="site-head wrap">
+  <a class="wordmark" href="/" aria-label="biti by bit — home">
+    <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
+    biti by bit
+    <span class="beta-badge">beta</span>
+  </a>
+  <nav class="site-nav"><a href="/#tools">the tools</a></nav>
+</header>
+
+<main class="wrap page">
+  <p class="kicker">Free · no signup · one link, every week</p>
+  <h1>Weekly Pulse</h1>
+  <p class="lede">One link the team bookmarks. Every week, one tap for how the
+  week went and a few words if they feel like it. You get an average, a trend
+  and a word cloud — and no way of telling who said what, because there is
+  nothing stored that could tell you.</p>
+
+  <section class="builder">
+    <form id="pulseForm" novalidate>
+      <div class="builder-cols">
+        <div>
+          <label class="field">
+            <span>Team name <em>(optional)</em></span>
+            <input type="text" id="team" maxlength="60" placeholder="Platform team" autocomplete="off">
+          </label>
+          <label class="field">
+            <span>The question <em>(optional — there's a default)</em></span>
+            <input type="text" id="question" maxlength="120" placeholder="How was your week?">
+          </label>
+        </div>
+        <div>
+          <label class="field checkbox-field">
+            <input type="checkbox" id="askWords" checked>
+            <span>Also ask for a few words <em>— this is what builds the word cloud</em></span>
+          </label>
+          <p class="fine">Every response is anonymous and there is no setting to
+          change that. Weeks with fewer than four responses show a count and
+          nothing else, including to you.</p>
+        </div>
+      </div>
+
+      <p class="form-error" id="formError" hidden></p>
+      <button type="submit" class="btn primary big" id="makeBtn">Start the pulse →</button>
+    </form>
+
+    <div class="prev-sweeps" id="prevBoards" hidden>
+      <p class="fine">Your earlier pulses (saved in this browser):</p>
+      <ul id="prevList"></ul>
+    </div>
+  </section>
+
+  <section class="content">
+    <h2>Anonymous, in the only way that counts</h2>
+    <p>Every other tool in this category is seat-based with a login, which means
+    "anonymous" is a promise: they hold your identity and have chosen not to show
+    it to your manager. You are asked to trust a setting.</p>
+    <p>Here there is no account, no email address, no cookie and no analytics on
+    the pages your team uses. There is nothing stored that could identify a
+    respondent, so the claim is not a policy — it is a fact about the database.
+    <strong>Even the organiser sees exactly what everyone else sees.</strong>
+    There is no admin view, and no way for us to add one without changing what
+    the tool is.</p>
+    <p>Two details do the real work:</p>
+    <ul>
+      <li><strong>Quiet weeks stay hidden.</strong> Under four responses, nobody
+      sees the average — not the team, not you. On a team of six, an average of
+      three answers with one visible low score is the same as naming the person
+      who gave it.</li>
+      <li><strong>Numbers and words are stored apart.</strong> A score and a
+      comment go in as two separate rows with nothing linking them. So a
+      distinctive turn of phrase can never be matched back to the 1 it came
+      with — which is the way most "anonymous" surveys actually get someone
+      identified.</li>
+      <li><strong>A word said once doesn't appear.</strong> The cloud only shows
+      words two or more people used. One person's unusual word is a fingerprint.</li>
+    </ul>
+
+    <h2>Why weekly, and why one link</h2>
+    <p>The failure mode of a team survey is that it becomes a project. Someone
+    has to send it, someone has to chase it, and by the third month it is a
+    calendar invite everyone declines.</p>
+    <p>This is one URL that never changes. The team bookmarks it, taps a number
+    on Friday, and that is the whole ritual. Nothing to send, nothing to chase
+    and nothing to set up again. The week rolls over on Monday morning by itself.</p>
+
+    <h2>What you actually see</h2>
+    <ul>
+      <li>This week's average out of five, and the spread across 1–5.</li>
+      <li>A trend across the last eight weeks, so a bad week reads as a bad week
+      rather than a crisis.</li>
+      <li>A word cloud of what people wrote, sized by how many people said it.</li>
+    </ul>
+    <p>What you never see is a name, and there is no export that would give you
+    one.</p>
+
+    <h2>FAQ</h2>
+    <h3>Can the organiser see individual responses?</h3>
+    <p>No. There is no organiser view of responses at all — the person who set it
+    up opens the same page as everyone else and sees the same aggregate. Nothing
+    identifying is stored, so there is nothing to reveal.</p>
+    <h3>What stops someone answering ten times?</h3>
+    <p>Only this browser remembering that it already answered this week. That is
+    deliberate: anything stronger would mean identifying people, which would cost
+    more than it is worth. This measures a mood, not an election.</p>
+    <h3>Why hide the result when only a few have answered?</h3>
+    <p>Because on a small team, an average of two or three responses points
+    straight at whoever gave the low one. Four is the smallest number where a
+    single outlier is not automatically attributable.</p>
+    <h3>How long is history kept?</h3>
+    <p>About six months of weeks. Older weeks are dropped automatically, whole
+    weeks at a time, so what remains is never a partial sample of a week.</p>
+    <h3>Do people need an account?</h3>
+    <p>No. Nobody signs up, nobody gives an email address, and there is nothing to
+    install. That is what makes the anonymity real rather than promised.</p>
+    <h3>Can I use it for something other than a mood check?</h3>
+    <p>Yes — the question is yours to write. Teams use the same thing for
+    workload, confidence in a deadline, or how a new process is landing. Anything
+    that fits a 1–5 and a few words.</p>
+
+    <h2>Related</h2>
+    <p>For something lighter every morning there is a
+    <a href="/question-of-the-day/">daily question</a> with a live vote, and
+    <a href="/fact-matcher/standup-games/">stand-up games</a> that fit in ninety
+    seconds. To get people talking across teams rather than measuring how they
+    feel, there is <a href="/coffee-roulette/">coffee roulette</a>.</p>
+  </section>
+
+  <footer class="site-foot">
+    <p class="fine">Part of <a class="quiet-link" href="/">biti by bit</a> —
+    small free tools for groups. No ads, no accounts.</p>
+    <p class="foot-links">
+      <a class="foot-link" href="https://buy.stripe.com/00wbJ1bri8J2c0yf8mbsc02" target="_blank" rel="noopener">☕ Buy me a coffee</a>
+      <a class="foot-link" href="https://github.com/furling-com-au/bitbybit" target="_blank" rel="noopener">◆ Source on GitHub</a>
+    </p>
+  </footer>
+</main>
+
+<script src="/pulse.js"></script>
+<!-- Cloudflare Web Analytics: public pages only, never on /s/, /e/ or /p/. -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "7df4259a0571411390aec9252ecc4f3e"}'></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can the organiser see individual responses?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. There is no organiser view of responses at all — the person who set it up opens the same page as everyone else and sees the same aggregate. Nothing identifying is stored, so there is nothing to reveal."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What stops someone answering ten times?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Only this browser remembering that it already answered this week. That is deliberate: anything stronger would mean identifying people, which would cost more than it is worth. This measures a mood, not an election."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why hide the result when only a few have answered?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Because on a small team, an average of two or three responses points straight at whoever gave the low one. Four is the smallest number where a single outlier is not automatically attributable."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long is history kept?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "About six months of weeks. Older weeks are dropped automatically, whole weeks at a time, so what remains is never a partial sample of a week."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do people need an account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Nobody signs up, nobody gives an email address, and there is nothing to install. That is what makes the anonymity real rather than promised."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use it for something other than a mood check?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — the question is yours to write. Teams use the same thing for workload, confidence in a deadline, or how a new process is landing. Anything that fits a 1–5 and a few words."
+      }
+    }
+  ]
+}
+</script>
+</body>
+</html>

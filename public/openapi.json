@@ -142,6 +142,13 @@
       "externalDocs": {
         "url": "https://bitibybit.com/coffee-roulette/"
       }
+    },
+    {
+      "name": "Weekly Pulse",
+      "description": "An anonymous weekly team check-in on one standing link. Responses come back as an average, a trend and a word cloud, never as individuals.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/weekly-pulse/"
+      }
     }
   ],
   "paths": {
@@ -1338,6 +1345,56 @@
                   "Bec"
                 ],
                 "cadence": "Every second Monday"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/pulse": {
+      "post": {
+        "operationId": "createPulse",
+        "summary": "Create a Weekly Pulse",
+        "description": "An anonymous weekly team check-in on one standing link. Responses come back as an average, a trend and a word cloud, never as individuals.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Everyone opens the same shared link and taps 1 to 5, optionally adding a few words. Nothing identifies a respondent: no account, no email, no cookie beyond this browser remembering it already answered this week. Score and comment are stored as separate rows so a phrase can never be tied to the number beside it. A week with fewer than four responses shows a count and nothing else — to the team and to the organiser alike, because there is no organiser view of responses at all. About six months of weeks are kept, dropped whole weeks at a time.\n\nHuman page: https://bitibybit.com/weekly-pulse/",
+        "tags": [
+          "Weekly Pulse"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "team": {
+                    "description": "Team name, used in the heading.",
+                    "type": "string"
+                  },
+                  "question": {
+                    "description": "What to ask each week.",
+                    "type": "string"
+                  },
+                  "askWords": {
+                    "description": "Whether to also ask for a few words, which is what builds the word cloud.",
+                    "type": "boolean"
+                  }
+                }
+              },
+              "example": {
+                "team": "Platform team",
+                "question": "How was your week?",
+                "askWords": true
               }
             }
           }

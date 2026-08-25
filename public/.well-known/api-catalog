@@ -53,6 +53,9 @@
     },
     {
      "href": "https://bitibybit.com/api/coffee"
+    },
+    {
+     "href": "https://bitibybit.com/api/pulse"
     }
    ],
    "service-desc": [
@@ -325,6 +328,21 @@
    "service-doc": [
     {
      "href": "https://bitibybit.com/api-docs/#coffee",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/pulse",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#pulse",
      "type": "text/html"
     }
    ]

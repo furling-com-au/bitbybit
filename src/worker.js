@@ -31,8 +31,9 @@ import giftidea from "./tools/giftidea.js";
 import hens from "./tools/hens.js";
 import qotd from "./tools/qotd.js";
 import coffee from "./tools/coffee.js";
+import pulse from "./tools/pulse.js";
 
-const TOOLS = [sweep, kringle, roles, plate, bracket, card, registry, fact, baby, roster, meal, poll, recipe, giftidea, hens, qotd, coffee];
+const TOOLS = [sweep, kringle, roles, plate, bracket, card, registry, fact, baby, roster, meal, poll, recipe, giftidea, hens, qotd, coffee, pulse];
 const BY_TYPE = Object.fromEntries(TOOLS.map((t) => [t.type, t]));
 
 
@@ -41,7 +42,7 @@ const BY_TYPE = Object.fromEntries(TOOLS.map((t) => [t.type, t]));
    drains the D1 write quota" into a non-event. Creates are the big
    write amplifiers (a kringle create is ~1 row per participant), so
    they get the tight budget. */
-const CREATE_RE = /^\/api\/(sweeps|kringle|roles|plate|bracket|card|registry|fact|baby|roster|meal|poll|recipe|giftidea|hens|qotd|coffee)$/;
+const CREATE_RE = /^\/api\/(sweeps|kringle|roles|plate|bracket|card|registry|fact|baby|roster|meal|poll|recipe|giftidea|hens|qotd|coffee|pulse)$/;
 async function overLimit(request, path, env) {
   // Local dev is exempt (.dev.vars sets DEV_MODE; it never exists in
   // production) — otherwise the persisted miniflare cache locks you
@@ -76,6 +77,7 @@ const VIA = {
   meal: "/meal-train/", poll: "/group-vote/", recipe: "/recipe-collection/", giftidea: "/gift-ideas/", hens: "/hens-planner/",
   qotd: "/question-of-the-day/",
   coffee: "/coffee-roulette/",
+  pulse: "/weekly-pulse/",
 };
 export default {
   async fetch(request, env) {

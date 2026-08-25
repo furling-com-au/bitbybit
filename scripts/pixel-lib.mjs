@@ -98,7 +98,14 @@ export const FONT = {
   "9":"010,101,011,001,110",
   "-":"000,000,111,000,000", ".":"000,000,000,000,010", " ":"000,000,000,000,000",
 };
+/* The font covers A-Z, 0-9, space, hyphen and full stop and nothing
+   else. An unsupported character used to render as a gap, which is
+   silent and easy to ship — a comma in a subtitle simply vanished.
+   Fail loudly instead; this only ever runs at build time. */
 export function drawText(grid, x, y, text, colour, scale = 1) {
+  const missing = [...new Set([...String(text).toUpperCase()])].filter((c) => !(c in FONT));
+  if (missing.length)
+    throw new Error(`drawText: the pixel font cannot draw ${JSON.stringify(missing.join(""))} in ${JSON.stringify(text)}`);
   let cx = x;
   for (const ch of text.toUpperCase()) {
     const rows = (FONT[ch] || FONT[" "]).split(",");
