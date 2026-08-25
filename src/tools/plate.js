@@ -379,7 +379,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("🍴 Put your name on a plate — pick what you’re bringing: " + shareUrl)}
+  ${shareNudge("🍴 Put your name on a plate — pick what you’re bringing: " + shareUrl, row.edit_token)}
 
   ${board(data, bySlot, true)}
 

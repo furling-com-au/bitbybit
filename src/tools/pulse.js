@@ -578,7 +578,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("Weekly pulse — one tap, takes five seconds, and nobody can tell who said what. Same link every week: " + shareUrl)}
+  ${shareNudge("Weekly pulse — one tap, takes five seconds, and nobody can tell who said what. Same link every week: " + shareUrl, row.edit_token)}
 
   <div class="dl-panel">
     <p class="dl-label">You see the same as everyone else</p>

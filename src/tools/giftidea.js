@@ -677,7 +677,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("🎁 Chipping in for " + data.recipient + "? Add gift ideas, vote, and tap “I’ll get this” on whatever you’ll buy so we don’t double up (don’t show " + data.recipient + "): " + shareUrl)}
+  ${shareNudge("🎁 Chipping in for " + data.recipient + "? Add gift ideas, vote, and tap “I’ll get this” on whatever you’ll buy so we don’t double up (don’t show " + data.recipient + "): " + shareUrl, row.edit_token)}
 
   ${listHtml}
 

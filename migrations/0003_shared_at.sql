@@ -1,0 +1,13 @@
+-- When the organiser actually handed the link over.
+--
+-- The funnel was: land -> create -> ??? -> someone else opens. The middle
+-- step was invisible, which meant "nobody else ever opened one of these"
+-- had three different explanations that could not be told apart: nobody is
+-- creating, or they create and never share, or they share and nobody bites.
+-- Those need three different responses.
+--
+-- A column rather than an event, matching participants.viewed_at: the write
+-- is authenticated by the edit token, first-write-wins makes it idempotent
+-- so repeat copies need no dedupe cache, and it joins straight onto the
+-- instance in stats instead of needing event correlation.
+ALTER TABLE instances ADD COLUMN shared_at TEXT;

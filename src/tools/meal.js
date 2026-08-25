@@ -772,7 +772,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("🍲 We're setting up meals for " + data.forWhom + " — grab a day you can cook a meal (takes 20 seconds, no sign-up): " + shareUrl)}
+  ${shareNudge("🍲 We're setting up meals for " + data.forWhom + " — grab a day you can cook a meal (takes 20 seconds, no sign-up): " + shareUrl, row.edit_token)}
 
   <div class="meal-tools">
     <button class="btn" id="csvBtn" type="button">Download schedule (CSV)</button>

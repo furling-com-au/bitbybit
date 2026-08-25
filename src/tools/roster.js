@@ -421,7 +421,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("We need hands for " + (row.title || "the day") + " — grab a shift here (takes 20 seconds, no sign-up): " + shareUrl)}
+  ${shareNudge("We need hands for " + (row.title || "the day") + " — grab a shift here (takes 20 seconds, no sign-up): " + shareUrl, row.edit_token)}
 
   <div class="rost-tools">
     <button class="btn" id="csvBtn" type="button">Download roster (CSV)</button>

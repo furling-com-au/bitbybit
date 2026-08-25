@@ -13,7 +13,7 @@
    contract below, import it, add it to TOOLS.
    ============================================================ */
 
-import { json, getBySlug, getByToken, getParticipant, getInstanceById, notFoundPage, logEvent, markViewed } from "./lib.js";
+import { json, getBySlug, getByToken, getParticipant, getInstanceById, notFoundPage, logEvent, markViewed, markShared } from "./lib.js";
 import sweep from "./tools/sweep.js";
 import kringle from "./tools/kringle.js";
 import roles from "./tools/roles.js";
@@ -206,6 +206,15 @@ export default {
         let mv;
         if (request.method === "POST" && (mv = path.match(/^\/api\/viewed\/([a-z0-9]+)$/)))
           return markViewed(env, mv[1]);
+
+        /* The organiser pressed Copy or Share. This is the only observable
+           moment between making a thing and someone else opening it, and
+           without it "nothing was ever opened by a second person" cannot be
+           told apart from "nothing was ever handed over". Idempotent and
+           tokenless-safe — see markShared. */
+        let ms;
+        if (request.method === "POST" && (ms = path.match(/^\/api\/shared\/([a-z0-9]+)$/)))
+          return markShared(env, ms[1]);
 
         for (const tool of TOOLS) {
           const res = await tool.api(request, env, url);

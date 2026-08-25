@@ -375,7 +375,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("🃏 Sizing a few stories — pick a card and we'll turn them over together. No signup: " + shareUrl)}
+  ${shareNudge("🃏 Sizing a few stories — pick a card and we'll turn them over together. No signup: " + shareUrl, row.edit_token)}
 
   <label class="field">
     <span>What are we sizing?</span>

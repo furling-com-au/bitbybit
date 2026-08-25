@@ -584,7 +584,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("🗳 Quick group vote — " + data.question + " — tap to pick: " + shareUrl)}
+  ${shareNudge("🗳 Quick group vote — " + data.question + " — tap to pick: " + shareUrl, row.edit_token)}
 
   <h2>${closed ? "Final results" : "Results so far"}</h2>
   ${bars(data, tally)}

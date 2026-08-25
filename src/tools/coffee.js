@@ -397,7 +397,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("☕ Coffee roulette — tap your name once and you'll get a private link that shows who you're paired with each round: " + shareUrl)}
+  ${shareNudge("☕ Coffee roulette — tap your name once and you'll get a private link that shows who you're paired with each round: " + shareUrl, row.edit_token)}
 
   <div class="dl-panel">
     <p class="dl-label">Round ${data.round}</p>

@@ -86,6 +86,7 @@ const rows = sql(
   `SELECT i.tool_type AS tool, COUNT(*) AS made,` +
   ` SUM(CASE WHEN ${REACHED} THEN 1 ELSE 0 END) AS reached,` +
   ` SUM(CASE WHEN ${COLD} THEN 1 ELSE 0 END) AS cold,` +
+  ` SUM(CASE WHEN i.shared_at IS NOT NULL THEN 1 ELSE 0 END) AS shared,` +
   ` SUM(CASE WHEN i.updated_at > i.created_at THEN 1 ELSE 0 END) AS touched` +
   ` FROM instances i WHERE i.slug NOT LIKE 'demo-%' GROUP BY i.tool_type ORDER BY reached DESC, made DESC`
 );
@@ -106,21 +107,26 @@ const pad = (s, n) => String(s).padEnd(n);
 const num = (s, n) => String(s).padStart(n);
 
 console.log(`\n  ${LOCAL ? "LOCAL" : "PRODUCTION"} — demo-* excluded\n`);
-console.log(`  ${pad("tool", 11)}${num("made", 5)}${num("reached", 9)}${num("cold", 7)}${num("edited", 8)}`);
-console.log("  " + "-".repeat(39));
-let made = 0, reached = 0, cold = 0;
+console.log(`  ${pad("tool", 11)}${num("made", 5)}${num("shared", 8)}${num("reached", 9)}${num("cold", 7)}${num("edited", 8)}`);
+console.log("  " + "-".repeat(47));
+let made = 0, shared = 0, reached = 0, cold = 0;
 for (const r of rows) {
-  made += r.made; reached += r.reached; cold += r.cold;
+  made += r.made; shared += r.shared; reached += r.reached; cold += r.cold;
   const note = UNMEASURABLE.has(r.tool) ? "   (reach not recorded)" : "";
-  console.log(`  ${pad(r.tool, 11)}${num(r.made, 5)}${num(r.reached, 9)}${num(r.cold, 7)}${num(r.touched, 8)}${note}`);
+  console.log(`  ${pad(r.tool, 11)}${num(r.made, 5)}${num(r.shared, 8)}${num(r.reached, 9)}${num(r.cold, 7)}${num(r.touched, 8)}${note}`);
 }
-console.log("  " + "-".repeat(39));
-console.log(`  ${pad("total", 11)}${num(made, 5)}${num(reached, 9)}${num(cold, 7)}`);
+console.log("  " + "-".repeat(47));
+console.log(`  ${pad("total", 11)}${num(made, 5)}${num(shared, 8)}${num(reached, 9)}${num(cold, 7)}`);
 console.log("");
+console.log("  shared  = the organiser pressed Copy or Share on the link.");
 console.log("  reached = anyone claimed, at any time.");
 console.log(`  cold    = claimed more than ${COLD_MINUTES} min after creation, so plausibly`);
 console.log("            NOT the maker clicking their own link to check it.");
 console.log("  cold is the real number. reached on its own overstates badly.");
+console.log("");
+console.log("  made but not shared  -> the share step is the problem.");
+console.log("  shared but not cold  -> the link lands and nobody bites.");
+console.log("  nothing made at all  -> it is a traffic problem, not a product one.");
 console.log("");
 
 console.log("  refused creates (a person pressed the button and got nothing):");

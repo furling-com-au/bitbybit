@@ -193,7 +193,7 @@ function editPage(row, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge((data.kind === "cup" ? "🐎 Cup sweep’s drawn! Find your horse: " : "🏉 The sweep’s drawn — come see what you pulled: ") + shareUrl)}
+  ${shareNudge((data.kind === "cup" ? "🐎 Cup sweep’s drawn! Find your horse: " : "🏉 The sweep’s drawn — come see what you pulled: ") + shareUrl, row.edit_token)}
 
   ${grid(data, { reveal: false })}
 

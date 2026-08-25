@@ -419,7 +419,7 @@ function shellBody(row, data, { organiser, origin }) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("🚙 Our gift registry is live — claim a part and watch the picture build: " + shareUrl)}` : "";
+  ${shareNudge("🚙 Our gift registry is live — claim a part and watch the picture build: " + shareUrl, row.edit_token)}` : "";
 
   const paymentNudge = organiser && !hasPayment ? `
   <div class="pixel-note rg-nudge">

@@ -284,7 +284,7 @@ function editPage(row, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("🏆 The bracket’s live — watch it fill in: " + shareUrl)}
+  ${shareNudge("🏆 The bracket’s live — watch it fill in: " + shareUrl, row.edit_token)}
 
   <p class="pixel-note">Tap the winner as each game finishes. Everyone watching
   the shared link sees it live-ish (on refresh). Tapped the wrong name? Tap the

@@ -300,7 +300,7 @@ async function editPage(row, env, url) {
     on a private page. Playing yourself? Join from the same link — roles stay
     hidden here so nothing gets spoiled for you.</p>
   </div>
-  ${shareNudge("🐺 Roles are dealt — tap for yours, and keep it secret: " + shareUrl)}
+  ${shareNudge("🐺 Roles are dealt — tap for yours, and keep it secret: " + shareUrl, row.edit_token)}
 
   ${table}
   <p class="fine reveal-line">${revealLink}</p>

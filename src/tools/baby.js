@@ -469,7 +469,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("👶 Baby pool for " + data.parents + " — guess the arrival date and weight, closest wins: " + shareUrl)}
+  ${shareNudge("👶 Baby pool for " + data.parents + " — guess the arrival date and weight, closest wins: " + shareUrl, row.edit_token)}
 
   <section class="bb-record">
     <h2>${result ? "The arrival" : "Record the arrival"}</h2>

@@ -1116,7 +1116,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge(`🪧 Question of the day${team ? " for " + team : ""} — today's: "${q.text}" — ${q.a} or ${q.b}? Tap and pick. Fresh one every morning, same link: ${shareUrl}`)}
+  ${shareNudge(`🪧 Question of the day${team ? " for " + team : ""} — today's: "${q.text}" — ${q.a} or ${q.b}? Tap and pick. Fresh one every morning, same link: ${shareUrl}`, row.edit_token)}
 
   ${dailyBlock(q)}
   ${voterNames}

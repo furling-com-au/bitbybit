@@ -518,7 +518,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("📖 We’re putting together a recipe book — add one of yours before it gets bound: " + shareUrl)}
+  ${shareNudge("📖 We’re putting together a recipe book — add one of yours before it gets bound: " + shareUrl, row.edit_token)}
 
   <p class="pixel-note">Every recipe below came in through the share link.
   Removing one is permanent, so maybe check with the cook first. When the

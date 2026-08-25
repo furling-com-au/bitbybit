@@ -412,7 +412,7 @@ async function editPage(row, env, url) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("🎁 Kris Kringle time — claim your name and see who you drew (takes 10 seconds, no emails): " + shareUrl)}
+  ${shareNudge("🎁 Kris Kringle time — claim your name and see who you drew (takes 10 seconds, no emails): " + shareUrl, row.edit_token)}
 
   <p class="pixel-note">This page never shows who drew whom — we can't spoil
   it for you either. If someone claimed a name that wasn't theirs, a reset restores access — but they've already seen that draw, so the clean fix is a full re-draw.</p>

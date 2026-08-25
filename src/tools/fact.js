@@ -463,7 +463,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("🔎 Fun-facts icebreaker — claim your name and add one secret fact before the big reveal (takes 20 seconds): " + shareUrl)}
+  ${shareNudge("🔎 Fun-facts icebreaker — claim your name and add one secret fact before the big reveal (takes 20 seconds): " + shareUrl, row.edit_token)}
 
   <p class="pixel-note">How it runs: everyone submits privately, you gather the
   room, read the facts out one by one and let people guess, then hit reveal.

@@ -112,6 +112,24 @@ export async function markViewed(env, token) {
   return json({ ok: true });
 }
 
+/* The organiser handed the link over. Sibling of markViewed above, and the
+   same three rules apply: first write wins (so a second Copy does not reset
+   the timestamp and no dedupe cache is needed), unknown tokens get the same
+   204 as real ones so this cannot be used to test whether a token exists,
+   and it never throws into the page.
+
+   Called only from the organiser page. shareNudge is rendered behind an
+   `organiser` check in every tool, so the edit token in the beacon URL is
+   never on a page a participant can reach. */
+export async function markShared(env, editToken) {
+  if (editToken) {
+    await env.DB.prepare(
+      "UPDATE instances SET shared_at = ? WHERE edit_token = ? AND shared_at IS NULL"
+    ).bind(new Date().toISOString(), editToken).run();
+  }
+  return new Response(null, { status: 204 });
+}
+
 /* Drop this into any participant page that tracks a viewed tick. */
 export const viewedBeacon = (token) => `
 <script>
@@ -210,7 +228,11 @@ export function ownCta(tool, prompt, cta) {
  *   - AbortError is someone changing their mind, not a failure. Swallow it.
  * The copy button stays visible everywhere as a peer, not a fallback:
  * desktop has no share sheet and plenty of people prefer the clipboard. */
-export function shareNudge(message) {
+/* editToken is required: copying or sharing is the only observable moment
+   between "made a thing" and "someone else opened it", and without it that
+   step of the funnel is invisible. check-share-nudge.mjs fails the build if
+   a tool forgets it. */
+export function shareNudge(message, editToken) {
   return `
   <div class="share-nudge">
     <span class="share-label">Paste-ready for the group chat &mdash; edit it however you like</span>
@@ -224,6 +246,7 @@ export function shareNudge(message) {
   </div>
   <script>
   (function () {
+    var TOKEN = ${JSON.stringify(String(editToken || ""))};
     var t = document.getElementById("nudgeText");
     var copy = document.getElementById("nudgeCopy");
     var share = document.getElementById("nudgeShare");
@@ -236,7 +259,37 @@ export function shareNudge(message) {
       btn._t = setTimeout(function () { btn.textContent = was; }, 1500);
     }
 
+    /* Fires on the first Copy or Share only. sendBeacon rather than fetch:
+       the whole point of the button is that the next thing they do is leave
+       for the group chat, and an in-flight fetch dies with the tab.
+       Best-effort by design — a failed beacon must never cost them the copy. */
+    var marked = false;
+    function markShared() {
+      if (marked || !TOKEN) return;
+      marked = true;
+      try {
+        if (navigator.sendBeacon) navigator.sendBeacon("/api/shared/" + TOKEN);
+        else fetch("/api/shared/" + TOKEN, { method: "POST", keepalive: true }).catch(function () {});
+      } catch (e) {}
+    }
+
+    /* Every tool also renders its own id="copyBtn" for the bare link, above
+       this block and more prominent than it. An organiser who presses that
+       one and leaves has shared just as truly as one who used the nudge, and
+       counting only the nudge would under-report the step - which is worse
+       than not measuring it, because it looks like data. Delegated on
+       document rather than bound directly so it does not matter whether that
+       button is rendered before or after this script. */
+    document.addEventListener("click", function (e) {
+      var el = e.target;
+      while (el && el !== document) {
+        if (el.id === "copyBtn") { markShared(); return; }
+        el = el.parentNode;
+      }
+    }, true);
+
     copy.addEventListener("click", function () {
+      markShared();
       t.select();
       if (navigator.clipboard) {
         navigator.clipboard.writeText(t.value).then(function () { flash(copy, "Copied"); },
@@ -249,6 +302,7 @@ export function shareNudge(message) {
     if (navigator.share) {
       share.hidden = false;
       share.addEventListener("click", function () {
+        markShared();
         navigator.share({ text: t.value }).catch(function (e) {
           if (e && e.name === "AbortError") return;   // they closed the sheet
           flash(share, "Couldn't share");

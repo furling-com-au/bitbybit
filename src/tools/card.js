@@ -313,7 +313,7 @@ async function editPage(row, env, origin) {
       <button class="btn primary" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
-  ${shareNudge("✍️ We’re signing a card — add your message before it gets handed over: " + shareUrl)}
+  ${shareNudge("✍️ We’re signing a card — add your message before it gets handed over: " + shareUrl, row.edit_token)}
 
   <p class="pixel-note">Share the link with everyone <strong>except
   ${esc(data.recipient)}</strong>. When it's full, share it with them too —
