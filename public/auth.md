@@ -47,6 +47,10 @@ POST /api/recipe
 POST /api/giftidea
 POST /api/hens
 POST /api/qotd
+POST /api/coffee
+POST /api/pulse
+POST /api/kudos
+POST /api/poker
 ```
 
 The request body differs per endpoint. The full field list, limits and a working
@@ -158,7 +162,13 @@ are deliberately indistinguishable — both are `404`.
 Enforced per client IP, per clock hour:
 
 - **20** requests/hour to registration endpoints
-- **240** requests/hour to all other `POST /api/` endpoints
+- **900** requests/hour to `POST /api/poker/vote`
+- **240** requests/hour to every other `POST /api/` endpoint
+
+Scrum poker has its own budget because a whole team sizing stories for half an
+hour is a burst, and a co-located team is one IP behind the office NAT — ten
+people on fifteen stories comes to roughly 255 requests in an hour, which the
+shared 240 used to cut off mid-meeting.
 
 Over the limit returns `429` with a JSON `error`. There is no key that raises
 these and no way to request an exemption. Back off rather than retrying hard.
