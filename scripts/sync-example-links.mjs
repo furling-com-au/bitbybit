@@ -81,7 +81,14 @@ const ONE_TAP = {
    the extra is-one-tap class. Requiring a quote immediately after
    "see-example" is exactly what made an earlier version fail to recognise
    its own output. Global, so duplicates are all removed, not just the first. */
-const STRIP = /[ \t]*<p class="see-example[^"]*">[\s\S]*?<\/p>\n(?:[ \t]*<p class="one-tap">[\s\S]*?<\/p>\n)?\n*/g;
+/* ? on every newline. check-line-endings.mjs should mean a CRLF file
+   never reaches here, but this regex is the one that did real damage when
+   it did: with <\/p>
+ unable to match </p>\r\n the lazy [\s\S]*? runs on
+   until it finds a bare 
+ further down the file, so a strip can take page
+   content with it. Two guards for the failure that already happened. */
+const STRIP = /[ \t]*<p class="see-example[^"]*">[\s\S]*?<\/p>\r?\n(?:[ \t]*<p class="one-tap">[\s\S]*?<\/p>\r?\n)?(?:\r?\n)*/g;
 
 function stripFor(dir, indent) {
   const noun = NOUN[dir];

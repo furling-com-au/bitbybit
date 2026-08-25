@@ -16,13 +16,14 @@
     "examples": "node scripts/sync-example-links.mjs",
     "seed:demos": "node scripts/seed-demos.mjs",
     "faq": "node scripts/sync-faq-schema.mjs",
-    "build": "npm run robots && npm run apidocs && npm run templates && npm run pages && npm run faq && npm run fold && npm run examples && npm run articleface && npm run cardcopy && npm run names && npm run sitemap",
+    "build": "npm run eol && npm run robots && npm run apidocs && npm run templates && npm run pages && npm run faq && npm run fold && npm run examples && npm run articleface && npm run cardcopy && npm run names && npm run sitemap",
     "stats": "node scripts/stats.mjs",
     "fold": "node scripts/builder-above-fold.mjs",
     "articleface": "node scripts/sync-article-face.mjs",
     "cardcopy": "node scripts/sync-card-copy.mjs",
     "sitemap": "node scripts/gen-sitemap.mjs",
-    "names": "node scripts/sync-example-names.mjs"
+    "names": "node scripts/sync-example-names.mjs",
+    "eol": "node scripts/check-line-endings.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
