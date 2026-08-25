@@ -135,6 +135,13 @@
       "externalDocs": {
         "url": "https://bitibybit.com/question-of-the-day/"
       }
+    },
+    {
+      "name": "Coffee Roulette",
+      "description": "Pairs a team up for a coffee, one round at a time. Each person claims their name once and keeps a private link that shows their new partner every round.",
+      "externalDocs": {
+        "url": "https://bitibybit.com/coffee-roulette/"
+      }
     }
   ],
   "paths": {
@@ -1263,6 +1270,74 @@
               },
               "example": {
                 "teamName": "Level 3 Finance"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Created"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        }
+      }
+    },
+    "/api/coffee": {
+      "post": {
+        "operationId": "createCoffee",
+        "summary": "Create a Coffee Roulette",
+        "description": "Pairs a team up for a coffee, one round at a time. Each person claims their name once and keeps a private link that shows their new partner every round.\n\nNo authentication. The response returns the two capability URLs for the thing you just created: share `/s/{slug}` with the group, and keep `/e/{editToken}` for whoever is organising.\n\n**How people take part:** Everyone opens the shared page, taps their own name once and lands on a private page at /p/{token}. That page is permanent — each new round it shows a different partner, so nobody claims their name more than once. The organiser draws the next round from /e/{editToken}; it re-pairs everyone without touching anyone's link. Odd numbers form one group of three. Recent pairings are avoided for a few rounds. The organiser can see who has claimed a name but never who is paired with whom.\n\nHuman page: https://bitibybit.com/coffee-roulette/",
+        "tags": [
+          "Coffee Roulette"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "description": "Name of the roulette, shown on every page.",
+                    "type": "string"
+                  },
+                  "names": {
+                    "description": "Everyone taking part.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "cadence": {
+                    "description": "How often you intend to run a round. A label only.",
+                    "type": "string"
+                  },
+                  "note": {
+                    "description": "A note shown to everyone on the shared page.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "names"
+                ]
+              },
+              "example": {
+                "title": "Product team coffee",
+                "names": [
+                  "Priya",
+                  "Tom H",
+                  "Meredith",
+                  "Jules",
+                  "Sam N",
+                  "Alex",
+                  "Bec"
+                ],
+                "cadence": "Every second Monday"
               }
             }
           }

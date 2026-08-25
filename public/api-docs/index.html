@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>API — create any tool in one request | biti by bit</title>
-<meta name="description" content="A free, no-account API for creating group tools — sweeps, registries, meal trains, polls. One POST returns a share link and an organiser link.">
+<meta name="description" content="A free, no-account API for creating group tools — sweeps, gift registries, meal trains, polls. One unauthenticated POST returns a share link and an organiser link.">
 <link rel="canonical" href="https://bitibybit.com/api-docs/">
 <meta property="og:title" content="biti by bit API — no account, one request">
 <meta property="og:description" content="Create a sweep, a registry, a meal train or a poll with a single unauthenticated POST. No API key, no OAuth.">
@@ -110,6 +110,7 @@
       <li><a href="#giftidea">Gift Idea Board</a></li>
       <li><a href="#hens">Hens &amp; Shower Planner</a></li>
       <li><a href="#qotd">Question of the Day</a></li>
+      <li><a href="#coffee">Coffee Roulette</a></li>
     </ul>
 
   <section class="api-tool" id="sweep">
@@ -1043,6 +1044,58 @@
 }</code></pre>
     <p class="eg-label">Errors</p><ul class="errs"><li><code>429</code> — More than 20 creates from the same connection within one clock hour. The budget is shared across every tool&#39;s create endpoint on the site rather than counted per tool, so the 21st create in the hour is refused whichever tool it was for. Only POST requests are counted, and only creates draw on the 20-per-hour budget; every other endpoint shares a larger allowance of 240 per connection per hour. <span class="msg">“Steady on — too many requests from this connection. Give it a few minutes.”</span></li></ul>
     <p class="flow"><strong>How people take part:</strong> There are no invitations and no per-person setup. The creator gets back {slug, editToken}: they bookmark the organiser page at /e/&lt;editToken&gt; and share the single public page at /s/&lt;slug&gt;. That link stays the same forever, because the question is worked out from the calendar. Anyone who opens the share page votes with POST /api/qotd/vote and a body of {slug, choice, day, qi, voterName}, where choice is &quot;a&quot; or &quot;b&quot; and qi identifies the question being answered. The slug is the only credential — no account or token is needed to vote. The response is 201 with {token, day, qi, choice, tally}. That vote token is kept in the voter&#39;s browser and lets them change their mind with POST /api/qotd/v/&lt;token&gt; and {choice, day, qi}. GET /api/qotd/&lt;slug&gt;/tally returns the current day&#39;s split; the page loads with its bars empty on purpose so early votes are not swayed. Organiser-only actions all use the edit token: POST /api/qotd/&lt;editToken&gt;/skip, /add, /remove and /delete.</p>
+  </section>
+
+  <section class="api-tool" id="coffee">
+    <h3>Coffee Roulette</h3>
+    <p>Pairs a team up for a coffee, one round at a time. Each person claims their name once and keeps a private link that shows their new partner every round. — <a href="/coffee-roulette/">human page</a></p>
+    <p class="endpoint"><span class="verb">POST</span> <code>/api/coffee</code></p>
+    <div class="table-scroll">
+      <table class="api-table">
+        <thead><tr><th>Field</th><th>Type</th><th></th><th>Rules</th></tr></thead>
+        <tbody>
+        <tr>
+          <td><code>title</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed and truncated to 80 characters. Falls back to &quot;Coffee roulette&quot;.</td>
+        </tr>
+        <tr>
+          <td><code>names</code></td>
+          <td><code>string[]</code></td>
+          <td><strong>required</strong></td>
+          <td>Required. Each name is trimmed, whitespace-collapsed and truncated to 40 characters; empties are dropped. At least 3 and at most 200 must remain. Names must all be different ignoring case, or the request is rejected — two people with the same name cannot each claim their own.</td>
+        </tr>
+        <tr>
+          <td><code>cadence</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed and truncated to 40 characters. Free text, never parsed — &quot;Every second Monday&quot; is fine.</td>
+        </tr>
+        <tr>
+          <td><code>note</code></td>
+          <td><code>string</code></td>
+          <td>optional</td>
+          <td>Optional. Trimmed and truncated to 300 characters.</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p class="eg-label">Example</p>
+    <pre class="eg"><code>{
+  &quot;title&quot;: &quot;Product team coffee&quot;,
+  &quot;names&quot;: [
+    &quot;Priya&quot;,
+    &quot;Tom H&quot;,
+    &quot;Meredith&quot;,
+    &quot;Jules&quot;,
+    &quot;Sam N&quot;,
+    &quot;Alex&quot;,
+    &quot;Bec&quot;
+  ],
+  &quot;cadence&quot;: &quot;Every second Monday&quot;
+}</code></pre>
+    <p class="eg-label">Errors</p><ul class="errs"><li><code>400</code> — Fewer than three usable names once blanks are dropped. <span class="msg">“Add at least three names — with two there&#39;s only ever one pairing.”</span></li><li><code>400</code> — Two names match once case is ignored.</li><li><code>429</code> — More than 20 creation requests from the same connection within the current clock hour.</li></ul>
+    <p class="flow"><strong>How people take part:</strong> Everyone opens the shared page, taps their own name once and lands on a private page at /p/{token}. That page is permanent — each new round it shows a different partner, so nobody claims their name more than once. The organiser draws the next round from /e/{editToken}; it re-pairs everyone without touching anyone&#39;s link. Odd numbers form one group of three. Recent pairings are avoided for a few rounds. The organiser can see who has claimed a name but never who is paired with whom.</p>
   </section>
   </section>
 

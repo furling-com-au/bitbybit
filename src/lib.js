@@ -217,6 +217,7 @@ const SHARE = {
   giftidea: ["og-giftidea", "Gift ideas",         "Suggest a gift, or back one that's already up there."],
   hens:     ["og-hens",     "Hens planner",       "Claim what you're bringing or helping with."],
   qotd:     ["og-qotd",     "Question of the day","Today's question is up. Pick a side, then see the split."],
+  coffee:   ["og-coffee",   "Coffee roulette",    "Tap your name once. You'll get a private link showing who you're paired with."],
 };
 
 /**

@@ -50,6 +50,9 @@
     },
     {
      "href": "https://bitibybit.com/api/qotd"
+    },
+    {
+     "href": "https://bitibybit.com/api/coffee"
     }
    ],
    "service-desc": [
@@ -307,6 +310,21 @@
    "service-doc": [
     {
      "href": "https://bitibybit.com/api-docs/#qotd",
+     "type": "text/html"
+    }
+   ]
+  },
+  {
+   "anchor": "https://bitibybit.com/api/coffee",
+   "service-desc": [
+    {
+     "href": "https://bitibybit.com/openapi.json",
+     "type": "application/json"
+    }
+   ],
+   "service-doc": [
+    {
+     "href": "https://bitibybit.com/api-docs/#coffee",
      "type": "text/html"
     }
    ]

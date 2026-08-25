@@ -1078,6 +1078,61 @@
       ],
       "exampleRequestBody": "{\"teamName\":\"Level 3 Finance\"}",
       "participantFlow": "There are no invitations and no per-person setup. The creator gets back {slug, editToken}: they bookmark the organiser page at /e/<editToken> and share the single public page at /s/<slug>. That link stays the same forever, because the question is worked out from the calendar. Anyone who opens the share page votes with POST /api/qotd/vote and a body of {slug, choice, day, qi, voterName}, where choice is \"a\" or \"b\" and qi identifies the question being answered. The slug is the only credential — no account or token is needed to vote. The response is 201 with {token, day, qi, choice, tally}. That vote token is kept in the voter's browser and lets them change their mind with POST /api/qotd/v/<token> and {choice, day, qi}. GET /api/qotd/<slug>/tally returns the current day's split; the page loads with its bars empty on purpose so early votes are not swayed. Organiser-only actions all use the edit token: POST /api/qotd/<editToken>/skip, /add, /remove and /delete."
+    },
+    {
+      "toolType": "coffee",
+      "displayName": "Coffee Roulette",
+      "summary": "Pairs a team up for a coffee, one round at a time. Each person claims their name once and keeps a private link that shows their new partner every round.",
+      "landingPath": "/coffee-roulette/",
+      "createPath": "/api/coffee",
+      "fields": [
+        {
+          "name": "title",
+          "type": "string",
+          "required": false,
+          "description": "Name of the roulette, shown on every page.",
+          "constraints": "Optional. Trimmed and truncated to 80 characters. Falls back to \"Coffee roulette\"."
+        },
+        {
+          "name": "names",
+          "type": "string[]",
+          "required": true,
+          "description": "Everyone taking part.",
+          "constraints": "Required. Each name is trimmed, whitespace-collapsed and truncated to 40 characters; empties are dropped. At least 3 and at most 200 must remain. Names must all be different ignoring case, or the request is rejected — two people with the same name cannot each claim their own."
+        },
+        {
+          "name": "cadence",
+          "type": "string",
+          "required": false,
+          "description": "How often you intend to run a round. A label only.",
+          "constraints": "Optional. Trimmed and truncated to 40 characters. Free text, never parsed — \"Every second Monday\" is fine."
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "required": false,
+          "description": "A note shown to everyone on the shared page.",
+          "constraints": "Optional. Trimmed and truncated to 300 characters."
+        }
+      ],
+      "successResponse": "201 {\"slug\": string, \"editToken\": string}. One participant row is created per name, each with its own 22-character private token.",
+      "errorResponses": [
+        {
+          "status": 400,
+          "when": "Fewer than three usable names once blanks are dropped.",
+          "message": "Add at least three names — with two there's only ever one pairing."
+        },
+        {
+          "status": 400,
+          "when": "Two names match once case is ignored."
+        },
+        {
+          "status": 429,
+          "when": "More than 20 creation requests from the same connection within the current clock hour."
+        }
+      ],
+      "exampleRequestBody": "{\"title\": \"Product team coffee\", \"names\": [\"Priya\", \"Tom H\", \"Meredith\", \"Jules\", \"Sam N\", \"Alex\", \"Bec\"], \"cadence\": \"Every second Monday\"}",
+      "participantFlow": "Everyone opens the shared page, taps their own name once and lands on a private page at /p/{token}. That page is permanent — each new round it shows a different partner, so nobody claims their name more than once. The organiser draws the next round from /e/{editToken}; it re-pairs everyone without touching anyone's link. Odd numbers form one group of three. Recent pairings are avoided for a few rounds. The organiser can see who has claimed a name but never who is paired with whom."
     }
   ]
 }
