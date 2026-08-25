@@ -196,7 +196,7 @@ async function state(slug, env) {
   };
   if (!data.revealed) return json(base);
 
-  return json({ ...base, cards: votes.map((v) => ({ name: v.name || "", card: v.card })), ...summarise(votes) });
+  return json({ ...base, cards: votes.map((v) => ({ name: v.name || "", card: v.card })), ...summarise(votes, data.deck) });
 }
 
 async function reveal(token, request, env) {
@@ -263,15 +263,22 @@ async function remove(token, env) {
    summary names the high and the low and says whether the group is
    actually together — it deliberately does not compute a mean, which
    would invite treating an estimate as arithmetic. */
-function summarise(votes) {
-  const nums = votes
+function summarise(votes, deckName) {
+  /* Rank by POSITION IN THE DECK, not by parsing the card as a number.
+     parseFloat("M") is NaN, so every t-shirt vote counted as "unsure": a
+     unanimous M produced "nobody put a number on it", and the whole t-shirt
+     deck reported no result no matter how well the team agreed. Position is
+     also what ordering an estimate actually means - 8 is not "more" than 5
+     by arithmetic here, it is one step coarser. */
+  const deck = deckOf(deckName);
+  const ranked = votes
     .filter((v) => !NON_NUMERIC.has(v.card))
-    .map((v) => ({ ...v, n: parseFloat(v.card) }))
-    .filter((v) => Number.isFinite(v.n));
-  const unsure = votes.length - nums.length;
-  if (!nums.length) return { agreed: false, low: null, high: null, unsure };
+    .map((v) => ({ ...v, i: deck.indexOf(v.card) }))
+    .filter((v) => v.i >= 0);
+  const unsure = votes.length - ranked.length;
+  if (!ranked.length) return { agreed: false, low: null, high: null, unsure };
 
-  const sorted = [...nums].sort((a, b) => a.n - b.n);
+  const sorted = [...ranked].sort((a, b) => a.i - b.i);
   const low = sorted[0], high = sorted[sorted.length - 1];
   return {
     agreed: low.card === high.card && !unsure,
@@ -281,12 +288,14 @@ function summarise(votes) {
   };
 }
 
-function verdict(votes) {
-  const s = summarise(votes);
+function verdict(votes, deckName) {
+  const s = summarise(votes, deckName);
+  // "a number" is wrong on the t-shirt deck, where nobody votes a number.
+  const unit = deckName === "tshirt" ? "a size" : "a number";
   if (s.agreed) return `<p class="pk-verdict pk-agreed">Everyone said <strong>${esc(s.low.card)}</strong>. Write it down and move on.</p>`;
-  if (!s.low) return `<p class="pk-verdict">Nobody put a number on it. That is usually a sign the story needs splitting or a question answered first.</p>`;
+  if (!s.low) return `<p class="pk-verdict">Nobody put ${unit} on it. That is usually a sign the story needs splitting or a question answered first.</p>`;
   if (s.low.card === s.high.card)
-    return `<p class="pk-verdict">Everyone with a number said <strong>${esc(s.low.card)}</strong>${s.unsure ? `, and ${s.unsure} ${s.unsure === 1 ? "person is" : "people are"} not sure` : ""}.</p>`;
+    return `<p class="pk-verdict">Everyone with ${unit} said <strong>${esc(s.low.card)}</strong>${s.unsure ? `, and ${s.unsure} ${s.unsure === 1 ? "person is" : "people are"} not sure` : ""}.</p>`;
   return `<p class="pk-verdict">Spread is <strong>${esc(s.low.card)}</strong> to <strong>${esc(s.high.card)}</strong>${s.unsure ? `, with ${s.unsure} unsure` : ""}.
     Ask those two what they are each seeing — that conversation is the point of the exercise.</p>`;
 }
@@ -316,7 +325,7 @@ async function publicPage(row, env, url) {
           <span class="pk-slot-card">${esc(v.card)}</span>
           <span class="pk-slot-name">${v.name ? esc(v.name) : "&mdash;"}</span>
         </li>`).join("")}</ul>
-       ${verdict(votes)}`
+       ${verdict(votes, data.deck)}`
     : `<ul class="pk-table">${votes.map((v) => `
         <li class="pk-slot pk-hidden"><span class="pk-slot-card">&bull;</span>
         <span class="pk-slot-name">${v.name ? esc(v.name) : "&mdash;"}</span></li>`).join("")}</ul>
@@ -389,7 +398,7 @@ async function editPage(row, env, origin) {
       <span class="pk-slot-card">${data.revealed ? esc(v.card) : "&bull;"}</span>
       <span class="pk-slot-name">${v.name ? esc(v.name) : "&mdash;"}</span>
     </li>`).join("")}</ul>
-  ${data.revealed ? verdict(votes) : ""}
+  ${data.revealed ? verdict(votes, data.deck) : ""}
 
   <p class="form-error" id="pkError" role="alert" hidden></p>
   <div class="pk-controls">

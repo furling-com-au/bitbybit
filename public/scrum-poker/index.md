@@ -26,6 +26,14 @@ The reason planning poker exists is anchoring. If the tech lead says "that's a f
 
 This tool will not show you an average, on purpose. The moment a group estimate becomes arithmetic, it starts getting treated as a measurement. The number that matters is the spread, and the useful minute of the meeting is the one where the person who said 2 and the person who said 13 explain what they are each picturing.
 
+## Fibonacci or t-shirt sizes
+
+Two decks, chosen when you make the room. **Fibonacci** is the default — 1, 2, 3, 5, 8, 13, 21 — for teams that size in story points and want the gaps to widen as the numbers grow, so nobody argues about whether something is a 14 or a 15.
+
+**T-shirt sizes** — XS, S, M, L, XL, XXL — suit teams that are sizing roughly, or early, or with people who find story points a made-up unit and say so. It is the same simultaneous reveal either way; only the cards change.
+
+Both decks also carry **?** for "I do not know enough to vote" and **☕** for "I need a break". Neither counts toward the spread, because a shrug is not an estimate and should not be averaged into one.
+
 ## What it is not
 
 - **Not a tracker.** There is no velocity chart, no history across sprints, no export. It sizes the story in front of you and then gets out of the way.
@@ -33,6 +41,10 @@ This tool will not show you an average, on purpose. The moment a group estimate 
 - **Not a permanent record.** Votes from a few stories ago are cleared as you go. The board holds the story you are on.
 
 ## FAQ
+
+### Does it do t-shirt sizing as well as story points?
+
+Yes. Pick the t-shirt deck when you create the room and everyone votes XS through XXL instead of 1 to 21. Both decks include? and a coffee cup, and neither of those counts toward the spread.
 
 ### Do people need an account?
 

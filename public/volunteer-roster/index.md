@@ -30,6 +30,20 @@ Volunteers tap an open spot, type their name and an optional note (a phone numbe
 
 Not sure how to carve up the day? The [volunteer roster templates](https://bitibybit.com/volunteer-roster/templates/) page has copy-ready shift structures for a school canteen week, a fete day, a Bunnings-style sausage sizzle, a Saturday club canteen and a working bee — with shift lengths, how many people each slot needs, plus how to get people to actually sign up and how to chase without nagging.
 
+## Ready-made rosters for club duty
+
+If you run duty for a sports club you do not have to type the shifts at all. Pick your sport from the dropdown at the top and the whole day drops in, already broken into slots with sensible numbers on each:
+
+- **Junior cricket** — Saturday
+- **Senior cricket** — two-day match
+- **Little Athletics** — Saturday, and a championships day
+- **Nippers** — Sunday
+- **Swim club** — club night
+- **Netball** — Saturday duty, and a carnival
+- **Junior AFL** and **junior league** — home game
+
+Ten of them, and they are real rosters rather than three example lines: canteen, BBQ, gate, scoring, timekeeping, first aid, set-up and pack-down, with the shift times a club day actually runs to. Change anything you like before you share it — the preset is a starting point, not a template you are stuck with. If none of them fit, start blank and type your own.
+
 ## Prefer a spreadsheet?
 
 Some committees want a file they can print and stick on the noticeboard, or email round before anyone touches a website. Each of these is a real starting roster with the shifts and jobs already filled in — you add the names. Free, no sign-up, nothing to install.
@@ -43,6 +57,10 @@ Some committees want a file they can print and stick on the noticeboard, or emai
 The spreadsheet is the easy part. Chasing the names is the hard part, and that is the bit [the roster tool](https://bitibybit.com/volunteer-roster/) does for you — people claim their own shift from a link and the sheet fills itself in.
 
 ## FAQ
+
+### Is there a ready-made roster for my sport?
+
+Probably. There are ten club presets built in — junior and senior cricket, Little Athletics and championships, Nippers, swim club night, netball duty and carnival, junior AFL and junior league. Pick one and the shifts fill themselves in, then edit whatever does not match your club.
 
 ### Is it actually free?
 
