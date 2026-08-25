@@ -61,6 +61,12 @@ export function newSlug(nouns) {
   return `${SLUG_ADJ[rand(SLUG_ADJ.length)]}-${nouns[rand(nouns.length)]}-${randomString(14)}`;
 }
 
+/* Always `throw badInput(...)`, never `return json({error}, 400)`.
+   The worker's outer catch is the only place a refused create is
+   recorded (see noteFailure in worker.js), so a create path that
+   returns a 4xx instead of throwing drops silently out of the
+   failure ledger and makes "nobody tried" indistinguishable from
+   "everybody was refused". */
 export function badInput(message) {
   const e = new Error(message);
   e.status = 400;
@@ -220,6 +226,7 @@ const SHARE = {
   coffee:   ["og-coffee",   "Coffee roulette",    "Tap your name once. You'll get a private link showing who you're paired with."],
   pulse:    ["og-pulse",    "Weekly pulse",       "One tap for how the week went. Nobody can tell it was you."],
   kudos:    ["og-kudos",    "Kudos wall",         "Someone did something worth saying out loud. Put it up here."],
+  poker:    ["og-poker",    "Scrum poker",        "Pick your card. Nobody sees a number until everyone has committed."],
 };
 
 /**
