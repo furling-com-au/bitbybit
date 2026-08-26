@@ -101,6 +101,20 @@
   $("qotdForm").addEventListener("submit", submit);
   $("previewNext").addEventListener("click", function () { showSample(shown + 1); });
 
-  showSample(Math.floor(Math.random() * SAMPLES.length));
+  /* Deliberately NOT random, and deliberately no DOM write at all: the page
+     ships with SAMPLES[0] already rendered in the HTML, so the preview is
+     correct before this script runs.
+
+     It used to pick at random here. Three of the four samples render at a
+     different height from the shipped one — 242px, 307px, 237px, 307px on a
+     375px viewport — so most loads moved the form and everything under it by
+     up to 70px, after first paint and with no user input to excuse it. That
+     is a pure Cumulative Layout Shift, and Cloudflare was reporting 12% of
+     samples as poor with this page's preview span named as the element.
+
+     Variety still exists: "Show me another" cycles, and a shift from a click
+     does not count against CLS because the browser attributes it to the user.
+     check-qotd-preview.mjs keeps the HTML and SAMPLES[0] in step. */
+  shown = 0;
   renderPrev();
 })();
