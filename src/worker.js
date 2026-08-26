@@ -159,6 +159,85 @@ const VIA = {
    shared with their group rather than with the web would quietly widen it. */
 const PAGE_RE = /^\/(?:[a-z0-9-]+\/)*$/;
 
+
+/* ---------- the seasonal card on the homepage ----------------
+   Rewritten per request rather than generated at build time, and that is the
+   whole point. The card used to be hard-coded in public/index.html reading
+   "Footy finals · September". Nothing rotated it, so it was wrong for ten
+   months of the year and would have gone on being wrong for as long as
+   nobody deployed. A build-time generator brings that failure straight back
+   the moment deploys stop; computing it from the clock cannot go stale.
+
+   Dates are read in Australia/Sydney, not UTC. The audience is Australian and
+   these windows turn on a particular day — a UTC boundary would flip the card
+   the evening before, mid-afternoon Sydney time.
+
+   The windows must tile the whole year exactly once with no gap and no
+   overlap; check-seasons.mjs walks all 366 days and fails the build if they
+   do not. */
+const SEASONS = [
+  { from: "08-15", to: "10-05", href: "/grand-final-sweep", icon: "footy.png",
+    tag: "Footy finals · September", title: "Grand Final Sweep",
+    blurb: "Run the office margin sweep in under a minute. Paste the names, hit draw, share the link. Fair, free, and printable for the fridge." },
+  { from: "10-06", to: "11-04", href: "/melbourne-cup-sweep", icon: "horse.png",
+    tag: "The Cup · first Tuesday in November", title: "Melbourne Cup Sweep",
+    blurb: "The classic 24-horse office sweep, drawn fairly in a minute. Everyone gets a runner, nobody has to chase coins. Printable for the tearoom wall." },
+  { from: "11-05", to: "12-24", href: "/kris-kringle", icon: "gift.png",
+    tag: "Kris Kringle · December", title: "Kris Kringle",
+    blurb: "A Secret Santa draw with no email addresses at all. Share one link, everyone claims their name and privately sees who they drew." },
+  { from: "12-25", to: "02-14", href: "/bring-a-plate", icon: "pot.png",
+    tag: "Summer · street parties and BBQs", title: "Bring a Plate",
+    blurb: "The potluck board that stops you getting six pavlovas and no salad. Set the categories, share one link, everyone claims what they are bringing." },
+  { from: "02-15", to: "08-14", href: "/volunteer-roster", icon: "clipboard.png",
+    tag: "School and club season", title: "Volunteer Roster",
+    blurb: "Canteen, BBQ, gate and ground duty, already filled in for ten sports. Set the shifts, share one link, and volunteers put their own name down." },
+];
+
+/* "MM-DD" in Australia/Sydney. */
+function todayInSydney(now = new Date()) {
+  const p = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Australia/Sydney", month: "2-digit", day: "2-digit",
+  }).formatToParts(now);
+  const get = (t) => p.find((x) => x.type === t).value;
+  return `${get("month")}-${get("day")}`;
+}
+
+function pickSeason(md) {
+  for (const s of SEASONS) {
+    // A window that wraps the new year (12-25 -> 02-14) is two ranges.
+    const wraps = s.from > s.to;
+    if (wraps ? (md >= s.from || md <= s.to) : (md >= s.from && md <= s.to)) return s;
+  }
+  return SEASONS[SEASONS.length - 1];   // unreachable while the tiling holds
+}
+
+/* One setInnerContent on the card itself, so the tag, heading, blurb and art
+   can never disagree. The previous version of this card was edited a piece at
+   a time and a selector drifted off its heading — a half-swapped card that
+   says "Melbourne Cup Sweep" under "Footy finals" is worse than a stale one,
+   because it looks deliberate. */
+function seasonalHomepage(res, now) {
+  const s = pickSeason(todayInSydney(now));
+  return new HTMLRewriter()
+    .on("a.feature-card", {
+      element(el) {
+        el.setAttribute("href", s.href);
+        el.setInnerContent(
+          `<div>` +
+            `<span class="feature-tag">${s.tag}</span>` +
+            `<h2>${s.title}</h2>` +
+            `<p>${s.blurb}</p>` +
+          `</div>` +
+          `<div class="feature-art">` +
+            `<img class="pixel" src="/icons/${s.icon}" alt="" width="150" height="150">` +
+          `</div>`,
+          { html: true }
+        );
+      },
+    })
+    .transform(res);
+}
+
 /* True only when text/markdown is named EXPLICITLY and wanted at least as
    much as HTML. The wildcard case is the whole difficulty: every browser
    sends "*\/*;q=0.8" somewhere in its Accept, so any implementation that
@@ -381,7 +460,17 @@ export default {
         if (md) return md;
       }
       const assetRes = await env.ASSETS.fetch(request);
-      return PAGE_RE.test(path) ? withVary(assetRes, path) : assetRes;
+      if (!PAGE_RE.test(path)) return assetRes;
+
+      /* The homepage's feature card is swapped for whatever is in season.
+         Capped at an hour so a cache cannot pin the wrong season for long —
+         at a boundary the worst case is sixty minutes of yesterday's card. */
+      if (path === "/" && assetRes.ok && request.method !== "HEAD") {
+        const out = withVary(seasonalHomepage(assetRes, new Date()), path);
+        out.headers.set("cache-control", "public, max-age=3600");
+        return out;
+      }
+      return withVary(assetRes, path);
     } catch (e) {
       const status = e.status || 500;
       if (status >= 500) console.error(e);

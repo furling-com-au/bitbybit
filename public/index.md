@@ -3,12 +3,6 @@ for groups
 
 Sweeps, registries, rosters — the little organisational jobs that usually end in a spreadsheet and three reminder messages. No accounts, no fees. Make a thing, share a link, done.
 
-Footy finals · September
-
-## Grand Final Sweep
-
-Run the office margin sweep in under a minute. Paste the names, hit draw, share the link. Fair, free, and printable for the fridge.
-
 ## Sweeps & draws
 
 - [Grand Final Sweep AFL or NRL margin sweep. Everyone draws an outcome, winner takes the glory. AFL or NRL margin sweep, drawn fair. run one →](https://bitibybit.com/grand-final-sweep)

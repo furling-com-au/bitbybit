@@ -32,7 +32,13 @@ const SKIP_TAGS = new Set(["script", "style", "form", "button", "input",
    tag alone does not give them away. */
 const SKIP_CLASSES = new Set(["scanlines", "builder", "tool-hero-art",
   "prev-sweeps", "status-line", "form-error", "foot-links", "site-foot",
-  "site-head", "beta-badge", "wordmark-blocks", "share-nudge", "one-tap"]);
+  "site-head", "beta-badge", "wordmark-blocks", "share-nudge", "one-tap",
+  /* The homepage feature card is swapped per request by the Worker, from the
+     clock. This file is written once at build time, so whatever it captured
+     would be frozen — telling an agent in March that it is footy finals. The
+     card is a promotional slot, not content, and every tool it can point at is
+     listed further down the same page anyway. */
+  "feature-card"]);
 
 const VOID = new Set(["br", "hr", "img", "input", "meta", "link", "source"]);
 
