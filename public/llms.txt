@@ -72,6 +72,7 @@ No account, no API key, no OAuth. The response returns two capability URLs:
 - [OpenAPI 3.1 description](https://bitibybit.com/openapi.json): machine-readable.
 - [API catalog](https://bitibybit.com/.well-known/api-catalog): RFC 9727 linkset.
 - [auth.md](https://bitibybit.com/auth.md): the capability-URL model, rate limits and revocation.
+- MCP server: `POST https://bitibybit.com/mcp` (Streamable HTTP, no auth). Scrum Poker only — create a room, read the state, reveal a round, start the next one. Every other tool is a plain unauthenticated POST described in openapi.json; MCP adds nothing there.
 
 Rate limits are 20 creates and 240 other POSTs per IP per hour. Please create
 instances only when a person actually asks for one — each is a real database row.

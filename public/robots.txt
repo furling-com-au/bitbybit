@@ -30,6 +30,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 Sitemap: https://bitibybit.com/sitemap.xml
 
@@ -50,6 +51,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Anthropic — fetches a page on behalf of a Claude user
 User-agent: Claude-User
@@ -59,6 +61,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Perplexity — fetches a page to answer a user's question
 User-agent: Perplexity-User
@@ -68,6 +71,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Mistral — user-initiated fetch
 User-agent: MistralAI-User
@@ -77,6 +81,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # DuckDuckGo — assistant answers
 User-agent: DuckAssistBot
@@ -86,6 +91,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # OpenAI — builds the ChatGPT search index
 User-agent: OAI-SearchBot
@@ -95,6 +101,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Anthropic — builds Claude's search index
 User-agent: Claude-SearchBot
@@ -104,6 +111,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Perplexity — search index
 User-agent: PerplexityBot
@@ -113,6 +121,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # You.com — search index
 User-agent: YouBot
@@ -122,6 +131,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Google Search
 User-agent: Googlebot
@@ -131,6 +141,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Bing, and the index behind Copilot
 User-agent: Bingbot
@@ -140,6 +151,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Apple — Siri and Spotlight
 User-agent: Applebot
@@ -149,6 +161,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # DuckDuckGo search
 User-agent: DuckDuckBot
@@ -158,6 +171,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # OpenAI — model training
 User-agent: GPTBot
@@ -167,6 +181,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Anthropic — model training
 User-agent: ClaudeBot
@@ -176,6 +191,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Google — controls Gemini training use (not a crawler)
 User-agent: Google-Extended
@@ -185,6 +201,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Apple — controls Apple Intelligence training use
 User-agent: Applebot-Extended
@@ -194,6 +211,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Common Crawl — the corpus behind many models
 User-agent: CCBot
@@ -203,6 +221,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Amazon — Alexa and model training
 User-agent: Amazonbot
@@ -212,6 +231,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # ByteDance
 User-agent: Bytespider
@@ -221,6 +241,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Meta — AI training
 User-agent: meta-externalagent
@@ -230,6 +251,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Cohere
 User-agent: cohere-ai
@@ -239,6 +261,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Diffbot — knowledge graph
 User-agent: Diffbot
@@ -248,6 +271,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Webz.io corpus
 User-agent: omgili
@@ -257,6 +281,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Timpi
 User-agent: Timpibot
@@ -266,6 +291,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # retired — folded into ClaudeBot; listed for scanners
 User-agent: Claude-Web
@@ -275,6 +301,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # retired — folded into ClaudeBot; listed for scanners
 User-agent: anthropic-ai
@@ -284,6 +311,7 @@ Disallow: /s/
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # ------------------------------------------------------------------
 # Link-preview fetchers.
@@ -305,6 +333,7 @@ Allow: /
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Slack fetches the card image with a second agent
 User-agent: Slack-ImgProxy
@@ -314,6 +343,7 @@ Allow: /
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Slack
 User-agent: Slackbot
@@ -323,6 +353,7 @@ Allow: /
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Discord — obeys robots.txt, so this line is load-bearing
 User-agent: Discordbot
@@ -332,6 +363,7 @@ Allow: /
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # X/Twitter cards
 User-agent: Twitterbot
@@ -341,6 +373,7 @@ Allow: /
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Facebook and Messenger
 User-agent: facebookexternalhit
@@ -350,6 +383,7 @@ Allow: /
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # WhatsApp link previews
 User-agent: WhatsApp
@@ -359,6 +393,7 @@ Allow: /
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Telegram
 User-agent: TelegramBot
@@ -368,6 +403,7 @@ Allow: /
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # used by several chat clients
 User-agent: Iframely
@@ -377,6 +413,7 @@ Allow: /
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # Skype and some Microsoft surfaces
 User-agent: SkypeUriPreview
@@ -386,6 +423,7 @@ Allow: /
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp
 
 # LinkedIn
 User-agent: LinkedInBot
@@ -395,3 +433,4 @@ Allow: /
 Disallow: /e/
 Disallow: /p/
 Disallow: /api/
+Disallow: /mcp

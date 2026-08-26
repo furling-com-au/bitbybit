@@ -16,7 +16,10 @@ import { writeFileSync } from "node:fs";
 /* The private surface. These are capability URLs — the link IS the
    credential — so they must stay out of every index, for every bot,
    forever. /api/ is POST-only in practice and pointless to crawl. */
-const DISALLOW = ["/s/", "/e/", "/p/", "/api/"];
+/* /mcp is POST-only for the same reason /api/ is: crawling it achieves
+   nothing. Discovery happens through llms.txt, which is explicitly allowed
+   and now names the endpoint. */
+const DISALLOW = ["/s/", "/e/", "/p/", "/api/", "/mcp"];
 
 /* Link-preview fetchers are a different animal from crawlers. They
    don't index and they don't follow links — they fetch one URL, once,

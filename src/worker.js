@@ -14,6 +14,7 @@
    ============================================================ */
 
 import { json, getBySlug, getByToken, getParticipant, getInstanceById, notFoundPage, logEvent, markViewed, markShared } from "./lib.js";
+import { handleMcp } from "./mcp.js";
 import sweep from "./tools/sweep.js";
 import kringle from "./tools/kringle.js";
 import roles from "./tools/roles.js";
@@ -341,6 +342,16 @@ export default {
     };
 
     try {
+      /* MCP, for agents. Stateless — no Durable Object — and mounted before
+         everything else because it is neither a page nor part of the REST
+         API, and must not be caught by the page rules further down. Only the
+         POST that the Streamable HTTP transport uses; a GET here is a person
+         or a crawler, and they get the docs. */
+      if (path === "/mcp" || path === "/mcp/") {
+        if (request.method === "POST") return handleMcp(request, env, ctx);
+        return Response.redirect(url.origin + "/api-docs/", 302);
+      }
+
       if (path.startsWith("/api/")) {
         if (request.method === "POST" && await overLimit(request, path, env)) {
           const rl = CREATE_RE.exec(path);

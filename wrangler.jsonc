@@ -2,6 +2,8 @@
   "name": "bitbybit",
   "main": "src/worker.js",
   "compatibility_date": "2026-08-01",
+  // Required by the MCP SDK (src/mcp.js). Nothing else here needs it.
+  "compatibility_flags": ["nodejs_compat"],
 
   // Static pages live in /public. The Worker fronts EVERY request — not just
   // the dynamic routes — because that is the only place the www -> apex
