@@ -6,7 +6,7 @@ bitibybit.com is a shelf of free, no-signup tools for the small rituals Australi
 
 ## The short version
 
-One person makes a thing — a sweep, a name-draw, a potluck board, a gift registry — and shares a single link. No accounts, no app, no fees, no ads, no cookies. It's built and run in Australia as a side project, and the code is open source.
+One person makes a thing — a sweep, a name-draw, a potluck board, a gift registry — and shares a single link. No accounts, no app, free to use, no ads, no cookies. It's built and run in Australia as a side project, and the code is open source.
 
 ## Story angles
 

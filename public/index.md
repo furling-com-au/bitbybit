@@ -1,7 +1,7 @@
 # Small free tools 
 for groups
 
-Sweeps, registries, rosters — the little organisational jobs that usually end in a spreadsheet and three reminder messages. No accounts, no fees. Make a thing, share a link, done.
+Sweeps, registries, rosters — the little organisational jobs that usually end in a spreadsheet and three reminder messages. Free to use, no accounts. Make a thing, share a link, done.
 
 ## Sweeps & draws
 

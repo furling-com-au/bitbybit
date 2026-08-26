@@ -1,6 +1,6 @@
 # Pixel Gift Registry
 
-Free · no fees · one shareable link
+Free · money goes straight to you · one shareable link
 
 A gift registry drawn as the thing itself. Your guests claim a part — a tyre, the snorkel, the $15 air freshener — and a pixel-art Toyota Prado paints itself in as the parts get claimed. The money goes straight to you. We never touch it.
 
@@ -34,7 +34,7 @@ Guests pick a part, leave their name and a note, and get your payment details pl
 
 ## The honest bits
 
-Payments happen directly between your guests and your bank account. That's why there are no fees — and also why there's no card checkout. Guests see your PayID or BSB and do a transfer, the same way they'd pay their share of dinner. This suits Australian weddings very well and overseas guests somewhat less well; the FAQ below doesn't pretend otherwise.
+Payments happen directly between your guests and your bank account. The money never passes through the site, so there is nothing for it to deduct — and that is also why there's no card checkout. Guests see your PayID or BSB and do a transfer, the same way they'd pay their share of dinner. This suits Australian weddings very well and overseas guests somewhat less well; the FAQ below doesn't pretend otherwise.
 
 Still weighing up a classic wishing well? We wrote the [wording examples](https://bitibybit.com/gift-registry/wishing-well-wording/) anyway — use them with our registry or without it.
 
