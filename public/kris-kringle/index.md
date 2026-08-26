@@ -20,6 +20,10 @@ You get two links: a **share link** for the group chat, and an **organiser link*
 
 Each person taps their own name on the shared page and lands on a private page: who they're buying for, that person's wishlist, and a wishlist box of their own. Nobody sees anyone else's draw — not even the organiser. Your page shows who's claimed and who's opened theirs, so you know exactly who to nag, without learning a single secret.
 
+## Kris Kringle, Secret Santa, gift exchange
+
+Three names for the same draw. **Kris Kringle** is what most Australians call it, **Secret Santa** is the usual name almost everywhere else, and an office running it formally will often call it a **gift exchange**. Same rules: everyone draws one name, keeps it quiet, and buys for that person only.
+
 ## No emails, on purpose
 
 Most Secret Santa sites want everyone's email address before a single name is drawn. Then the invites bounce, or land in spam, or sit unopened next to the electricity bill, and by December someone's chasing Nan for a login. One link in a chat that everyone already reads skips all of it. Works in WhatsApp, Messenger, Teams, the family thread — anywhere a link can go.

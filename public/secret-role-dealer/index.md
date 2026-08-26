@@ -6,6 +6,12 @@ Werewolf, Spyfall, Avalon — or anything you can type. Put in the roles, share 
 
 Not sure what you get? [See a finished game →](https://bitibybit.com/s/demo-secret-role-dealer)
 
+## For hidden-role party games
+
+Werewolf and Mafia, Spyfall, Avalon, Resistance, Insider, Bang — the **party games** where everyone gets a secret role and the whole point is that nobody knows who has what. The awkward part has always been the dealing: a deck to shuffle, cards to hand round face-down, and someone catching a glimpse.
+
+Type the roles you want, share one link, and each player draws privately on their own phone. It works for a printed game you have lost the cards for, a variant you made up, or a class exercise that needs secret assignments.
+
 ## How it works
 
 ### 1. Make the deal

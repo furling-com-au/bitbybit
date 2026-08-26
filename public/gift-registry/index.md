@@ -12,6 +12,12 @@ A wishing well says *give us money*. This says *help us build something* — and
 
 There are **126 parts from $15 to $1,200**, so nobody feels priced out: the air freshener is a real, claimable, $15 gift with its name on the crew wall, same as the engine block.
 
+## A wedding registry without the department store
+
+A traditional **wedding registry** hands you a scanner in a homewares shop and a list of things you did not choose. This is the same idea pointed at whatever you are actually saving for — the trip, the car, the deposit, the renovation — with guests claiming a part of it rather than a boxed appliance.
+
+It works for a baby shower registry, an engagement, a big birthday, or a group chipping in on anything at all. The thing being saved for changes; the mechanism does not.
+
 ## How it works
 
 ### 1. Make it yours

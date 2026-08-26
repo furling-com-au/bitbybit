@@ -12,6 +12,10 @@ Most people know about a third of the organisation and then stop. Not because an
 
 It matters more in a hybrid team, where the corridor conversation that used to do this job stopped happening and nothing replaced it.
 
+## Also called random coffee
+
+The same idea goes by a few names — **random coffee**, coffee roulette, virtual coffee, or the donut/serendipity bots that pair people up inside a chat tool. All of them do one thing: put two people who would not otherwise talk in front of a coffee.
+
 ## How it works
 
 ### 1. Paste the names, share one link

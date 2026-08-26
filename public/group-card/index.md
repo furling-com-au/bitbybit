@@ -6,6 +6,12 @@ The farewell card, minus the manila envelope sneaking desk to desk. Start a card
 
 Not sure what you get? [See a finished card →](https://bitibybit.com/s/demo-group-card)
 
+## A group greeting card, signed from a link
+
+This is an online **group greeting card** — the kind everyone in an office or a class signs before it gets handed over. Farewells and birthdays mostly, but also get-well, congratulations, thank-yous, and the card for the teacher at the end of the year.
+
+The difference from a paper card is that nobody has to be in the building. The difference from most online ones is that there is no account, no per-card fee, and no cap on how many people sign.
+
 ## How it works
 
 ### 1. Start the card

@@ -10,6 +10,12 @@ Not sure what you get? [See a finished plan →](https://bitibybit.com/s/demo-he
 
 Planning a hens party or a shower usually means one person holding the whole thing in their head, a group chat that scrolls past every decision, and three people all quietly buying the same balloons. This is the boring, reliable fix: a single page that says who's bringing what, what the plan is, and how the money gets sorted — shared with one link, updated by everyone.
 
+## Hens, hen do, bachelorette — same party
+
+The word changes depending on where you are. In Australia it is a **hens night** or hens do, in the UK a **hen do** or hen party, in the US a **bachelorette party**. It is the same afternoon either way: a group of people, a plan, and someone quietly working out who owes what.
+
+This plans any of them, and the bucks or stag equivalent too. Nothing in the tool assumes a particular kind of party — it is a running order, a list of who is bringing what, and a note about the kitty.
+
 ## How it works
 
 ### 1. Set the lists
