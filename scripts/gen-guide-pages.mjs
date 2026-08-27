@@ -100,7 +100,6 @@ function render(p, fam) {
 <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<div class="scanlines" aria-hidden="true"></div>
 <header class="site-head wrap">
   <a class="wordmark" href="/" aria-label="biti by bit — home">
     <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
