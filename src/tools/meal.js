@@ -569,50 +569,6 @@ function board(data, bySlot, organiser) {
   </ol>`;
 }
 
-/* ---------- the worked example ------------------------------ */
-
-/* Baked into the landing page by sync-example-links.mjs, using the SAME
-   .meal-day / .meal-slot markup the real board renders. Two days sorted and one
-   still open is the whole point of the tool in one glance — a full board looks
-   finished and an empty one looks broken.
-   Every slot here is a plain <span>, never the "I can do this" button or its
-   form, so the strip has nothing to press and gen-markdown.mjs has no control
-   to strip. Cast and family match scripts/seed-demos.mjs. */
-const EXAMPLE_DAYS = [
-  { label: "Mon 3 Nov", cook: "Priya", dish: "Butter chicken \u2014 mild, extra rice" },
-  { label: "Wed 5 Nov", cook: "Tom H", dish: "Lasagne, and a loaf" },
-  { label: "Fri 7 Nov", cook: null, dish: null },
-];
-
-function examplePreview() {
-  const items = EXAMPLE_DAYS.map((d) => {
-    const slot = d.cook
-      ? `
-        <li class="meal-slot claimed">
-          <span class="meal-cook">${esc(d.cook)}</span>
-          <span class="meal-dish">${esc(d.dish)}</span>
-        </li>`
-      : `
-        <li class="meal-slot open">
-          <span class="meal-open-label">Open</span>
-        </li>`;
-    const status = d.cook
-      ? `<span class="meal-day-status covered">sorted \u2713</span>`
-      : `<span class="meal-day-status open">open</span>`;
-    return `
-      <li class="meal-day${d.cook ? " is-covered" : ""}">
-        <div class="meal-day-head">
-          <span class="meal-day-date">${esc(d.label)}</span>
-          ${status}
-        </div>
-        <ul class="meal-day-slots">${slot}
-        </ul>
-      </li>`;
-  }).join("");
-  return `<ol class="meal-days">${items}
-    </ol>`;
-}
-
 /* ---------- public page (/s/:slug) -------------------------- */
 
 async function publicPage(row, env) {
@@ -1069,7 +1025,6 @@ export default {
     return null;
   },
 
-  examplePreview,
   publicPage: (row, env) => publicPage(row, env),
   editPage: (row, env, url) => editPage(row, env, url.origin),
 };

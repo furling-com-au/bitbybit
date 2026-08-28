@@ -72,7 +72,6 @@ const NOUN = {
    lazy match and this block carries lists and divs of its own. */
 const PREVIEW_MODULES = {
   "scrum-poker": "../src/tools/poker.js",
-  "meal-train": "../src/tools/meal.js",
   "kris-kringle": "../src/tools/kringle.js",
 };
 

@@ -1,37 +1,20 @@
-/* Hens & Shower Planner — builder page logic. */
+/* Hens & Shower Planner — builder page logic.
+
+   A module so it can import the one copy of the "Name xN" parser and the
+   board renderer. Those used to live here, and in two other builders. */
+import { parseCategoryLines, previewSummary, renderCategoryPreview,
+         countLines, firstDupe, MAX_CATS } from "./preview/hens.js";
+
 (function () {
   "use strict";
 
   const $ = (id) => document.getElementById(id);
   const LS_KEY = "bbb:hens-made:v1";
-  const MAX_CATS = 12;
   const MAX_ACTIVITIES = 20;
   const MAX_ACTIVITY = 100;
 
-  const escHtml = (s) =>
-    String(s).replace(/[&<>"']/g, (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-  /* ---- categories: "Name xN" per line ------------------------ */
-  const catLines = () =>
-    $("categories").value.split("\n")
-      .map((s) => s.trim().replace(/\s+/g, " "))
-      .filter(Boolean);
 
-  function parseCategories() {
-    return catLines().slice(0, MAX_CATS).map((line) => {
-      const m = line.match(/^(.*?)\s*[xX]\s*(\d+)$/);
-      let name = line;
-      let capacity;
-      if (m && m[1].trim()) {
-        name = m[1].trim();
-        capacity = parseInt(m[2], 10);
-      }
-      if (!Number.isFinite(capacity)) capacity = 2; // no xN suffix given
-      capacity = Math.min(20, Math.max(1, capacity)); // "x0" clamps to 1
-      return { name: name.slice(0, 40), capacity };
-    });
-  }
 
   /* ---- activities: one per line ------------------------------ */
   const parseActivities = () =>
@@ -40,38 +23,37 @@
       .filter(Boolean)
       .slice(0, MAX_ACTIVITIES);
 
-  function firstDupe(cats) {
-    const seen = new Set();
-    for (const c of cats) {
-      const k = c.name.toLowerCase();
-      if (seen.has(k)) return c.name;
-      seen.add(k);
-    }
-    return null;
-  }
 
-  /* ---- live summary ------------------------------------------ */
-  function updateStatus() {
+  /* ---- the live preview -------------------------------------
+     Redraws the board from the lists box on every keystroke. The counts
+     moved into the preview's own label; statusLine keeps only the warnings,
+     because repeating the totals above a board that shows them is the
+     redundancy this replaced.
+
+     The first frame is baked by scripts/gen-live-preview.mjs, so nothing
+     paints after load. Every redraw after that is attributed to typing,
+     which costs nothing against CLS. */
+  function updatePreview() {
+    const cats = parseCategoryLines($("categories").value);
+    const box = $("hensPreview");
+    const label = $("hensPreviewLabel");
+    if (box) box.innerHTML = renderCategoryPreview(cats);
+    /* textContent on a node that persists: aria-live only announces changes
+       inside a region that was already there at load. */
+    if (label) label.textContent = previewSummary(cats);
+
     const el = $("statusLine");
     el.classList.remove("warn");
-    const cats = parseCategories();
-    if (!cats.length) { el.innerHTML = ""; return; }
-
-    const spots = cats.reduce((s, c) => s + c.capacity, 0);
-    const acts = parseActivities().length;
-    let msg = `<strong>${cats.length} ${cats.length === 1 ? "list" : "lists"}, ` +
-      `${spots} ${spots === 1 ? "spot" : "spots"}</strong>` +
-      (acts ? ` · ${acts} ${acts === 1 ? "plan item" : "plan items"}` : "");
-
     const dupe = firstDupe(cats);
-    if (catLines().length > MAX_CATS) {
+    if (countLines($("categories").value) > MAX_CATS) {
       el.classList.add("warn");
-      msg += " — twelve lists is the limit; only the first twelve count.";
+      el.innerHTML = "Twelve lists is the limit — only the first twelve count.";
     } else if (dupe) {
       el.classList.add("warn");
-      msg += ` — "${escHtml(dupe)}" appears twice. Each list needs its own name.`;
+      el.innerHTML = "Two lists are both called “" + dupe + "” — give them different names.";
+    } else {
+      el.innerHTML = "";
     }
-    el.innerHTML = msg;
   }
 
   /* ---- earlier plans (this browser only) --------------------- */
@@ -114,7 +96,7 @@
     const where = $("where").value.trim();
     const kitty = $("kitty").value.trim();
     const note = $("note").value.trim();
-    const cats = parseCategories();
+    const cats = parseCategoryLines($("categories").value);
     const activities = parseActivities();
 
     if (!title) return fail("Give the do a name so everyone knows what it is.");
@@ -151,10 +133,10 @@
   }
 
   /* ---- wire up ----------------------------------------------- */
-  $("categories").addEventListener("input", updateStatus);
-  $("activities").addEventListener("input", updateStatus);
+  $("categories").addEventListener("input", updatePreview);
+  $("activities").addEventListener("input", updatePreview);
   $("hensForm").addEventListener("submit", submit);
 
-  updateStatus();
+  updatePreview();
   renderPrev();
 })();

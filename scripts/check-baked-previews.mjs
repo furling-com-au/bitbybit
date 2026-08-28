@@ -86,7 +86,6 @@ if (fibSrc && labelSrc) {
    which fails if a page carries a preview this file does not know about. */
 const PREVIEW_MODULES = {
   "scrum-poker": "../src/tools/poker.js",
-  "meal-train": "../src/tools/meal.js",
   "kris-kringle": "../src/tools/kringle.js",
 };
 
@@ -140,6 +139,8 @@ const { readInputs } = await import("./preview-inputs.mjs");
 const LIVE = {
   "volunteer-roster": "roster",
   "meal-train": "meal",
+  "bring-a-plate": "plate",
+  "hens-planner": "hens",
 };
 
 for (const [dir, modName] of Object.entries(LIVE)) {

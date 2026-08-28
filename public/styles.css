@@ -2320,6 +2320,28 @@ h1.qotd-q {
   display: flex; margin: 0 0 .35rem; font-size: .84rem; font-weight: 700;
   color: var(--ink);
 }
+/* bring-a-plate and the hens planner render the same board with plate-*
+   classes (hens reuses plate's on the real page too), so the compact
+   treatment has to name both vocabularies or their previews come out at
+   full board size — measured at 1076px before this existed. */
+.live-preview .plate-cat { margin: 0 0 .5rem; }
+.live-preview .plate-cat:last-child { margin-bottom: 0; }
+.live-preview .plate-cat-head {
+  display: flex; margin: 0 0 .35rem; font-size: .84rem; font-weight: 700;
+  color: var(--ink); gap: .4rem; flex-wrap: wrap;
+}
+.live-preview .plate-cat-head .plate-count {
+  font-weight: 400; color: var(--ink-faint); text-transform: none; letter-spacing: 0;
+}
+.live-preview .plate-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: .25rem;
+}
+.live-preview .plate-slot {
+  padding: .22rem .3rem; min-height: 0; border-width: 1px; box-shadow: none;
+}
+.live-preview .plate-open-label { font-size: .58rem; letter-spacing: .12em; }
+
 .live-preview .rost-grid {
   grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: .25rem;
 }

@@ -30,6 +30,8 @@ import { readInputs } from "./preview-inputs.mjs";
 const LIVE = {
   "volunteer-roster": "roster",
   "meal-train": "meal",
+  "bring-a-plate": "plate",
+  "hens-planner": "hens",
 };
 
 const FENCE = /([ 	]*)<!-- live-preview:start -->[\s\S]*?<!-- live-preview:end -->/;
