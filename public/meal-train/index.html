@@ -89,6 +89,12 @@
               <option value="3">3 — a crowd to feed</option>
             </select>
           </label>
+          <!-- live-preview:start -->
+          <p class="live-preview-label" id="mealPreviewLabel" aria-live="polite"></p>
+          <div class="live-preview" id="mealPreview">
+            <p class="live-preview-empty">Pick a first day and the roster lays itself out here.</p>
+          </div>
+          <!-- live-preview:end -->
           <p class="status-line" id="statusLine"></p>
           <p class="form-error" id="formError" hidden></p>
           <button type="submit" class="btn primary big" id="makeBtn">Start the roster →</button>
@@ -254,7 +260,7 @@
   ]
 }
 </script>
-<script src="/meal.js"></script>
+<script type="module" src="/meal.js"></script>
 <!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
      Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,
      the pages people share with their group. What their friends do in a sweep

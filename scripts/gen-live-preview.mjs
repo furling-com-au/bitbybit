@@ -21,65 +21,68 @@
    cannot leave the baked frame describing the old ones.
    ============================================================ */
 import { readFileSync, writeFileSync } from "node:fs";
-import { parseShiftLines, previewSummary, renderRosterPreview } from "../public/preview/roster.js";
+import { readInputs } from "./preview-inputs.mjs";
 
-/* dir -> how to find the input, and what to render it with. One entry so
-   far; the shape is here so the second one is an entry and not a fork. */
+/* dir -> the module under public/preview/ that owns its rendering. The
+   module declares its own PAGE_INPUTS, PREVIEW_IDS and firstFrame(), so a
+   new tool is a new file plus a line here — this driver knows nothing about
+   shifts or dates. */
 const LIVE = {
-  "volunteer-roster": {
-    field: /<textarea id="shifts"[^>]*>([\s\S]*?)<\/textarea>/,
-    render: (raw) => {
-      const shifts = parseShiftLines(decode(raw));
-      return { summary: previewSummary(shifts), board: renderRosterPreview(shifts) };
-    },
-  },
+  "volunteer-roster": "roster",
+  "meal-train": "meal",
 };
 
-const ENT = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'" };
-const decode = (s) => s.replace(/&[a-z]+;|&#\d+;/gi, (e) => ENT[e] ?? e);
-
-const FENCE = /([ \t]*)<!-- live-preview:start -->[\s\S]*?<!-- live-preview:end -->/;
+const FENCE = /([ 	]*)<!-- live-preview:start -->[\s\S]*?<!-- live-preview:end -->/;
 
 const problems = [];
-let changed = 0, already = 0;
+let changed = 0, already = 0, empty = 0;
 
-for (const [dir, cfg] of Object.entries(LIVE)) {
+for (const [dir, modName] of Object.entries(LIVE)) {
   const file = `public/${dir}/index.html`;
   const html = readFileSync(file, "utf8");
+  const mod = await import(`../public/preview/${modName}.js`);
 
   const fence = html.match(FENCE);
   if (!fence) { problems.push(`${dir}/ has no <!-- live-preview --> fence`); continue; }
 
-  const input = html.match(cfg.field);
-  if (!input) { problems.push(`${dir}/ has no prefilled field matching ${cfg.field}`); continue; }
+  const { summary, board } = mod.firstFrame(readInputs(html, mod.PAGE_INPUTS));
 
-  const { summary, board } = cfg.render(input[1]);
-  if (!board) { problems.push(`${dir}/ prefilled field renders an empty preview`); continue; }
+  if (!board && mod.REQUIRE_FIRST_FRAME) {
+    problems.push(`${dir}/ declares REQUIRE_FIRST_FRAME but its defaults render nothing`);
+    continue;
+  }
 
   const indent = fence[1];
-  /* Re-indented so the file stays readable, and trimmed per line so the
-     output is a pure function of the input — otherwise the generator
-     would rewrite the page on every run over whitespace alone. */
-  const inner = board.trim().split("\n").map((l) => `${indent}  ${l.trim()}`).join("\n");
-  /* The summary is its own node, outside the board and NOT rewritten
-     wholesale by the client — aria-live only announces changes inside a
-     region that already existed at load. The board carries no live region
-     at all: reading sixteen slots out on every keystroke is not help. */
+  const { label: labelId, board: boardId } = mod.PREVIEW_IDS;
+
+  /* Trimmed per line so the output is a pure function of the input and the
+     generator does not rewrite the page over whitespace alone. */
+  const inner = board
+    ? "\n" + board.trim().split("\n").map((l) => `${indent}  ${l.trim()}`).join("\n") + "\n" + indent
+    : "";
+
+  /* The summary is its own node and is NOT replaced wholesale by the client
+     — aria-live only announces changes inside a region that already existed
+     at load. The board carries no live region at all: reading a whole
+     roster out on every keystroke is not help. */
   const block =
     `${indent}<!-- live-preview:start -->\n` +
-    `${indent}<p class="live-preview-label" id="rosterPreviewLabel" aria-live="polite">${summary}</p>\n` +
-    `${indent}<div class="live-preview" id="rosterPreview">\n` +
-    `${inner}\n` +
-    `${indent}</div>\n` +
+    `${indent}<p class="live-preview-label" id="${labelId}" aria-live="polite">${summary}</p>\n` +
+    `${indent}<div class="live-preview" id="${boardId}">${inner}</div>\n` +
     `${indent}<!-- live-preview:end -->`;
 
+  if (!board) empty++;
   const next = html.replace(FENCE, block);
   if (next === html) { already++; continue; }
   writeFileSync(file, next);
   changed++;
 }
 
-console.log(`live previews: ${changed} written, ${already} already current, ${Object.keys(LIVE).length} page(s)`);
+console.log(
+  `live previews: ${changed} written, ${already} already current, ` +
+  `${Object.keys(LIVE).length} page(s)` +
+  (empty ? `, ${empty} with no default frame (nothing typed yet)` : "")
+);
 if (problems.length) {
   for (const p of problems) console.error("  ! " + p);
   process.exit(1);

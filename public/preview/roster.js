@@ -92,12 +92,16 @@ export function previewSummary(shifts) {
 /* A <p> heading, not an <h2>: this sits inside the builder form, and
    injecting five headings into the outline for a preview would put them in
    the document's heading order ahead of the real ones. */
+export const SHOW_SHIFTS = 3;
+
 export function renderRosterPreview(shifts) {
   if (!shifts.length) return "";
-  return shifts.map((shift) => {
+  const shown = shifts.slice(0, SHOW_SHIFTS);
+  const rest = shifts.slice(SHOW_SHIFTS);
+
+  const sections = shown.map((shift) => {
     const slots = Array.from({ length: shift.capacity }, () =>
-      `
-    <li class="rost-slot open"><span class="rost-open-label">Open</span></li>`
+      `\n    <li class="rost-slot open"><span class="rost-open-label">Open</span></li>`
     ).join("");
     return `
   <section class="rost-shift">
@@ -106,4 +110,36 @@ export function renderRosterPreview(shifts) {
     </ul>
   </section>`;
   }).join("");
+
+  /* Only the first few are drawn, and the rest are counted rather than
+     rendered. A box that scrolls inside a form traps a thumb on a phone,
+     and fifty shifts drawn in full would push the submit button off the
+     page — which is the thing this preview is supposed to help with, not
+     make worse. */
+  if (!rest.length) return sections;
+  const spots = rest.reduce((n, x) => n + x.capacity, 0);
+  return sections + `
+  <p class="live-preview-more">&hellip; and ${rest.length} more ${rest.length === 1 ? "shift" : "shifts"}, ${spots} more ${spots === 1 ? "spot" : "spots"}</p>`;
+}
+
+/* ---------- the build-time contract --------------------------
+   What gen-live-preview.mjs and check-baked-previews.mjs need to bake and
+   verify the first frame. Declared HERE, in the module that owns the
+   rendering, so adding a second tool is a new file rather than a fork of
+   the generator. */
+
+export const PREVIEW_IDS = { label: "rosterPreviewLabel", board: "rosterPreview" };
+
+/* Pulled out of the page rather than restated, so editing the defaults in
+   the HTML cannot leave the baked frame describing the old ones. */
+export const PAGE_INPUTS = {
+  shifts: /<textarea id="shifts"[^>]*>([\s\S]*?)<\/textarea>/,
+};
+
+/* The roster ships prefilled, so it always has a frame to bake. */
+export const REQUIRE_FIRST_FRAME = true;
+
+export function firstFrame({ shifts }) {
+  const parsed = parseShiftLines(shifts || "");
+  return { summary: previewSummary(parsed), board: renderRosterPreview(parsed) };
 }
