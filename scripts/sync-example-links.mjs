@@ -168,9 +168,24 @@ function stripFor(dir, indent) {
   const noun = NOUN[dir];
   if (!noun) throw new Error(`no noun for ${dir} — add one to NOUN`);
   const tap = ONE_TAP[dir];
+
+  /* "See a finished round" directly above an actual finished round is the same
+     redundancy this whole change is about — telling someone to go and look at a
+     thing that is right there. So when the strip lands immediately beneath this
+     line (the one-tap case, see previewFor), the link stops advertising the
+     example and starts offering the one thing the strip cannot be: the real,
+     full-size, interactive board.
+
+     Where the strip goes AFTER the builder, the two are about a thousand pixels
+     apart and this line is the only example affordance above the fold, so it
+     keeps its original wording. The wording follows adjacency, not tool. */
+  const adjacent = PREVIEWS[dir] && tap;
+  const link = adjacent
+    ? `Open the live ${noun} &rarr;`
+    : `See a finished ${noun} &rarr;`;
   let out = `${indent}<p class="see-example${tap ? " is-one-tap" : ""}">` +
     `${tap ? tap.promise + " " : "Not sure what you get? "}` +
-    `<a href="/s/demo-${dir}">See a finished ${noun} &rarr;</a></p>\n`;
+    `<a href="/s/demo-${dir}">${link}</a></p>\n`;
   if (tap)
     out += `${indent}<p class="one-tap">` +
       `<button type="submit" form="${tap.form}" id="makeBtnTop" class="btn primary">` +
