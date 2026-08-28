@@ -43,6 +43,38 @@
 
   <p class="see-example is-one-tap">Nothing needs filling in — Fibonacci is ready to go. <a href="/s/demo-scrum-poker">See a finished round &rarr;</a></p>
   <p class="one-tap"><button type="submit" form="pokerForm" id="makeBtnTop" class="btn primary">Deal the cards now &rarr;</button><a class="fine" href="#pokerForm">or name the story first</a></p>
+  <!-- example-preview:start -->
+  <div class="example-preview" role="group" aria-label="An example of a finished round">
+    <p class="example-preview-label">A finished one, for instance</p>
+    <ul class="pk-table">
+    <li class="pk-slot pk-shown">
+    <span class="pk-slot-card">3</span>
+    <span class="pk-slot-name">Priya</span>
+    </li>
+    <li class="pk-slot pk-shown">
+    <span class="pk-slot-card">5</span>
+    <span class="pk-slot-name">Tom H</span>
+    </li>
+    <li class="pk-slot pk-shown">
+    <span class="pk-slot-card">5</span>
+    <span class="pk-slot-name">Meredith</span>
+    </li>
+    <li class="pk-slot pk-shown">
+    <span class="pk-slot-card">13</span>
+    <span class="pk-slot-name">Jules</span>
+    </li>
+    <li class="pk-slot pk-shown">
+    <span class="pk-slot-card">5</span>
+    <span class="pk-slot-name">Sam N</span>
+    </li>
+    <li class="pk-slot pk-shown">
+    <span class="pk-slot-card">?</span>
+    <span class="pk-slot-name">Alex</span>
+    </li></ul>
+    <p class="pk-verdict">Spread is <strong>3</strong> to <strong>13</strong>, with 1 unsure.
+    Ask those two what they are each seeing — that conversation is the point of the exercise.</p>
+  </div>
+  <!-- example-preview:end -->
 
   <section class="builder">
     <form id="pokerForm" novalidate>
@@ -63,7 +95,14 @@
               <input type="radio" name="deck" value="tshirt">
               <span>T-shirt sizes — for rougher sizing</span>
             </label>
-            <div class="pk-deck pk-deck-preview" id="deckPreview" aria-hidden="true"></div>
+            <!-- Baked, not painted on load. An empty div filled by JS after first
+                 paint is the exact shift check-qotd-preview.mjs exists to prevent.
+                 poker.js repaints only when the radio changes, or on restore when
+                 data-deck disagrees with the checked radio. role="img" so a screen
+                 reader gets one sentence naming the deck rather than nine loose
+                 glyphs — and so ☕ is described rather than announced by codepoint. -->
+            <div class="pk-deck pk-deck-preview" id="deckPreview" data-deck="fib"
+                 role="img" aria-label="Fibonacci deck: 1, 2, 3, 5, 8, 13, 21, a question mark for “not enough information”, and a coffee cup for “I need a break”"><span class="pk-card pk-card-sample">1</span><span class="pk-card pk-card-sample">2</span><span class="pk-card pk-card-sample">3</span><span class="pk-card pk-card-sample">5</span><span class="pk-card pk-card-sample">8</span><span class="pk-card pk-card-sample">13</span><span class="pk-card pk-card-sample">21</span><span class="pk-card pk-card-sample">?</span><span class="pk-card pk-card-sample">☕</span></div>
           </fieldset>
 
           <p class="form-error" id="formError" hidden></p>
@@ -92,57 +131,10 @@
 
   <section class="content">
     <h2>How it works</h2>
-    <h3>1. One link, shared once</h3>
-    <p>Post it in the channel or drop it in the calendar invite. The same link
-    works for every story, this sprint and every sprint after. Nobody signs up,
-    nobody installs anything, and there is no room code to read out twice
-    because somebody mistyped it.</p>
-    <h3>2. Everyone picks a card</h3>
-    <p>Cards stay face down. The page shows how many people have voted and who
-    they are if they gave a name — never what anyone chose. You can change your
-    mind as many times as you like until the cards are turned over.</p>
-    <h3>3. Turn them over together</h3>
-    <p>The facilitator reveals, and every open page flips within a second or
-    two. You get the spread, the highest and the lowest, and then you talk.</p>
-
-    <h2>Why simultaneous matters</h2>
-    <p>The reason planning poker exists is anchoring. If the tech lead says
-    "that's a five" before anyone else commits, the estimates that follow
-    cluster around five — not because the team agrees, but because five is now
-    the number in the room. Committing privately and revealing at once is the
-    entire mechanism, and it is why a spreadsheet or a show of hands does not
-    substitute.</p>
-    <p>This tool will not show you an average, on purpose. The moment a group
-    estimate becomes arithmetic, it starts getting treated as a measurement. The
-    number that matters is the spread, and the useful minute of the meeting is
-    the one where the person who said 2 and the person who said 13 explain what
-    they are each picturing.</p>
-
-    <h2>Fibonacci or t-shirt sizes</h2>
-    <p>Two decks, chosen when you make the room. <strong>Fibonacci</strong> is
-    the default — 1, 2, 3, 5, 8, 13, 21 — for teams that size in story points
-    and want the gaps to widen as the numbers grow, so nobody argues about
-    whether something is a 14 or a 15.</p>
-    <p><strong>T-shirt sizes</strong> — XS, S, M, L, XL, XXL — suit teams that
-    are sizing roughly, or early, or with people who find story points a made-up
-    unit and say so. It is the same simultaneous reveal either way; only the
-    cards change.</p>
-    <p>Both decks also carry <strong>?</strong> for "I do not know enough to
-    vote" and <strong>☕</strong> for "I need a break". Neither counts toward
-    the spread, because a shrug is not an estimate and should not be averaged
-    into one.</p>
-
-    <h2>What it is not</h2>
-    <ul>
-      <li><strong>Not a tracker.</strong> There is no velocity chart, no history
-      across sprints, no export. It sizes the story in front of you and then
-      gets out of the way.</li>
-      <li><strong>Not tied to a backlog tool.</strong> No Jira connection, no
-      integration to approve. Paste the story title, or just say it out loud and
-      leave the box empty.</li>
-      <li><strong>Not a permanent record.</strong> Votes from a few stories ago
-      are cleared as you go. The board holds the story you are on.</li>
-    </ul>
+    <p>Share one link — the same one every story, this sprint and every sprint
+    after. Everyone picks a card, and no card is visible to anybody, including
+    the facilitator, until the round is turned over. You can change your mind
+    until it is.</p>
 
     <h2>FAQ</h2>
     <h3>Does it do t-shirt sizing as well as story points?</h3>
@@ -150,9 +142,6 @@
     XS through XXL instead of 1 to 21. Both decks include ? and a coffee cup,
     and neither of those counts toward the spread.</p>
 
-    <h3>Do people need an account?</h3>
-    <p>No. Nobody signs up, nobody gives an email address and there is nothing
-    to install. If you can paste a link into a call, everyone can vote.</p>
     <h3>Can the facilitator see the cards early?</h3>
     <p>No, and that is deliberate. The facilitator's page polls exactly the same
     endpoint everyone else's does, and the server does not send a single card
@@ -177,6 +166,10 @@
     people in a sprint planning call are on a phone or a second screen.</p>
 
     <h2>Related</h2>
+    <p>The argument for why the cards turn over at once — anchoring, the spread,
+    and which deck to pick — is on
+    <a href="/scrum-poker/why-simultaneous/">why planning poker reveals all the
+    cards at once</a>.</p>
     <p>For the top of the same meeting, there is a
     <a href="/question-of-the-day/">daily question</a> and
     <a href="/fact-matcher/standup-games/">stand-up games</a>. For how the team
@@ -210,14 +203,6 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Yes. Pick the t-shirt deck when you create the room and everyone votes XS through XXL instead of 1 to 21. Both decks include ? and a coffee cup, and neither of those counts toward the spread."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Do people need an account?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "No. Nobody signs up, nobody gives an email address and there is nothing to install. If you can paste a link into a call, everyone can vote."
       }
     },
     {

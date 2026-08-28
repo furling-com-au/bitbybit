@@ -8,47 +8,13 @@ Nothing needs filling in — Fibonacci is ready to go. [See a finished round →
 
 ## How it works
 
-### 1. One link, shared once
-
-Post it in the channel or drop it in the calendar invite. The same link works for every story, this sprint and every sprint after. Nobody signs up, nobody installs anything, and there is no room code to read out twice because somebody mistyped it.
-
-### 2. Everyone picks a card
-
-Cards stay face down. The page shows how many people have voted and who they are if they gave a name — never what anyone chose. You can change your mind as many times as you like until the cards are turned over.
-
-### 3. Turn them over together
-
-The facilitator reveals, and every open page flips within a second or two. You get the spread, the highest and the lowest, and then you talk.
-
-## Why simultaneous matters
-
-The reason planning poker exists is anchoring. If the tech lead says "that's a five" before anyone else commits, the estimates that follow cluster around five — not because the team agrees, but because five is now the number in the room. Committing privately and revealing at once is the entire mechanism, and it is why a spreadsheet or a show of hands does not substitute.
-
-This tool will not show you an average, on purpose. The moment a group estimate becomes arithmetic, it starts getting treated as a measurement. The number that matters is the spread, and the useful minute of the meeting is the one where the person who said 2 and the person who said 13 explain what they are each picturing.
-
-## Fibonacci or t-shirt sizes
-
-Two decks, chosen when you make the room. **Fibonacci** is the default — 1, 2, 3, 5, 8, 13, 21 — for teams that size in story points and want the gaps to widen as the numbers grow, so nobody argues about whether something is a 14 or a 15.
-
-**T-shirt sizes** — XS, S, M, L, XL, XXL — suit teams that are sizing roughly, or early, or with people who find story points a made-up unit and say so. It is the same simultaneous reveal either way; only the cards change.
-
-Both decks also carry **?** for "I do not know enough to vote" and **☕** for "I need a break". Neither counts toward the spread, because a shrug is not an estimate and should not be averaged into one.
-
-## What it is not
-
-- **Not a tracker.** There is no velocity chart, no history across sprints, no export. It sizes the story in front of you and then gets out of the way.
-- **Not tied to a backlog tool.** No Jira connection, no integration to approve. Paste the story title, or just say it out loud and leave the box empty.
-- **Not a permanent record.** Votes from a few stories ago are cleared as you go. The board holds the story you are on.
+Share one link — the same one every story, this sprint and every sprint after. Everyone picks a card, and no card is visible to anybody, including the facilitator, until the round is turned over. You can change your mind until it is.
 
 ## FAQ
 
 ### Does it do t-shirt sizing as well as story points?
 
 Yes. Pick the t-shirt deck when you create the room and everyone votes XS through XXL instead of 1 to 21. Both decks include? and a coffee cup, and neither of those counts toward the spread.
-
-### Do people need an account?
-
-No. Nobody signs up, nobody gives an email address and there is nothing to install. If you can paste a link into a call, everyone can vote.
 
 ### Can the facilitator see the cards early?
 
@@ -75,5 +41,7 @@ Sixty on one board, which is far more than a team that can usefully estimate tog
 Yes. The deck is laid out for a thumb, which matters because half the people in a sprint planning call are on a phone or a second screen.
 
 ## Related
+
+The argument for why the cards turn over at once — anchoring, the spread, and which deck to pick — is on [why planning poker reveals all the cards at once](https://bitibybit.com/scrum-poker/why-simultaneous/).
 
 For the top of the same meeting, there is a [daily question](https://bitibybit.com/question-of-the-day/) and [stand-up games](https://bitibybit.com/fact-matcher/standup-games/). For how the team is travelling, the [weekly pulse](https://bitibybit.com/weekly-pulse/), and for saying thank you afterwards, the [kudos wall](https://bitibybit.com/kudos-wall/).

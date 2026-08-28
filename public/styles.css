@@ -2251,6 +2251,43 @@ h1.qotd-q {
    directly under the lede because on a phone the submit button is roughly
    a screen and a half further down, and someone deciding whether this tool
    is worth their time should not have to scroll to find that out. */
+/* ---------- the baked worked example -------------------------
+   A real fragment, rendered by the tool's own code at build time by
+   sync-example-links.mjs, sitting under the one-tap button so a visitor sees
+   what they get before typing anything.
+
+   Dashed, like .see-example above it and for the same reason: everywhere else
+   on this site a solid edge means a real control, and dashed reads as a
+   sample. Nothing in here is pressable, so it must not look pressable.
+
+   Scaled down rather than reflowed. The fragments come from the /s/ pages at
+   full size, and re-styling each one per tool would be a second copy of every
+   board's CSS to keep in sync — so the strip shrinks type and spacing and
+   leaves the components alone. */
+.example-preview {
+  max-width: 52ch; margin: 0 0 1.5rem; padding: .7rem .8rem .8rem;
+  border: 2px dashed var(--line-firm); background: var(--paper-2);
+  font-size: .86rem;
+}
+.example-preview-label {
+  margin: 0 0 .5rem; font-size: .72rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-faint); font-weight: 700;
+}
+/* Nothing inside is interactive, so nothing inside should lift, press or
+   invite a cursor. */
+.example-preview * { cursor: default !important; }
+.example-preview .pk-slot, .example-preview .meal-slot,
+.example-preview .kk-name, .example-preview .meal-day {
+  box-shadow: none;
+}
+.example-preview .kk-grid { gap: .4rem; }
+.example-preview .kk-name { padding: .4rem .5rem; }
+.example-preview .meal-days { margin: 0; }
+.example-preview .meal-day { margin-bottom: .4rem; }
+.example-preview .pk-table { margin: 0; }
+.example-preview .pk-verdict { margin: .6rem 0 0; font-size: .84rem; }
+.example-preview .page-sub { margin: 0 0 .5rem; font-size: .78rem; }
+
 .see-example {
   display: flex; align-items: baseline; flex-wrap: wrap; gap: .3rem .6rem;
   max-width: 52ch; margin: 0 0 1.5rem; padding: .6rem .8rem;

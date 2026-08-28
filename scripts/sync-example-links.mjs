@@ -56,6 +56,35 @@ const NOUN = {
 
    `form=` is the HTML form-owner attribute, so the button submits the real
    form from outside it — no duplicated handler, no second code path. */
+/* ---------- the baked worked example -------------------------
+   Tools whose module exports examplePreview(). The fragment is rendered HERE,
+   at build time, by the tool's own code — so the strip shows markup the tool
+   would really produce, and it is in the HTML at first paint rather than
+   arriving afterwards and shoving the form down the page (see
+   check-qotd-preview.mjs for what that cost last time).
+
+   Emitted AFTER the one-tap button, deliberately. builder-above-fold.mjs
+   measured that button at ~332px on a phone and the in-form submit at ~1,400px;
+   putting a preview above it would spend that win to save a scroll nobody was
+   making. Below it, the example still lands inside the first screen.
+
+   Fenced with comment sentinels rather than matched by shape: STRIP below is a
+   lazy match and this block carries lists and divs of its own. */
+const PREVIEW_MODULES = {
+  "scrum-poker": "../src/tools/poker.js",
+  "meal-train": "../src/tools/meal.js",
+  "kris-kringle": "../src/tools/kringle.js",
+};
+
+const PREVIEWS = {};
+for (const [dir, mod] of Object.entries(PREVIEW_MODULES)) {
+  const m = await import(mod);
+  const fn = m.default && m.default.examplePreview;
+  if (typeof fn !== "function")
+    throw new Error(`${mod} is in PREVIEW_MODULES but exports no examplePreview()`);
+  PREVIEWS[dir] = fn();
+}
+
 const ONE_TAP = {
   "bring-a-plate": { form: "plateForm", cta: "Make the board now",
     promise: "Six categories are already filled in, Mains through Wildcards.",
@@ -81,7 +110,8 @@ const ONE_TAP = {
    the extra is-one-tap class. Requiring a quote immediately after
    "see-example" is exactly what made an earlier version fail to recognise
    its own output. Global, so duplicates are all removed, not just the first. */
-/* ? on every newline. check-line-endings.mjs should mean a CRLF file
+/* 
+? on every newline. check-line-endings.mjs should mean a CRLF file
    never reaches here, but this regex is the one that did real damage when
    it did: with <\/p>
  unable to match </p>\r\n the lazy [\s\S]*? runs on
@@ -89,6 +119,50 @@ const ONE_TAP = {
  further down the file, so a strip can take page
    content with it. Two guards for the failure that already happened. */
 const STRIP = /[ \t]*<p class="see-example[^"]*">[\s\S]*?<\/p>\r?\n(?:[ \t]*<p class="one-tap">[\s\S]*?<\/p>\r?\n)?(?:\r?\n)*/g;
+
+/* Where the preview goes depends on whether the tool has a one-tap button, and
+   the reason is measured rather than aesthetic.
+
+   With one: the button sits at ~380px on a phone, so the fast path is already
+   above the fold and a strip beneath it costs nothing that matters.
+
+   Without one: the visitor has to reach the form, and on /meal-train/ a strip
+   above it pushed the builder from 507px to 956px — entirely below the fold, on
+   a site whose README says "the tool page IS the tool — it works above the
+   fold". So for those tools the example goes AFTER the builder instead. The
+   .see-example link stays above the fold either way, which is what points at it.
+
+   Stripped globally rather than as part of STRIP, because it now has two
+   possible homes and a block left behind in the old one would be a duplicate. */
+const PREVIEW_STRIP = /[ \t]*<!-- example-preview:start -->[\s\S]*?<!-- example-preview:end -->\r?\n(?:\r?\n)*/g;
+
+function previewFor(dir, indent) {
+  const noun = NOUN[dir];
+  return `${indent}<!-- example-preview:start -->\n` +
+    `${indent}<div class="example-preview" role="group" aria-label="An example of a finished ${noun}">\n` +
+    `${indent}  <p class="example-preview-label">A finished one, for instance</p>\n` +
+    `${PREVIEWS[dir].trim().split("\n").map((l) => `${indent}  ${l.trim()}`).join("\n")}\n` +
+    `${indent}</div>\n` +
+    `${indent}<!-- example-preview:end -->\n`;
+}
+
+/* End of the <section class="builder"> block, by depth count — the builder
+   holds a <form> and the page holds more sections after it, so the first
+   </section> after the opening tag is not reliably the right one. */
+function afterBuilder(html) {
+  /* class="builder" on some pages, class="builder panel" on others. */
+  const m0 = html.match(/<section class="builder(?:[ "])/);
+  if (!m0) return -1;
+  const open = m0.index;
+  const re = /<section\b|<\/section>/g;
+  re.lastIndex = open;
+  let depth = 0, m;
+  while ((m = re.exec(html))) {
+    depth += m[0] === "</section>" ? -1 : 1;
+    if (depth === 0) return html.indexOf("\n", m.index) + 1;
+  }
+  return -1;
+}
 
 function stripFor(dir, indent) {
   const noun = NOUN[dir];
@@ -102,6 +176,7 @@ function stripFor(dir, indent) {
       `<button type="submit" form="${tap.form}" id="makeBtnTop" class="btn primary">` +
       `${tap.cta} &rarr;</button>` +
       `<a class="fine" href="#${tap.form}">${tap.hint}</a></p>\n`;
+  if (PREVIEWS[dir] && tap) out += previewFor(dir, indent);
   return out;
 }
 
@@ -147,12 +222,20 @@ for (const dir of dirs) {
      second copy on every run. Strip-then-insert cannot drift that way: the
      end state is the same whatever the file started as, so a file that has
      already collected duplicates repairs itself. */
-  const cleaned = html.replace(STRIP, "");
+  const cleaned = html.replace(STRIP, "").replace(PREVIEW_STRIP, "");
   const cleanLede = cleaned.indexOf('<p class="lede">');
   const end = cleaned.indexOf("</p>", cleanLede);
   if (end === -1) { problems.push(`${dir}/ lede is unclosed`); continue; }
   const at = cleaned.indexOf("\n", end) + 1;
-  const next = cleaned.slice(0, at) + "\n" + want + cleaned.slice(at);
+  let next = cleaned.slice(0, at) + "\n" + want + cleaned.slice(at);
+
+  /* No one-tap button: the example goes after the builder, so the form keeps
+     the fold. See the note on PREVIEW_STRIP above. */
+  if (PREVIEWS[dir] && !ONE_TAP[dir]) {
+    const bAt = afterBuilder(next);
+    if (bAt === -1) { problems.push(`${dir}/ has a preview but no <section class="builder"> to place it after`); continue; }
+    next = next.slice(0, bAt) + "\n" + previewFor(dir, "  ") + next.slice(bAt);
+  }
   if (next === html) { already++; continue; }
   writeFileSync(file, next);
   changed++;

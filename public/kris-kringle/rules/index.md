@@ -79,6 +79,14 @@ Categories rather than brands, because the good version of each of these exists 
 
 Drew someone you barely know? Ask whoever sits nearest them one question — "what's always on their desk?" — and buy the better version of that.
 
+## Kris Kringle, Secret Santa, gift exchange
+
+Three names for the same draw. **Kris Kringle** is what most Australians call it, **Secret Santa** is the usual name almost everywhere else, and an office running it formally will often call it a **gift exchange**. Same rules: everyone draws one name, keeps it quiet, and buys for that person only.
+
+## No emails, on purpose
+
+Most Secret Santa sites want everyone's email address before a single name is drawn. Then the invites bounce, or land in spam, or sit unopened next to the electricity bill, and by December someone's chasing Nan for a login. One link in a chat that everyone already reads skips all of it. Works in WhatsApp, Messenger, Teams, the family thread — anywhere a link can go.
+
 ## Wishlists fix most of this
 
 Telling people what you'd like isn't unromantic; it's the entire point of a group that has agreed to buy each other presents. Three lines is plenty: **one thing you'd genuinely use, one thing to avoid, and a size if a size could ever matter.** It's far easier to write when it's anonymous — nobody knows who's reading it.
