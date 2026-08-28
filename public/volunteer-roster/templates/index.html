@@ -26,8 +26,11 @@
   .cta-line { border-left: 6px solid var(--gold); padding: .2rem 0 .2rem 1.1rem;
     margin: 1.6rem 0; font-size: .86rem; color: var(--ink-soft); }
   .cta-line strong { color: var(--ink); }
+  /* --accent, not --terra-dark: that one does not flip for dark mode, where it
+     measured 2.47:1 on the dark ground. --accent is the terracotta-as-ink token
+     and carries a lifted value after dark. */
   .content h3.sub { margin: 1.1rem 0 .2rem; font-size: .78rem; letter-spacing: .05em;
-    text-transform: uppercase; color: var(--terra-dark); }
+    text-transform: uppercase; color: var(--accent); }
 </style>
 </head>
 <body class="article">

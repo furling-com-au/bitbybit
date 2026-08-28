@@ -125,6 +125,60 @@ for (const [dir, mod] of Object.entries(PREVIEW_MODULES)) {
     problems.push(`/${dir}/: example-preview contains a form control — it must be inert`);
 }
 
+/* ---------- 3. the live previews ---------------------------- */
+
+/* The baked first frame must equal what the shared module renders from the
+   field the page actually ships with. If they disagree, the visitor sees one
+   roster until their first keystroke and a different one after it — a flicker
+   with no cause they can see, which is worse than no preview.
+
+   Rendered here from the page's own textarea rather than from a fixture, so
+   editing the defaults cannot quietly invalidate the check. */
+const { parseShiftLines, previewSummary, renderRosterPreview } = await import("../public/preview/roster.js");
+
+const LIVE = {
+  "volunteer-roster": {
+    field: /<textarea id="shifts"[^>]*>([\s\S]*?)<\/textarea>/,
+    render: (raw) => {
+      const shifts = parseShiftLines(raw
+        .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"').replace(/&#39;/g, "'"));
+      return { summary: previewSummary(shifts), board: renderRosterPreview(shifts) };
+    },
+  },
+};
+
+for (const [dir, cfg] of Object.entries(LIVE)) {
+  const html = readFileSync(`public/${dir}/index.html`, "utf8");
+
+  const block = html.match(/<!-- live-preview:start -->([\s\S]*?)<!-- live-preview:end -->/);
+  if (!block) { problems.push(`/${dir}/: no live-preview fence — run gen-live-preview.mjs`); continue; }
+
+  const input = html.match(cfg.field);
+  if (!input) { problems.push(`/${dir}/: no prefilled field to render the first frame from`); continue; }
+
+  const want = cfg.render(input[1]);
+  if (!flat(block[1]).includes(flat(want.board)))
+    problems.push(`/${dir}/: baked board does not match what the module renders from the page's own defaults — re-run gen-live-preview.mjs`);
+  if (!flat(block[1]).includes(flat(want.summary)))
+    problems.push(`/${dir}/: baked summary does not match the module — re-run gen-live-preview.mjs`);
+
+  /* The board must NOT be a live region and the summary MUST be. Getting this
+     backwards reads the whole roster aloud on every keystroke. */
+  if (/<div class="live-preview"[^>]*aria-live/.test(block[1]))
+    problems.push(`/${dir}/: the board carries aria-live — it would be announced in full on every keystroke`);
+  if (!/<p class="live-preview-label"[^>]*aria-live="polite"/.test(block[1]))
+    problems.push(`/${dir}/: the summary is not a polite live region, so nothing is announced as it changes`);
+
+  if (/<button|<input|<form|<select|<textarea/.test(block[1]))
+    problems.push(`/${dir}/: live-preview contains a form control — it sits inside the builder and must not be pressable`);
+
+  /* The whole point is that the first frame is already there. An empty
+     container would be filled by JS after paint, which is the shift. */
+  if (!/rost-shift/.test(block[1]))
+    problems.push(`/${dir}/: live-preview is empty in the HTML — it would paint after load`);
+}
+
 /* A preview on a page this script does not know about would go unchecked
    forever, which is the failure mode that makes a guard worse than none. */
 for (const d of readdirSync("public", { withFileTypes: true })) {
@@ -136,7 +190,7 @@ for (const d of readdirSync("public", { withFileTypes: true })) {
 }
 
 const n = Object.keys(PREVIEW_MODULES).length;
-console.log(`baked previews: 1 deck + ${n} example strips checked, ${problems.length} wrong`);
+console.log(`baked previews: 1 deck + ${n} example strips + ${Object.keys(LIVE).length} live first-frame(s) checked, ${problems.length} wrong`);
 if (problems.length) {
   for (const p of problems) console.error("  ! " + p);
   process.exit(1);

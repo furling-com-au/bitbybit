@@ -18,7 +18,7 @@ If you've ended up running the roster for the fete or the sizzle, you did not si
 
 ### 1. Set the shifts
 
-One per line, with how many people each needs — *Grill 9-11am x3* means three spots on the grill for that slot. The defaults suit a sausage sizzle; edit them for a canteen, a fete stall, a working bee, or a whole day of them. No *xN* on a line? It gets two spots. Up to twenty shifts, up to thirty spots each.
+The defaults suit a sausage sizzle. Edit them for a canteen, a fete stall, a working bee, or a whole day of them — up to twenty shifts, thirty spots each.
 
 ### 2. Share the link
 

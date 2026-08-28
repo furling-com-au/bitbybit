@@ -67,13 +67,59 @@
           <p class="preset-note" id="presetNote" hidden></p>
 
           <label class="field">
-            <span>Shifts <em>(one per line — "Job time xN")</em></span>
+            <span>Shifts <em>(one per line)</em></span>
             <textarea id="shifts" rows="9" spellcheck="false">Setup 8-9am x2
 Grill 9-11am x3
 Grill 11am-1pm x3
 Serving 9am-1pm x4
 Pack down 1-2pm x4</textarea>
           </label>
+          <!-- live-preview:start -->
+          <p class="live-preview-label" id="rosterPreviewLabel" aria-live="polite">5 shifts, 16 spots — this is what people will see</p>
+          <div class="live-preview" id="rosterPreview">
+            <section class="rost-shift">
+            <p class="rost-shift-head">Setup 8-9am <span class="rost-count">&mdash; 0 of 2 filled</span></p>
+            <ul class="rost-grid">
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            </ul>
+            </section>
+            <section class="rost-shift">
+            <p class="rost-shift-head">Grill 9-11am <span class="rost-count">&mdash; 0 of 3 filled</span></p>
+            <ul class="rost-grid">
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            </ul>
+            </section>
+            <section class="rost-shift">
+            <p class="rost-shift-head">Grill 11am-1pm <span class="rost-count">&mdash; 0 of 3 filled</span></p>
+            <ul class="rost-grid">
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            </ul>
+            </section>
+            <section class="rost-shift">
+            <p class="rost-shift-head">Serving 9am-1pm <span class="rost-count">&mdash; 0 of 4 filled</span></p>
+            <ul class="rost-grid">
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            </ul>
+            </section>
+            <section class="rost-shift">
+            <p class="rost-shift-head">Pack down 1-2pm <span class="rost-count">&mdash; 0 of 4 filled</span></p>
+            <ul class="rost-grid">
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            <li class="rost-slot open"><span class="rost-open-label">Open</span></li>
+            </ul>
+            </section>
+          </div>
+          <!-- live-preview:end -->
           <p class="status-line" id="statusLine"></p>
           <p class="form-error" id="formError" hidden></p>
           <button type="submit" class="btn primary big" id="makeBtn">Build the roster →</button>
@@ -130,11 +176,9 @@ Pack down 1-2pm x4</textarea>
 
     <h2>How it works</h2>
     <h3>1. Set the shifts</h3>
-    <p>One per line, with how many people each needs —
-    <em>Grill 9-11am x3</em> means three spots on the grill for that slot.
-    The defaults suit a sausage sizzle; edit them for a canteen, a fete stall,
-    a working bee, or a whole day of them. No <em>xN</em> on a line? It gets two
-    spots. Up to twenty shifts, up to thirty spots each.</p>
+    <p>The defaults suit a sausage sizzle. Edit them for a canteen, a fete
+    stall, a working bee, or a whole day of them &mdash; up to twenty shifts,
+    thirty spots each.</p>
     <h3>2. Share the link</h3>
     <p>Paste the share link into the class group, the club chat, the email.
     There's a ready-made message waiting on your coordinator page. Bookmark the
@@ -278,7 +322,7 @@ Pack down 1-2pm x4</textarea>
 }
 </script>
 <script src="/roster-presets.js"></script>
-<script src="/roster.js"></script>
+<script type="module" src="/roster.js"></script>
 <!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
      Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,
      the pages people share with their group. What their friends do in a sweep

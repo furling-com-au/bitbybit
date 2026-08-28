@@ -1,14 +1,17 @@
-/* Volunteer Roster — builder page logic. */
+/* Volunteer Roster — builder page logic.
+
+   A module, not a classic script, so it can import the one renderer the
+   baked preview also uses. roster-presets.js stays classic and still
+   loads first: classic scripts run before module scripts, so the
+   ROSTER_PRESETS global it defines is there by the time this runs. */
+import { parseShiftLines, countShiftLines, previewSummary, renderRosterPreview, MAX_SHIFTS }
+  from "./preview/roster.js";
+
 (function () {
   "use strict";
 
   const $ = (id) => document.getElementById(id);
   const LS_KEY = "bbb:roster-made:v1";
-  const MAX_SHIFTS = 20;
-
-  const escHtml = (s) =>
-    String(s).replace(/[&<>"']/g, (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
   /* ---- club templates ---------------------------------------
      Ten real match-day duty sheets, grouped so a secretary is not offered
@@ -45,43 +48,40 @@
     });
   })();
 
-  /* ---- shifts: "Job time xN" per line ------------------------ */
-  const shiftLines = () =>
-    $("shifts").value.split("\n")
-      .map((s) => s.trim().replace(/\s+/g, " "))
-      .filter(Boolean);
+  /* ---- the live preview -------------------------------------
+     Redraws the board from the shifts box on every keystroke. This is
+     what replaced three hundred words explaining the "xN" suffix: type
+     "Grill 9-11am x3" and three slots appear, which is a better
+     explanation than the sentence was.
 
-  function parseShifts() {
-    return shiftLines().slice(0, MAX_SHIFTS).map((line) => {
-      const m = line.match(/^(.*?)\s*[xX]\s*(\d+)$/);
-      let label = line;
-      let capacity;
-      if (m && m[1].trim()) {
-        label = m[1].trim();
-        capacity = parseInt(m[2], 10);
-      }
-      if (!Number.isFinite(capacity)) capacity = 2; // no xN suffix given
-      capacity = Math.min(30, Math.max(1, capacity)); // "x0" clamps to 1
-      return { label: label.slice(0, 50), capacity };
-    });
-  }
+     The initial render is BAKED into the page by
+     scripts/gen-live-preview.mjs, so there is no paint-after-load and
+     nothing moves before the visitor touches anything. From then on
+     every redraw is attributed to typing, and a shift the browser can
+     blame on input does not count against CLS.
 
-  /* ---- live summary ------------------------------------------ */
-  function updateStatus() {
+     statusLine keeps only the over-limit warning. The counts moved into
+     the preview's own label, because saying "5 shifts, 18 spots" above a
+     board showing five shifts and eighteen spots is the same redundancy
+     this whole change is about. */
+  function updatePreview() {
+    const shifts = parseShiftLines($("shifts").value);
+    const box = $("rosterPreview");
+    const label = $("rosterPreviewLabel");
+    if (box) box.innerHTML = renderRosterPreview(shifts);
+    /* textContent on a node that persists, not innerHTML on a replaced one:
+       aria-live only announces changes inside a region that was already
+       there when the page loaded. */
+    if (label) label.textContent = previewSummary(shifts);
+
     const el = $("statusLine");
     el.classList.remove("warn");
-    const shifts = parseShifts();
-    if (!shifts.length) { el.innerHTML = ""; return; }
-
-    const spots = shifts.reduce((s, c) => s + c.capacity, 0);
-    let msg = `<strong>${shifts.length} ${shifts.length === 1 ? "shift" : "shifts"}, ` +
-      `${spots} ${spots === 1 ? "spot" : "spots"}</strong>`;
-
-    if (shiftLines().length > MAX_SHIFTS) {
+    if (countShiftLines($("shifts").value) > MAX_SHIFTS) {
       el.classList.add("warn");
-      msg += " — twenty shifts is the limit; only the first twenty count.";
+      el.innerHTML = "Twenty shifts is the limit — only the first twenty count.";
+    } else {
+      el.innerHTML = "";
     }
-    el.innerHTML = msg;
   }
 
   /* ---- earlier rosters (this browser only) ------------------- */
@@ -129,7 +129,7 @@
     const err = $("formError");
     err.hidden = true;
 
-    const shifts = parseShifts();
+    const shifts = parseShiftLines($("shifts").value);
     const title = $("title").value.trim();
     const eventDate = $("eventDate").value.trim();
     const note = $("note").value.trim();
@@ -167,9 +167,9 @@
   }
 
   /* ---- wire up ----------------------------------------------- */
-  $("shifts").addEventListener("input", updateStatus);
+  $("shifts").addEventListener("input", updatePreview);
   $("rosterForm").addEventListener("submit", submit);
 
-  updateStatus();
+  updatePreview();
   renderPrev();
 })();
