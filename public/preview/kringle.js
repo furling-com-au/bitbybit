@@ -73,7 +73,17 @@ export function previewSummary(names) {
 
 /* The same .kk-grid / .kk-name markup publicPage renders, minus the button:
    every tile is the non-interactive <div>, so the preview offers nothing to
-   press and gen-markdown.mjs has no control to strip. */
+   press and gen-markdown.mjs has no control to strip.
+
+   And minus the "That's me" line the real tile carries. On the live board
+   that is a call to action on a button aimed at ONE person — the one whose
+   name it is. Repeated down a preview nobody can press, it stops reading as
+   an invitation and starts reading as a state, as though all three of them
+   had already said it. The label above already says what these are for.
+
+   The open slots in the roster, plate, hens and meal previews keep their
+   "Open" for the opposite reason: that is a state, and an empty slot really
+   is open. */
 export function renderKringlePreview(names) {
   if (!names.length) return "";
   const shown = names.slice(0, SHOW_NAMES);
@@ -82,7 +92,6 @@ export function renderKringlePreview(names) {
   const tiles = shown.map((n) => `
     <li><div class="kk-name">
       <span class="kk-person">${esc(n)}</span>
-      <span class="kk-cta">That's me</span>
     </div></li>`).join("");
 
   /* Counted, not drawn. A hundred names is legal and rendering them all

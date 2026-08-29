@@ -2352,11 +2352,10 @@ h1.qotd-q {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: .3rem;
 }
 .live-preview .kk-name {
-  padding: .35rem .45rem; min-height: 0; border-width: 1px; box-shadow: none;
+  padding: .4rem .5rem; min-height: 0; border-width: 1px; box-shadow: none;
   display: block; text-align: left;
 }
 .live-preview .kk-person { font-size: .82rem; font-weight: 700; display: block; }
-.live-preview .kk-cta { font-size: .58rem; letter-spacing: .1em; display: block; }
 
 .live-preview .rost-grid {
   grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: .25rem;
