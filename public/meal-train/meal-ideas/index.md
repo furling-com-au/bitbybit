@@ -168,3 +168,13 @@ Ask what they've been told they can eat and follow it exactly. Without restricti
 ### How often should meals be delivered?
 
 Every second or third day is usually better than daily — most meals make leftovers, and freezer space runs out. Spread the roster so support continues into week three and four, not just the first week.
+
+## Dietary needs come first
+
+Allergies and dietary needs aren't a nice-to-have here — they're a safety field. Whatever you type in the dietary box shows up **prominently at the top of the shared board**, so every single person cooking sees "no nuts" or "coeliac" or "dairy-free baby" before they pick a recipe. It's the one detail you can't afford to have buried.
+
+## Not everyone cooks
+
+Food is only half of what helps. Alongside the meals you can add up to **twelve other jobs** — the school run, walking the dog, a load of washing, mowing the lawn before the wake — each with how many people it needs. They sit on the same board, get claimed the same way, and come out in the same printout and CSV, so the coordinator sees everyone who is helping in one place rather than running a second roster in the group chat.
+
+It matters because the people who want to help are not all cooks. The neighbour who cannot cook but drives past the school at 3pm every day is offering something genuinely useful, and there should be somewhere to put it. Say when the job is in its name — *School pickup, Tuesdays* — and it reads correctly to everyone looking at the board.

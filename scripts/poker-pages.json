@@ -1,0 +1,26 @@
+{
+  "pages": [
+    {
+      "slug": "why-simultaneous",
+      "title": "Why planning poker reveals all the cards at once",
+      "metaDescription": "Planning poker works because nobody sees a number before committing their own. What anchoring does to an estimate, and why the spread beats the average.",
+      "h1": "Why planning poker reveals all the cards at once",
+      "lede": "The whole mechanism is that nobody hears a number before they commit their own. Take that away and an estimation session becomes a room agreeing with whoever spoke first.",
+      "bodyHtml": "<h2>Why simultaneous matters</h2>\n<p>The reason planning poker exists is anchoring. If the tech lead says\n\"that's a five\" before anyone else commits, the estimates that follow\ncluster around five — not because the team agrees, but because five is now\nthe number in the room. Committing privately and revealing at once is the\nentire mechanism, and it is why a spreadsheet or a show of hands does not\nsubstitute.</p>\n<p>This tool will not show you an average, on purpose. The moment a group\nestimate becomes arithmetic, it starts getting treated as a measurement. The\nnumber that matters is the spread, and the useful minute of the meeting is\nthe one where the person who said 2 and the person who said 13 explain what\nthey are each picturing.</p>\n\n<h2>Fibonacci or t-shirt sizes</h2>\n<p>Two decks, chosen when you make the room. <strong>Fibonacci</strong> is\nthe default — 1, 2, 3, 5, 8, 13, 21 — for teams that size in story points\nand want the gaps to widen as the numbers grow, so nobody argues about\nwhether something is a 14 or a 15.</p>\n<p><strong>T-shirt sizes</strong> — XS, S, M, L, XL, XXL — suit teams that\nare sizing roughly, or early, or with people who find story points a made-up\nunit and say so. It is the same simultaneous reveal either way; only the\ncards change.</p>\n<p>Both decks also carry <strong>?</strong> for \"I do not know enough to\nvote\" and <strong>☕</strong> for \"I need a break\". Neither counts toward\nthe spread, because a shrug is not an estimate and should not be averaged\ninto one.</p>\n\n<h2>What it is not</h2>\n<ul>\n  <li><strong>Not a tracker.</strong> There is no velocity chart, no history\n  across sprints, no export. It sizes the story in front of you and then\n  gets out of the way.</li>\n  <li><strong>Not tied to a backlog tool.</strong> No Jira connection, no\n  integration to approve. Paste the story title, or just say it out loud and\n  leave the box empty.</li>\n  <li><strong>Not a permanent record.</strong> Votes from a few stories ago\n  are cleared as you go. The board holds the story you are on.</li>\n</ul>\n",
+      "faq": [
+        {
+          "q": "Why not just take the average of everyone's estimate?",
+          "a": "Because the moment a group estimate becomes arithmetic it starts getting treated as a measurement. The number worth having is the spread: the minute where the person who said 2 and the person who said 13 explain what they are each picturing is the reason to estimate as a group at all."
+        },
+        {
+          "q": "What if the team already agrees before we start?",
+          "a": "Then the round takes fifteen seconds and you move on, which is the correct outcome. The cost of running it when you did not need it is far lower than the cost of skipping it the one time somebody had seen the migration that nobody else had."
+        },
+        {
+          "q": "Should we use Fibonacci or t-shirt sizes?",
+          "a": "Fibonacci if you size in story points and want the gaps to widen as the numbers grow. T-shirt sizes if you are sizing roughly, or early, or with people who find story points a made-up unit and say so. The reveal works the same either way; only the cards change."
+        }
+      ]
+    }
+  ]
+}

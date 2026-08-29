@@ -34,14 +34,30 @@
     fib: ["1", "2", "3", "5", "8", "13", "21", "?", "☕"],
     tshirt: ["XS", "S", "M", "L", "XL", "XXL", "?", "☕"],
   };
+  /* Read out as one sentence by role="img", so the deck is described rather
+     than announced as nine loose glyphs. Kept beside DECKS so the two cannot
+     drift; check-baked-previews.mjs asserts the page agrees with both. */
+  const DECK_LABEL = {
+    fib: "Fibonacci deck: 1, 2, 3, 5, 8, 13, 21, a question mark for “not enough information”, and a coffee cup for “I need a break”",
+    tshirt: "T-shirt deck: XS, S, M, L, XL, XXL, a question mark for “not enough information”, and a coffee cup for “I need a break”",
+  };
   function paintDeck() {
     const chosen = document.querySelector('input[name="deck"]:checked');
     const which = chosen ? chosen.value : "fib";
-    $("deckPreview").innerHTML = DECKS[which]
+    const el = $("deckPreview");
+    if (el.dataset.deck === which) return;      // already correct - do not touch the DOM
+    el.innerHTML = DECKS[which]
       .map((c) => '<span class="pk-card pk-card-sample">' + c + "</span>").join("");
+    el.setAttribute("aria-label", DECK_LABEL[which]);
+    el.dataset.deck = which;
   }
   document.querySelectorAll('input[name="deck"]').forEach((r) =>
     r.addEventListener("change", paintDeck));
+  /* NOT an unconditional repaint on load. The fib deck is baked into the HTML,
+     so painting it again after first paint is the shift check-qotd-preview.mjs
+     was written to stop. This call is a no-op in the normal case and only does
+     work when a browser restores "tshirt" on reload (Firefox does), where the
+     baked markup would otherwise contradict the checked radio. */
   paintDeck();
 
   $("pokerForm").addEventListener("submit", async (e) => {

@@ -1,75 +1,51 @@
 /* Meal Train — builder page logic. Collects the household, the dietary
    needs, the drop-off details and the span of days, generates the date
-   list client-side, and posts it. No framework, no build step. */
+   list client-side, and posts it. No framework, no build step.
+
+   A module so it can import the one copy of the date helpers and the
+   board renderer. They used to live here too, under a comment saying
+   they mirrored the server by hand. */
+import { parseISO, fmtDay, buildDates as buildDateList, previewSummary,
+         renderMealPreview, MAX_DAYS } from "./preview/meal.js";
+
 (function () {
   "use strict";
 
   const $ = (id) => document.getElementById(id);
   const LS_KEY = "bbb:meal-made:v1";
-  const MAX_DAYS = 60;
 
-  const escHtml = (s) =>
-    String(s).replace(/[&<>"']/g, (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const buildDates = () =>
+    buildDateList($("firstDate").value, $("meals").value, $("spacing").value);
 
-  const WD = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const MO = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  /* ---- the live preview -------------------------------------
+     Redraws the dated board from the four fields that decide it. The
+     counts and the span moved into the preview's own label; statusLine
+     keeps only the over-limit warning, because "10 meals over 10 days"
+     above a board showing ten days is the redundancy this replaced.
 
-  /* ---- date helpers (all in UTC, mirroring the server) -------- */
-  function parseISO(s) {
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || "").trim());
-    if (!m) return null;
-    const y = +m[1], mo = +m[2], d = +m[3];
-    const dt = new Date(Date.UTC(y, mo - 1, d));
-    if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== mo - 1 || dt.getUTCDate() !== d) return null;
-    return dt;
-  }
-  function toISO(dt) {
-    const mo = String(dt.getUTCMonth() + 1).padStart(2, "0");
-    const d = String(dt.getUTCDate()).padStart(2, "0");
-    return dt.getUTCFullYear() + "-" + mo + "-" + d;
-  }
-  function fmtDay(iso) {
-    const d = parseISO(iso);
-    return d ? WD[d.getUTCDay()] + " " + d.getUTCDate() + " " + MO[d.getUTCMonth()] : iso;
-  }
+     #mealPreview has a FIXED height in styles.css. seedDate() below sets
+     the first day to tomorrow AFTER paint, so the placeholder is swapped
+     for a ten-day board with no user action to blame the shift on — and a
+     box that is the same size either way cannot shift at all. */
+  function updatePreview() {
+    const dates = buildDates();
+    const box = $("mealPreview");
+    const label = $("mealPreviewLabel");
+    if (box) box.innerHTML = dates.length
+      ? renderMealPreview(dates, $("capacity").value, $("allergies").value)
+      : '<p class="live-preview-empty">Pick a first day and the roster lays itself out here.</p>';
+    /* textContent on a node that persists: aria-live only announces changes
+       inside a region that was already there at load. */
+    if (label) label.textContent = previewSummary(dates, $("capacity").value);
 
-  /* Build the list of dates from the first day, the number of meals, and
-     the spacing (1 = every day, 2 = every second day, 7 = weekly). */
-  function buildDates() {
-    const start = parseISO($("firstDate").value);
-    if (!start) return [];
-    let count = parseInt($("meals").value, 10);
-    if (!Number.isFinite(count) || count < 1) count = 0;
-    count = Math.min(count, MAX_DAYS);
-    const step = parseInt($("spacing").value, 10) || 1;
-    const out = [];
-    for (let i = 0; i < count; i++) {
-      out.push(toISO(new Date(Date.UTC(
-        start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate() + i * step))));
-    }
-    return out;
-  }
-
-  /* ---- live summary ------------------------------------------ */
-  function updateStatus() {
     const el = $("statusLine");
     el.classList.remove("warn");
-    const dates = buildDates();
-    if (!dates.length) { el.innerHTML = ""; return; }
-
-    const cap = parseInt($("capacity").value, 10) || 1;
-    const meals = dates.length * cap;
-    let msg = "<strong>" + meals + " " + (meals === 1 ? "meal" : "meals") + "</strong> over " +
-      dates.length + " " + (dates.length === 1 ? "day" : "days") +
-      " — " + escHtml(fmtDay(dates[0]));
-    if (dates.length > 1) msg += " → " + escHtml(fmtDay(dates[dates.length - 1]));
-
     if (parseInt($("meals").value, 10) > MAX_DAYS) {
       el.classList.add("warn");
-      msg += " — sixty days is the limit; only the first sixty count.";
+      el.innerHTML = "Sixty days is the limit — only the first sixty count.";
+    } else {
+      el.innerHTML = "";
     }
-    el.innerHTML = msg;
   }
 
   /* ---- earlier rosters (this browser only) ------------------- */
@@ -177,13 +153,13 @@
   })();
 
   /* ---- wire up ----------------------------------------------- */
-  ["firstDate", "meals", "spacing", "capacity"].forEach((id) => {
+  ["firstDate", "meals", "spacing", "capacity", "allergies"].forEach((id) => {
     const el = $(id);
-    if (el) el.addEventListener("input", updateStatus);
-    if (el) el.addEventListener("change", updateStatus);
+    if (el) el.addEventListener("input", updatePreview);
+    if (el) el.addEventListener("change", updatePreview);
   });
   $("mealForm").addEventListener("submit", submit);
 
-  updateStatus();
+  updatePreview();
   renderPrev();
 })();

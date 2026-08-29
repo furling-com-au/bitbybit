@@ -2,9 +2,10 @@
    Build long-tail guide pages from a data file.
    Run: node scripts/gen-guide-pages.mjs
 
-   Two families so far — roster guides under /volunteer-roster/ and
-   icebreaker guides under /fact-matcher/ — sharing one shell so a
-   third does not become a third copy of the same HTML.
+   Three families — roster guides under /volunteer-roster/, icebreaker
+   guides under /fact-matcher/ and the planning-poker explainer under
+   /scrum-poker/ — sharing one shell so each new one does not become
+   another copy of the same HTML.
 
    FAQs are rendered VISIBLY here and their JSON-LD is generated
    afterwards by sync-faq-schema.mjs, never written by hand.
@@ -54,6 +55,23 @@ const FAMILIES = [
     situation and by time</a>, and a
     <a href="/question-of-the-day/">daily question</a> if you want one that runs
     itself every morning.</p>`,
+  },
+  {
+    data: "scripts/poker-pages.json",
+    out: "public/scrum-poker",
+    kicker: "Planning poker",
+    navLabel: "the poker tool",
+    navHref: "/scrum-poker/",
+    ogImage: "og-poker",
+    downloads: {},
+    /* This page exists because the tool page used to carry it. The deck
+       is now shown on the builder itself, so the argument for WHY the
+       reveal is simultaneous is the part that still needs words. */
+    closing: `    <h2>Run a round</h2>
+    <p><a href="/scrum-poker/">Scrum poker</a> is free and needs no account from
+    anyone: you get one link for the team and a facilitator link for yourself, and
+    the same link works for every story this sprint and every sprint after. No
+    card is visible to anybody — including you — until the round is turned over.</p>`,
   },
 ];
 

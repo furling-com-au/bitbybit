@@ -66,6 +66,42 @@ Drinks x4
 Ice and esky x2
 Wildcards x3</textarea>
           </label>
+          <!-- live-preview:start -->
+          <p class="live-preview-label" id="platePreviewLabel" aria-live="polite">6 categories, 24 spots — this is what people will see</p>
+          <div class="live-preview" id="platePreview">
+            <section class="plate-cat">
+            <p class="plate-cat-head">Mains <span class="plate-count">&mdash; 0 of 6 sorted</span></p>
+            <ul class="plate-grid">
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            </ul>
+            </section>
+            <section class="plate-cat">
+            <p class="plate-cat-head">Salads <span class="plate-count">&mdash; 0 of 5 sorted</span></p>
+            <ul class="plate-grid">
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            </ul>
+            </section>
+            <section class="plate-cat">
+            <p class="plate-cat-head">Desserts <span class="plate-count">&mdash; 0 of 4 sorted</span></p>
+            <ul class="plate-grid">
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            </ul>
+            </section>
+            <p class="live-preview-more">&hellip; and 3 more categories, 9 more spots</p>
+          </div>
+          <!-- live-preview:end -->
           <p class="status-line" id="statusLine"></p>
           <p class="form-error" id="formError" hidden></p>
           <button type="submit" class="btn primary big" id="makeBtn">Set the table →</button>
@@ -221,7 +257,7 @@ Wildcards x3</textarea>
   ]
 }
 </script>
-<script src="/plate.js"></script>
+<script type="module" src="/plate.js"></script>
 <!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
      Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,
      the pages people share with their group. What their friends do in a sweep

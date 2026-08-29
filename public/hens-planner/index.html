@@ -69,6 +69,33 @@ Cake x1
 Games x2
 Nibbles x4</textarea>
           </label>
+          <!-- live-preview:start -->
+          <p class="live-preview-label" id="hensPreviewLabel" aria-live="polite">5 lists, 12 spots — this is what people will see</p>
+          <div class="live-preview" id="hensPreview">
+            <section class="plate-cat">
+            <p class="plate-cat-head">Drinks <span class="plate-count">&mdash; 0 of 3 sorted</span></p>
+            <ul class="plate-grid">
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            </ul>
+            </section>
+            <section class="plate-cat">
+            <p class="plate-cat-head">Decorations <span class="plate-count">&mdash; 0 of 2 sorted</span></p>
+            <ul class="plate-grid">
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            </ul>
+            </section>
+            <section class="plate-cat">
+            <p class="plate-cat-head">Cake <span class="plate-count">&mdash; 0 of 1 sorted</span></p>
+            <ul class="plate-grid">
+            <li class="plate-slot open"><span class="plate-open-label">Open</span></li>
+            </ul>
+            </section>
+            <p class="live-preview-more">&hellip; and 2 more lists, 6 more spots</p>
+          </div>
+          <!-- live-preview:end -->
           <p class="status-line" id="statusLine"></p>
           <p class="form-error" id="formError" hidden></p>
           <button type="submit" class="btn primary big" id="makeBtn">Start planning →</button>
@@ -248,7 +275,7 @@ Dinner &amp; dancing, 7:30</textarea>
   ]
 }
 </script>
-<script src="/hens.js"></script>
+<script type="module" src="/hens.js"></script>
 <!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
      Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,
      the pages people share with their group. What their friends do in a sweep

@@ -81,7 +81,8 @@ const ONE_TAP = {
    the extra is-one-tap class. Requiring a quote immediately after
    "see-example" is exactly what made an earlier version fail to recognise
    its own output. Global, so duplicates are all removed, not just the first. */
-/* ? on every newline. check-line-endings.mjs should mean a CRLF file
+/* 
+? on every newline. check-line-endings.mjs should mean a CRLF file
    never reaches here, but this regex is the one that did real damage when
    it did: with <\/p>
  unable to match </p>\r\n the lazy [\s\S]*? runs on
@@ -153,6 +154,7 @@ for (const dir of dirs) {
   if (end === -1) { problems.push(`${dir}/ lede is unclosed`); continue; }
   const at = cleaned.indexOf("\n", end) + 1;
   const next = cleaned.slice(0, at) + "\n" + want + cleaned.slice(at);
+
   if (next === html) { already++; continue; }
   writeFileSync(file, next);
   changed++;

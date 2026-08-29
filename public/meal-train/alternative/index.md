@@ -69,3 +69,13 @@ Nothing. There is no paid tier, no upsell partway through, and no card to enter.
 It takes about a minute and you can throw it away if it is not right: [set up a meal train](https://bitibybit.com/meal-train/), or [look at a finished one first](https://bitibybit.com/s/demo-meal-train).
 
 Everything stated about MealTrain.com was checked against their live site on **26 August 2026** and is quoted or described as it appeared then; products change, so check theirs if a detail matters to your decision. biti by bit is not affiliated with, endorsed by, or connected to Meal Train LLC in any way — their name is used only to identify the service being compared.
+
+## What a meal train does
+
+A **meal train** (or meal roster, or meal calendar) is a simple roster of who's cooking on which day. Instead of five people all dropping a lasagne on the Monday and nothing for the rest of the week, each day gets claimed once, in the open. The people who want to help can see at a glance where the gaps are, and the household gets a steady run of meals rather than a fridge full on day one and nothing by Thursday.
+
+It's for the moments when cooking is the last thing someone has energy for: a new baby, a stint in hospital, chemo weeks, a bereavement. The tool stays out of the way — no accounts, no app, no chasing people in the group chat.
+
+## The address stays private
+
+The drop-off address is the one thing that *doesn't* go on the shared link. A home address — especially a new mum's or a grieving family's — shouldn't live on a URL that gets forwarded around a dozen group chats. You add it on your own coordinator page, and pass it to each person once they've claimed a day. Everything else is open; the address is yours to share deliberately.
