@@ -300,42 +300,6 @@ function verdict(votes, deckName) {
     Ask those two what they are each seeing — that conversation is the point of the exercise.</p>`;
 }
 
-/* ---------- the worked example ------------------------------ */
-
-/* Baked into the landing page by scripts/gen-example-preview.mjs, so a visitor
-   sees what a finished round looks like before typing anything.
-
-   Rendered by the SAME table markup and the SAME verdict() the real board uses,
-   which is the whole point: this cannot show an outcome the tool would not
-   actually produce. check-baked-previews.mjs re-renders it and fails the build
-   if the page has drifted.
-
-   Static rather than fetched or painted on load, because a preview that arrives
-   after first paint moves the form underneath it — the exact regression
-   check-qotd-preview.mjs exists to prevent.
-
-   The cast matches scripts/seed-demos.mjs so the strip and the full demo behind
-   it read as the same team. The spread is deliberate: a unanimous example would
-   demonstrate the least interesting thing the tool does. */
-const EXAMPLE_VOTES = [
-  { name: "Priya", card: "3" },
-  { name: "Tom H", card: "5" },
-  { name: "Meredith", card: "5" },
-  { name: "Jules", card: "13" },
-  { name: "Sam N", card: "5" },
-  { name: "Alex", card: "?" },
-];
-
-function examplePreview() {
-  const rows = EXAMPLE_VOTES.map((v) => `
-      <li class="pk-slot pk-shown">
-        <span class="pk-slot-card">${esc(v.card)}</span>
-        <span class="pk-slot-name">${esc(v.name)}</span>
-      </li>`).join("");
-  return `<ul class="pk-table">${rows}</ul>
-    ${verdict(EXAMPLE_VOTES, "fib")}`;
-}
-
 /* ---------- pages ------------------------------------------- */
 
 const storyLine = (data) => data.story
@@ -491,7 +455,6 @@ export default {
     return null;
   },
 
-  examplePreview,
   publicPage: (row, env, url) => publicPage(row, env, url),
   editPage: (row, env, url) => editPage(row, env, url.origin),
 };

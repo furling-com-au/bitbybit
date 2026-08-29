@@ -4,7 +4,7 @@ Free · no signup · one link per team
 
 Everyone picks a card at the same time, so nobody anchors on the first number said out loud. Turn them over together, and spend the meeting on the disagreement instead of the arithmetic.
 
-Nothing needs filling in — Fibonacci is ready to go. [Open the live round →](https://bitibybit.com/s/demo-scrum-poker)
+Nothing needs filling in — Fibonacci is ready to go. [See a finished round →](https://bitibybit.com/s/demo-scrum-poker)
 
 ## How it works
 

@@ -12,11 +12,10 @@
         other deck. If those disagree, choosing t-shirt and
         choosing back again silently changes the page.
 
-     2. Every example-preview block written by
-        sync-example-links.mjs. Must match what the tool module's
-        examplePreview() renders right now. The whole claim of that
-        strip is "this is what the tool really produces"; a stale
-        copy makes it a screenshot with extra steps.
+     2. The first frame of every live preview. Must match what the
+        shared module renders from the fields the page ships with,
+        or the visitor sees one board until their first keystroke
+        and a different one after it.
 
    Run: node scripts/check-baked-previews.mjs
    ============================================================ */
@@ -80,47 +79,23 @@ if (fibSrc && labelSrc) {
   }
 }
 
-/* ---------- 2. the example previews ------------------------- */
+/* Collapsed whitespace: the baked block is re-indented by the generator, so
+   this checks that the CONTENT still matches, not the pretty-printing. */
+const flat = (str) => str.replace(/\s+/g, " ").trim();
 
-/* Same map sync-example-links.mjs uses. Kept in step by the check below,
-   which fails if a page carries a preview this file does not know about. */
-const PREVIEW_MODULES = {
-  "scrum-poker": "../src/tools/poker.js",
-};
+/* ---------- 2. no stale static strips ----------------------- */
 
-/* The strip is written with each line trimmed and re-indented, so compare on
-   collapsed whitespace — this is checking that the CONTENT still matches, not
-   that the pretty-printing does. */
-const flat = (s) => s.replace(/\s+/g, " ").trim();
-
-for (const [dir, mod] of Object.entries(PREVIEW_MODULES)) {
-  const file = `public/${dir}/index.html`;
-  const html = readFileSync(file, "utf8");
-
-  const block = html.match(
-    /<!-- example-preview:start -->([\s\S]*?)<!-- example-preview:end -->/
-  );
-  if (!block) {
-    problems.push(`/${dir}/: no example-preview block — run sync-example-links.mjs`);
-    continue;
-  }
-
-  const m = await import(mod);
-  const fn = m.default && m.default.examplePreview;
-  if (typeof fn !== "function") {
-    problems.push(`${mod}: no examplePreview() export`);
-    continue;
-  }
-
-  if (!flat(block[1]).includes(flat(fn())))
-    problems.push(
-      `/${dir}/: baked preview has drifted from ${mod} examplePreview() — re-run sync-example-links.mjs`
-    );
-
-  /* The strip must not offer anything to press. A control in there is either a
-     dead end or, worse, one that works and creates something. */
-  if (/<button|<input|<form|<select|<textarea/.test(block[1]))
-    problems.push(`/${dir}/: example-preview contains a form control — it must be inert`);
+/* The static "A finished one, for instance" strip is gone from every builder —
+   once a page shows the board you are actually making, a second board showing
+   somebody else's is just another thing on it. This fails if one comes back
+   without the machinery that used to maintain it, which would leave a frozen
+   copy of a tool's output that nothing keeps in step. */
+for (const d of readdirSync("public", { withFileTypes: true })) {
+  if (!d.isDirectory()) continue;
+  const f = `public/${d.name}/index.html`;
+  if (!existsSync(f)) continue;
+  if (readFileSync(f, "utf8").includes("<!-- example-preview:start -->"))
+    problems.push(`/${d.name}/: carries an example-preview block, but nothing generates or checks those any more`);
 }
 
 /* ---------- 3. the live previews ---------------------------- */
@@ -174,18 +149,7 @@ for (const [dir, modName] of Object.entries(LIVE)) {
     problems.push(`/${dir}/: live-preview contains a heading — it would land in the page outline ahead of the real ones`);
 }
 
-/* A preview on a page this script does not know about would go unchecked
-   forever, which is the failure mode that makes a guard worse than none. */
-for (const d of readdirSync("public", { withFileTypes: true })) {
-  if (!d.isDirectory() || PREVIEW_MODULES[d.name]) continue;
-  const f = `public/${d.name}/index.html`;
-  if (!existsSync(f)) continue;
-  if (readFileSync(f, "utf8").includes("<!-- example-preview:start -->"))
-    problems.push(`/${d.name}/: carries a preview but is not in PREVIEW_MODULES — it would never be checked`);
-}
-
-const n = Object.keys(PREVIEW_MODULES).length;
-console.log(`baked previews: 1 deck + ${n} example strips + ${Object.keys(LIVE).length} live first-frame(s) checked, ${problems.length} wrong`);
+console.log(`baked previews: 1 deck + ${Object.keys(LIVE).length} live first-frame(s) checked, ${problems.length} wrong`);
 if (problems.length) {
   for (const p of problems) console.error("  ! " + p);
   process.exit(1);

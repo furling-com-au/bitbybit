@@ -38,15 +38,7 @@ const SKIP_CLASSES = new Set(["scanlines", "builder", "tool-hero-art",
      would be frozen — telling an agent in March that it is footy finals. The
      card is a promotional slot, not content, and every tool it can point at is
      listed further down the same page anyway. */
-  "feature-card",
-  /* The baked worked example. It is a visual strip — six names beside six card
-     values, or three dated slots — and flattening it to Markdown gives an agent
-     a list of Priya and Tom H without the thing that made it legible. The
-     .see-example link immediately above it survives and points at the real
-     demo, which is strictly better for a reader that can follow a URL. Note
-     the deck contents are still described in the FAQ, so nothing that moved
-     off this page went missing from the twin. */
-  "example-preview"]);
+  "feature-card"]);
 
 const VOID = new Set(["br", "hr", "img", "input", "meta", "link", "source"]);
 
