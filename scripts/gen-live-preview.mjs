@@ -32,6 +32,7 @@ const LIVE = {
   "meal-train": "meal",
   "bring-a-plate": "plate",
   "hens-planner": "hens",
+  "kris-kringle": "kringle",
 };
 
 const FENCE = /([ 	]*)<!-- live-preview:start -->[\s\S]*?<!-- live-preview:end -->/;

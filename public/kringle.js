@@ -1,65 +1,56 @@
-/* Kris Kringle — builder page logic. */
+/* Kris Kringle — builder page logic.
+
+   A module so it can import the one copy of the name parser (including the
+   comma fallback) and the board renderer, which used to live here. */
+import { parseNames, findDuplicate, previewSummary, renderKringlePreview, esc }
+  from "./preview/kringle.js";
+
 (function () {
   "use strict";
 
   const $ = (id) => document.getElementById(id);
-  /* People type a list two ways: one per line, or comma-separated on a single
-     line. The second used to be a dead end — splitting on newlines returned
-     one item, and the tool refused it with "add at least three names", which
-     reads as though the names were wrong rather than the separator.
-
-     Falling back to commas ONLY when the whole input is a single line is what
-     makes this safe: one line is already a useless input for this field, so
-     the fallback can only turn a certain refusal into a likely success.
-     Multi-line input is left alone, so an entry that legitimately contains a
-     comma keeps it as long as it sits on its own line. Fields where a single
-     item IS valid — bring-a-plate categories, volunteer-roster shifts,
-     hens-planner categories and activities — deliberately do not do this. */
-  const listPieces = (v) => {
-    const lines = v.split("\n").filter((s) => s.trim());
-    return lines.length === 1 && lines[0].includes(",") ? lines[0].split(",") : v.split("\n");
-  };
   const LS_KEY = "bbb:kringle-made:v1";
 
-  const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const lines = (el) => parseNames($(el).value);
 
-  const lines = (el) =>
-    listPieces($(el).value).map((s) => s.trim().replace(/\s+/g, " ")).filter(Boolean);
+  /* ---- the live preview -------------------------------------
+     Redraws the tile grid from the names box on every keystroke. Paste a
+     comma-separated line and the tiles still appear — which is the comma
+     fallback explaining itself, a rule that had fifteen lines of source
+     comment and no mention on the page at all.
 
-  /* First name that appears twice (case-insensitive), or null. */
-  function findDuplicate(names) {
-    const seen = new Set();
-    for (const n of names) {
-      const key = n.toLowerCase();
-      if (seen.has(key)) return n;
-      seen.add(key);
-    }
-    return null;
-  }
+     The board shows every tile unclaimed, because that is what it looks
+     like the moment it is made. Who drew whom is the one thing this tool
+     keeps secret, and it does not exist until the button is pressed.
 
-  /* ---- live status ------------------------------------------- */
-  function updateStatus() {
+     statusLine keeps only the warnings — too few, too many, a duplicate —
+     because the count moved into the preview's own label. */
+  function updatePreview() {
     const names = lines("names");
+    const box = $("kringlePreview");
+    const label = $("kringlePreviewLabel");
+    if (box) box.innerHTML = names.length
+      ? renderKringlePreview(names)
+      : '<p class="live-preview-empty">Paste the names and the board appears here.</p>';
+    /* textContent on a node that persists: aria-live only announces changes
+       inside a region that was already there at load. */
+    if (label) label.textContent = previewSummary(names);
+
     const el = $("statusLine");
     el.classList.remove("warn");
-
-    if (!names.length) { el.innerHTML = ""; return; }
-
     const dup = findDuplicate(names);
+    if (!names.length) { el.innerHTML = ""; return; }
     if (dup) {
       el.classList.add("warn");
-      el.innerHTML = `<strong>${esc(dup)}</strong> is in there twice — add a surname initial so the right one gets claimed.`;
-      return;
-    }
-    if (names.length < 3) {
+      el.innerHTML = "Two people are both called “" + esc(dup) + "” — add a surname or an initial.";
+    } else if (names.length < 3) {
       el.classList.add("warn");
-      el.innerHTML = `<strong>${names.length} name${names.length === 1 ? "" : "s"}</strong> — Kris Kringle needs at least three.`;
+      el.innerHTML = "Kris Kringle needs at least three names.";
     } else if (names.length > 100) {
       el.classList.add("warn");
-      el.innerHTML = `<strong>${names.length} names</strong> — the limit is 100. Split into two draws.`;
+      el.innerHTML = "The limit is 100 — split into two draws.";
     } else {
-      el.innerHTML = `<strong>${names.length} names</strong> in the hat.`;
+      el.innerHTML = "";
     }
   }
 
@@ -143,9 +134,9 @@
   }
 
   /* ---- wire up ----------------------------------------------- */
-  $("names").addEventListener("input", updateStatus);
+  $("names").addEventListener("input", updatePreview);
   $("kringleForm").addEventListener("submit", submit);
 
-  updateStatus();
+  updatePreview();
   renderPrev();
 })();

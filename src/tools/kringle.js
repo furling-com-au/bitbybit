@@ -199,34 +199,6 @@ function chips(data) {
 const noteBlock = (data) =>
   data.note ? `<div class="pixel-note kk-note">${esc(data.note)}</div>` : "";
 
-/* ---------- the worked example ------------------------------ */
-
-/* Baked into the landing page by sync-example-links.mjs. Uses the SAME
-   .kk-grid / .kk-name markup publicPage renders, so it cannot show a board the
-   tool would not produce — and the claimed/unclaimed split is the one thing the
-   prose used to spend a paragraph describing.
-   Non-interactive on purpose: every tile is the is-claimed <div>, never the
-   <button>, so the strip offers nothing to press and gen-markdown.mjs has no
-   form control to strip. Cast matches scripts/seed-demos.mjs. */
-const EXAMPLE_NAMES = [
-  { name: "Priya", claimed: true },
-  { name: "Tom H", claimed: true },
-  { name: "Meredith", claimed: true },
-  { name: "Jules", claimed: false },
-  { name: "Sam N", claimed: false },
-];
-
-function examplePreview() {
-  const cards = EXAMPLE_NAMES.map((p) => `
-      <li><div class="kk-name${p.claimed ? " is-claimed" : ""}">
-        <span class="kk-person">${esc(p.name)}</span>
-        <span class="kk-cta">${p.claimed ? "claimed \u2713" : "That's me"}</span>
-      </div></li>`).join("");
-  return `<p class="page-sub">5 in the hat \u00b7 3 claimed so far</p>
-    <ul class="kk-grid">${cards}
-    </ul>`;
-}
-
 async function publicPage(row, env) {
   const data = JSON.parse(row.data);
   const parts = await allParticipants(env, row.id);
@@ -535,7 +507,6 @@ export default {
     return null;
   },
 
-  examplePreview,
   publicPage: (row, env) => publicPage(row, env),
   editPage: (row, env, url) => editPage(row, env, url),
   participantPage: (prow, row, env) => participantPage(prow, row, env),

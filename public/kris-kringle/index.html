@@ -65,6 +65,12 @@ Michelle W
 Matt R
 Con S"></textarea>
           </label>
+          <!-- live-preview:start -->
+          <p class="live-preview-label" id="kringlePreviewLabel" aria-live="polite"></p>
+          <div class="live-preview" id="kringlePreview">
+            <p class="live-preview-empty">Paste the names and the board appears here.</p>
+          </div>
+          <!-- live-preview:end -->
           <p class="status-line" id="statusLine"></p>
           <p class="form-error" id="formError" hidden></p>
           <button type="submit" class="btn primary big" id="drawBtn">Draw the names →</button>
@@ -98,35 +104,6 @@ Con S"></textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
-
-  <!-- example-preview:start -->
-  <div class="example-preview" role="group" aria-label="An example of a finished Kris Kringle">
-    <p class="example-preview-label">A finished one, for instance</p>
-    <p class="page-sub">5 in the hat · 3 claimed so far</p>
-    <ul class="kk-grid">
-    <li><div class="kk-name is-claimed">
-    <span class="kk-person">Priya</span>
-    <span class="kk-cta">claimed ✓</span>
-    </div></li>
-    <li><div class="kk-name is-claimed">
-    <span class="kk-person">Tom H</span>
-    <span class="kk-cta">claimed ✓</span>
-    </div></li>
-    <li><div class="kk-name is-claimed">
-    <span class="kk-person">Meredith</span>
-    <span class="kk-cta">claimed ✓</span>
-    </div></li>
-    <li><div class="kk-name">
-    <span class="kk-person">Jules</span>
-    <span class="kk-cta">That's me</span>
-    </div></li>
-    <li><div class="kk-name">
-    <span class="kk-person">Sam N</span>
-    <span class="kk-cta">That's me</span>
-    </div></li>
-    </ul>
-  </div>
-  <!-- example-preview:end -->
 
     <div class="tool-hero-art">
       <img class="pixel" decoding="async" src="/art/kringle-hero.png"
@@ -235,7 +212,7 @@ Con S"></textarea>
   ]
 }
 </script>
-<script src="/kringle.js"></script>
+<script type="module" src="/kringle.js"></script>
 <!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
      Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,
      the pages people share with their group. What their friends do in a sweep

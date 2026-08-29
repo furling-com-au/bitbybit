@@ -86,7 +86,6 @@ if (fibSrc && labelSrc) {
    which fails if a page carries a preview this file does not know about. */
 const PREVIEW_MODULES = {
   "scrum-poker": "../src/tools/poker.js",
-  "kris-kringle": "../src/tools/kringle.js",
 };
 
 /* The strip is written with each line trimmed and re-indented, so compare on
@@ -141,6 +140,7 @@ const LIVE = {
   "meal-train": "meal",
   "bring-a-plate": "plate",
   "hens-planner": "hens",
+  "kris-kringle": "kringle",
 };
 
 for (const [dir, modName] of Object.entries(LIVE)) {
