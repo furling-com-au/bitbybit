@@ -26,7 +26,7 @@ Some tools deliberately keep things private within a shared page: a Kris Kringle
 
 **Shared pages set no cookies and make no third-party requests at all.** That is every `/s/`, `/e/` and `/p/` page — the ones an ordinary participant actually opens. Nothing is loaded from any other company, so nobody else learns you were there.
 
-The public pages — this one, the homepage, the tool descriptions — load one script: Cloudflare Web Analytics. It counts page views in aggregate. It sets no cookies, does not fingerprint the browser, and does not follow anyone between sites. It is there so it is possible to tell whether anything is being used at all.
+The public pages — this one, the homepage, the tool descriptions — load two counters: Cloudflare Web Analytics and GoatCounter. Both count page views in aggregate. Neither sets cookies, fingerprints the browser, or follows anyone between sites. They are there so it is possible to tell whether anything is being used at all.
 
 There are no advertising trackers, no Google Analytics, no Meta pixel, no session recording and no A/B testing scripts.
 
