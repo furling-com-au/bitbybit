@@ -1,45 +1,34 @@
-/* Tournament Bracket — builder page logic. */
+/* Tournament Bracket — builder page logic.
+
+   A module so it can import the one copy of the name parser (including the
+   comma fallback), the dupe check and the round-one preview, which used to
+   be duplicated here. */
+import { parseEntrants, firstDupe, previewSummary, renderBracketPreview, esc as escHtml }
+  from "./preview/bracket.js";
+
 (function () {
   "use strict";
 
   const $ = (id) => document.getElementById(id);
-  /* People type a list two ways: one per line, or comma-separated on a single
-     line. The second used to be a dead end — splitting on newlines returned
-     one item, and the tool refused it with "add at least three names", which
-     reads as though the names were wrong rather than the separator.
-
-     Falling back to commas ONLY when the whole input is a single line is what
-     makes this safe: one line is already a useless input for this field, so
-     the fallback can only turn a certain refusal into a likely success.
-     Multi-line input is left alone, so an entry that legitimately contains a
-     comma keeps it as long as it sits on its own line. Fields where a single
-     item IS valid — bring-a-plate categories, volunteer-roster shifts,
-     hens-planner categories and activities — deliberately do not do this. */
-  const listPieces = (v) => {
-    const lines = v.split("\n").filter((s) => s.trim());
-    return lines.length === 1 && lines[0].includes(",") ? lines[0].split(",") : v.split("\n");
-  };
   const LS_KEY = "bbb:bracket-made:v1";
   const MAX_ENTRANTS = 64;
 
-  const escHtml = (s) =>
-    String(s).replace(/[&<>"']/g, (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-
   /* ---- entrants: one per line -------------------------------- */
   const lines = () =>
-    listPieces($("entrants").value)
-      .map((s) => s.trim().replace(/\s+/g, " ").slice(0, 40))
-      .filter(Boolean);
+    parseEntrants($("entrants").value).map((s) => s.slice(0, 40));
 
-  function firstDupe(names) {
-    const seen = new Set();
-    for (const n of names) {
-      const k = n.toLowerCase();
-      if (seen.has(k)) return n;
-      seen.add(k);
-    }
-    return null;
+  /* ---- the live preview ---------------------------------------
+     Redraws round one from the names box on every keystroke. Always in
+     typed order, regardless of the seeding radio — see preview/bracket.js
+     for why a random draw can't be the thing shown here. */
+  function updatePreview() {
+    const names = lines();
+    const box = $("bracketPreview");
+    box.innerHTML = names.length >= 2
+      ? renderBracketPreview(names)
+      : '<p class="live-preview-empty">Add the names and round one appears here.</p>';
+    const label = $("bracketPreviewLabel");
+    if (label) label.textContent = previewSummary(names);
   }
 
   const nextPow2 = (n) => {
@@ -137,6 +126,7 @@
 
       const editUrl = `/e/${data.editToken}`;
       savePrev({ title, editUrl, at: new Date().toISOString() });
+      if (window.bbbRemember) window.bbbRemember("bracket", title, editUrl);
       location.href = editUrl;
     } catch (ex) {
       fail(ex.message || "Something went wrong — try again.");
@@ -152,9 +142,10 @@
   }
 
   /* ---- wire up ----------------------------------------------- */
-  $("entrants").addEventListener("input", updateStatus);
+  $("entrants").addEventListener("input", () => { updateStatus(); updatePreview(); });
   $("bracketForm").addEventListener("submit", submit);
 
   updateStatus();
+  updatePreview();
   renderPrev();
 })();

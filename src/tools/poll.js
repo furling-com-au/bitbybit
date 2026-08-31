@@ -25,7 +25,7 @@
 import {
   esc, json, html, randomString, badInput, pageShell,
   getBySlug, getByToken, getParticipant, getInstanceById,
-  createInstance, updateInstanceData, deleteInstance, logEvent, shareNudge,
+  createInstance, updateInstanceData, deleteInstance, logEvent, shareNudge, ownCta, cardPreview,
 } from "../lib.js";
 
 const MAX_QUESTION = 140;
@@ -354,7 +354,7 @@ async function publicPage(row, env) {
       <input type="text" id="voterName" maxlength="${MAX_NAME}" autocomplete="name"
         placeholder="So the organiser knows who's chimed in">
     </label>
-    <p class="form-error" id="ballotErr" hidden></p>
+    <p class="form-error" id="ballotErr" role="alert" hidden></p>
     <button class="btn primary big" id="voteBtn" type="submit">Cast my vote →</button>
   </form>
 
@@ -389,6 +389,9 @@ async function publicPage(row, env) {
   ${ballot}
   ${results}
 
+  ${ownCta("poll",
+    "Group can't agree on something else?",
+    "Start your own vote")}
   <footer class="page-foot">
     <p class="fine">Your name and pick are visible to the poll's organiser;
     everyone else sees only the running totals.</p>
@@ -577,16 +580,20 @@ async function editPage(row, env, origin) {
 
   ${closed ? `<div class="poll-closed-banner pixel-note">${winnerLine(data, tally)}</div>` : ""}
 
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("poll", data.question || "Group vote")}
+
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link — everyone taps it and votes</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("🗳 Quick group vote — " + data.question + " — tap to pick: " + shareUrl, row.edit_token)}
 
   <h2>${closed ? "Final results" : "Results so far"}</h2>
+  <button class="btn" id="printBtn" type="button">Print the results</button>
   ${bars(data, tally)}
 
   <div class="poll-toggle-row">
@@ -609,7 +616,7 @@ async function editPage(row, env, origin) {
     <input type="text" id="newOpt" maxlength="${MAX_OPTION}" placeholder="Add another option" autocomplete="off">
     <button class="btn" id="addOptBtn" type="button">Add option</button>
   </div>
-  <p class="form-error" id="orgErr" hidden></p>
+  <p class="form-error" id="orgErr" role="alert" hidden></p>
 
   <div class="organiser-actions">
     <a class="btn" href="/s/${esc(row.slug)}">Open the shared vote</a>
@@ -630,6 +637,7 @@ async function editPage(row, env, origin) {
   var token = ${sj(row.edit_token)};
   var orgErr = document.getElementById("orgErr");
 
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   document.getElementById("copyBtn").addEventListener("click", function () {
     var input = document.getElementById("shareUrl");
     input.select();

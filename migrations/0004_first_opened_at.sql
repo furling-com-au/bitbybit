@@ -1,0 +1,24 @@
+-- When anyone first opened the shared /s/ page.
+--
+-- sweep and bracket write to neither `claims` nor `participants` — the two
+-- tables every other tool's "reached a second person" signal is built from
+-- (see scripts/stats.mjs). That made them structurally unmeasurable: not
+-- "reads as zero", genuinely no way to tell "nobody has opened this" from
+-- "thirty people opened it and none of them needed to write anything back".
+-- Both tools sit on SEASONS for 82 days combined (footy finals, the Cup),
+-- so that gap covers the two heaviest-traffic products on the site.
+--
+-- Same shape as `shared_at` (migration 0003): a column rather than an event,
+-- first-write-wins so a page refreshed ten times only ever records the
+-- first, and it joins straight onto the instance in stats instead of
+-- needing event correlation. Set from the generic /s/:slug handler in
+-- worker.js, so it will pick up every tool, not only sweep and bracket —
+-- harmless for tools that already have a claims/participants signal, and
+-- the only signal at all for the two that don't.
+--
+-- Deliberately NOT per-view logging (one write per instance, not one per
+-- request) and NOT who opened it — same envelope as shared_at and
+-- viewed_at. Read it as a reach signal the same way as everything else in
+-- stats.mjs: cold (more than COLD_MINUTES after created_at) means plausibly
+-- a second person; near-instant means the organiser checking their own link.
+ALTER TABLE instances ADD COLUMN first_opened_at TEXT;

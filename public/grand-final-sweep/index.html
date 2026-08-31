@@ -32,7 +32,6 @@
   <a class="wordmark" href="/" aria-label="biti by bit — home">
     <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
     biti by bit
-    <span class="beta-badge">beta</span>
   </a>
   <nav class="site-nav">
     <a href="/#tools">more tools</a>
@@ -57,7 +56,21 @@
       <div class="builder-cols">
         <div>
           <label class="field">
-            <span>Sweep title <em>(optional)</em></span>
+            <span>Who's in? <em>(one name per line)</em></span>
+            <textarea id="names" rows="14" spellcheck="false" placeholder="Dave K
+Shaz
+Macca
+Bec T
+Trev
+Lachie"></textarea>
+          </label>
+          <p class="status-line" id="statusLine"></p>
+          <p class="form-error" id="formError" role="alert" hidden></p>
+          <button type="submit" class="btn primary big" id="drawBtn">Draw the sweep →</button>
+        </div>
+        <div>
+          <label class="field">
+            <span>Sweep title <em>(optional — this is what shows in the group chat)</em></span>
             <input type="text" id="title" maxlength="80" placeholder="Accounts dept. Grand Final sweep">
           </label>
           <div class="builder-cols">
@@ -74,20 +87,6 @@
             <span>Outcomes <em>(one per line — edit freely)</em></span>
             <textarea id="outcomes" rows="9" spellcheck="false"></textarea>
           </label>
-          <p class="form-error" id="formError" hidden></p>
-          <button type="submit" class="btn primary big" id="drawBtn">Draw the sweep →</button>
-        </div>
-        <div>
-          <label class="field">
-            <span>Who's in? <em>(one name per line)</em></span>
-            <textarea id="names" rows="14" spellcheck="false" placeholder="Dave K
-Shaz
-Macca
-Bec T
-Trev
-Lachie"></textarea>
-          </label>
-          <p class="status-line" id="statusLine"></p>
         </div>
       </div>
 
@@ -98,6 +97,13 @@ Lachie"></textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+  <div class="prev-sweeps" id="madeStrip" hidden>
+    <p class="fine">Things you've made in this browser</p>
+    <ul></ul>
+    <p class="fine">Saved in this browser and nowhere else — there's no account
+    to keep them in. Bookmark the ones you'll want in a year.</p>
+  </div>
 
 
     <div class="tool-hero-art">
@@ -205,6 +211,7 @@ Lachie"></textarea>
   ]
 }
 </script>
+<script src="/made.js"></script>
 <script src="/sweep.js"></script>
 <!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
      Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,

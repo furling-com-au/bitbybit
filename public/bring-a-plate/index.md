@@ -2,7 +2,7 @@
 
 Free · no signup · one shareable link
 
-The potluck board that prevents six pavlovas and no salad. Set the categories, share the link, and everyone puts their name on a spot with what they're bringing. The board fills in; the doubling-up doesn't.
+The potluck board that prevents six pavlovas and no salad.
 
 Six categories are already filled in, Mains through Wildcards. [See a finished list →](https://bitibybit.com/s/demo-bring-a-plate)
 
@@ -26,7 +26,7 @@ You get two links: a **share link** for the group chat, and an **organiser link*
 
 ### 3. Watch it fill in
 
-Guests tap an open spot, type their name and what they're bringing, done. Each category shows a running count, gets a tick when it's full, and stops accepting names — that's the whole trick. Changed plans? Everyone can take their own name back off.
+Guests tap an open spot, type their name and what they're bringing, done. Each category shows a running count, gets a tick when it's full, and stops accepting names — that's the whole trick. Changed plans? Everyone can take their own name back off. The board fills in; the doubling-up doesn't.
 
 **Not sure what to actually bring?** We wrote the long version: [bring a plate ideas](https://bitibybit.com/bring-a-plate/ideas/) — what the phrase means (food to share, not an empty plate), how much food counts as a plate, and what to bring when there's no oven, when it has to survive a hot car, or when you've got forty minutes and a supermarket.
 

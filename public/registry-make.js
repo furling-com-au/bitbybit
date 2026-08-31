@@ -69,6 +69,7 @@
 
       const editUrl = "/e/" + data.editToken;
       savePrev({ coupleNames, editUrl, at: new Date().toISOString() });
+      if (window.bbbRemember) window.bbbRemember("registry", coupleNames, editUrl);
       location.href = editUrl;
     } catch (ex) {
       fail(ex.message || "Something went wrong — try again.");

@@ -33,7 +33,7 @@
 import {
   esc, json, html, randomString, badInput, pageShell,
   getBySlug, getByToken,
-  createInstance, deleteInstance, logEvent, shareNudge } from "../lib.js";
+  createInstance, deleteInstance, logEvent, shareNudge, ownCta, cardPreview } from "../lib.js";
 
 const MAX_TEAM = 60;
 const MAX_STORY = 120;
@@ -354,6 +354,9 @@ async function publicPage(row, env, url) {
        which otherwise dumps a keyboard user back at the top of the page. -->
   <section class="pk-result" id="pkResult" role="status" tabindex="-1">${table}</section>
 
+  ${ownCta("poker",
+    "Got your own backlog to size?",
+    "Start your own round")}
   <footer class="page-foot">
     <p><a class="quiet-link" href="/via/poker">made with biti by bit &rarr;</a></p>
   </footer>
@@ -377,11 +380,14 @@ async function editPage(row, env, origin) {
   <p class="kicker">Facilitator &middot; round ${data.round}</p>
   <h1>${esc(data.team || "Scrum poker")}</h1>
 
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("poker", data.team ? `${data.team} — scrum poker` : "Scrum poker")}
+
   <div class="share-box">
     <label class="share-label" for="shareUrl">The team opens this link — same one every story, every sprint</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("🃏 Sizing a few stories — pick a card and we'll turn them over together. No signup: " + shareUrl, row.edit_token)}

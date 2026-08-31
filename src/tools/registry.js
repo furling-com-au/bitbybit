@@ -16,7 +16,7 @@
    ============================================================ */
 import {
   esc, json, html, randomString, badInput, pageShell,
-  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge,
+  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge, ownCta, cardPreview,
 } from "../lib.js";
 
 const MAX_COUPLE = 80;
@@ -412,11 +412,14 @@ function shellBody(row, data, { organiser, origin }) {
 
   const shareUrl = `${origin}/s/${row.slug}`;
   const shareBox = organiser ? `
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("registry", `${data.coupleNames} — build the Prado`)}
+
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with your guests</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("🚙 Our gift registry is live — claim a part and watch the picture build: " + shareUrl, row.edit_token)}` : "";
@@ -455,6 +458,10 @@ function shellBody(row, data, { organiser, origin }) {
   wording change, delete and remake. Deleting is permanent: every link stops
   working immediately and all claims go with it.</p>` : "";
 
+  const recruitCta = organiser ? "" : ownCta("registry",
+    "Planning a big group gift of your own?",
+    "Start a registry");
+
   return `
 <main class="wrap page">
   ${organiserTop}
@@ -474,7 +481,7 @@ function shellBody(row, data, { organiser, origin }) {
     <div class="rg-meter-bar"><div class="rg-meter-fill" id="rgMeterFill"></div></div>
     <p class="rg-meter-stats" id="rgStats">Loading the build sheet…</p>
   </div>
-  <p class="form-error" id="rgLoadError" hidden></p>
+  <p class="form-error" id="rgLoadError" role="alert" hidden></p>
 
   <h2 id="buildsheet">The build sheet</h2>
   <div class="rg-sections" id="rgSections"></div>
@@ -514,6 +521,7 @@ function shellBody(row, data, { organiser, origin }) {
 
   ${adminSection}
 
+  ${recruitCta}
   <footer class="page-foot">
     <p class="fine">No accounts — this browser remembers which parts are yours.
     Payments happen directly between you and the couple; this site never

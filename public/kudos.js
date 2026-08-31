@@ -56,6 +56,7 @@
       if (!res.ok) throw new Error(data.error || `Server said ${res.status}.`);
       const editUrl = `/e/${data.editToken}`;
       savePrev({ title: team ? team + " — kudos wall" : "Kudos wall", editUrl, at: new Date().toISOString() });
+      if (window.bbbRemember) window.bbbRemember("kudos", team ? team + " — kudos wall" : "", editUrl);
       location.href = editUrl;
     } catch (ex) {
       err.textContent = ex.message || "Something went wrong — try again.";

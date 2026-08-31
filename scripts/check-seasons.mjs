@@ -94,6 +94,35 @@ for (const [md, hits] of claims) {
   }
 }
 
+/* The sweep's "what's next" banner duplicates two of these boundaries.
+ *
+ * src/tools/sweep.js cannot import SEASONS - worker.js imports sweep.js, so
+ * the dependency only runs one way - and a settled Cup sweep pointing at Kris
+ * Kringle on a different day from the homepage card is the kind of drift
+ * nobody notices, because both halves look right in isolation and they are
+ * only ever wrong together for a few days a year.
+ *
+ * So the copy is allowed, and checked. SEASON_ENDS must hold the CLOSING day
+ * of each matching window, keyed by the sweep kind. */
+const sweepSrc = readFileSync("src/tools/sweep.js", "utf8");
+const se = sweepSrc.match(/const SEASON_ENDS = \{[\s\S]*?\};/);
+if (!se) {
+  problems.push("SEASON_ENDS not found in src/tools/sweep.js - the sweep's season banner is now unchecked");
+} else {
+  const SEASON_ENDS = new Function(`${se[0]}; return SEASON_ENDS;`)();
+  const endOf = (href) => (SEASONS.find((s) => s.href === href) || {}).to;
+  for (const [kind, href] of [["gf", "/grand-final-sweep"], ["cup", "/melbourne-cup-sweep"]]) {
+    const want = endOf(href);
+    if (!want) {
+      problems.push(`SEASONS has no window for ${href}, so SEASON_ENDS.${kind} cannot be checked`);
+    } else if (SEASON_ENDS[kind] !== want) {
+      problems.push(
+        `SEASON_ENDS.${kind} is "${SEASON_ENDS[kind]}" but the ${href} window closes "${want}" ` +
+        `- a settled sweep would point at the next tool on a different day from the homepage card`);
+    }
+  }
+}
+
 const covered = [...claims].filter(([, h]) => h.length === 1).length;
 console.log(`seasons: ${SEASONS.length} windows, ${covered}/${claims.size} days covered exactly once`);
 

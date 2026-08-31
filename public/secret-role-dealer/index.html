@@ -32,7 +32,6 @@
   <a class="wordmark" href="/" aria-label="biti by bit — home">
     <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
     biti by bit
-    <span class="beta-badge">beta</span>
   </a>
   <nav class="site-nav">
     <a href="/#tools">more tools</a>
@@ -57,10 +56,6 @@
     <form id="rolesForm" novalidate>
       <div class="builder-cols">
         <div>
-          <label class="field">
-            <span>Game title <em>(optional)</em></span>
-            <input type="text" id="title" maxlength="80" placeholder="Friday night Werewolf">
-          </label>
           <div class="preset-row" role="group" aria-label="Fill the roles with a preset">
             <label class="count-field">Players
               <input type="number" id="playerCount" min="2" max="40" inputmode="numeric" placeholder="8">
@@ -80,10 +75,14 @@ Villager
 Villager"></textarea>
           </label>
           <p class="status-line" id="statusLine"></p>
-          <p class="form-error" id="formError" hidden></p>
+          <p class="form-error" id="formError" role="alert" hidden></p>
           <button type="submit" class="btn primary big" id="dealBtn">Deal the roles →</button>
         </div>
         <div>
+          <label class="field">
+            <span>Game title <em>(optional — this is what shows in the group chat)</em></span>
+            <input type="text" id="title" maxlength="80" placeholder="Friday night Werewolf">
+          </label>
           <label class="field">
             <span>Note to players <em>(optional — shows on every role page)</em></span>
             <textarea id="note" rows="5" maxlength="300" placeholder="Gather in the kitchen at 8. No phones at the table once we start."></textarea>
@@ -102,6 +101,13 @@ Villager"></textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+  <div class="prev-sweeps" id="madeStrip" hidden>
+    <p class="fine">Things you've made in this browser</p>
+    <ul></ul>
+    <p class="fine">Saved in this browser and nowhere else — there's no account
+    to keep them in. Bookmark the ones you'll want in a year.</p>
+  </div>
 
 
     <div class="tool-hero-art">
@@ -221,6 +227,7 @@ Villager"></textarea>
   ]
 }
 </script>
+<script src="/made.js"></script>
 <script src="/roles.js"></script>
 <!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
      Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,

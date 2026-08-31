@@ -33,6 +33,7 @@ const LIVE = {
   "bring-a-plate": "plate",
   "hens-planner": "hens",
   "kris-kringle": "kringle",
+  "tournament-bracket": "bracket",
 };
 
 const FENCE = /([ 	]*)<!-- live-preview:start -->[\s\S]*?<!-- live-preview:end -->/;

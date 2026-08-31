@@ -17,6 +17,49 @@
  * The script only ever MOVES whole blocks. It never edits a line's content,
  * only its indentation, and it verifies afterwards that the set of element
  * ids in the form is unchanged.
+ *
+ * THE SECOND THING IT DOES, AND WHY IT HAD TO
+ * The fold above was proved on the static page, and then broken at runtime by
+ * something the script could not see. `made.js` renders the shared list of
+ * things you've made in this browser into `#madeStrip` — a `.prev-sweeps`
+ * block that shipped in the hero, ABOVE the form, `hidden` until the browser
+ * turns out to have something in it. A first-time visitor never sees it, so
+ * every measurement taken on a clean browser said the fold was fine. Measured
+ * at 375x812 with two entries in the list, the strip is 157px tall including
+ * its margin, and it pushed the submit button down by exactly that on all 21
+ * builders: /kris-kringle/ 699px -> 856px, /tournament-bracket/ 807 -> 965,
+ * /meal-train/ 886 -> 1044, /group-card/ 645 -> 802.
+ *
+ * The builder therefore worked above the fold for a stranger and below it for
+ * a regular, which is the wrong way round: the people the strip serves are the
+ * people it penalised. So this script now also LIFTS that block out of the
+ * hero and drops it directly below the builder panel.
+ *
+ * WHY BELOW THE BUILDER AND NOT SOMEWHERE CLEVERER
+ * Every one of the 21 tool pages already carries a second `.prev-sweeps` — the
+ * per-tool one (`#prevDraws`, `#prevSweeps`, `#prevRosters`…) — INSIDE the
+ * builder panel, two lines after `</form>`. That is where this site already
+ * decided retrieval belongs on a tool page, and it is the strip that actually
+ * holds the thing a returning organiser came back for, because it is scoped to
+ * the tool whose page they are standing on. The shared strip is cross-tool
+ * retrieval, which is genuinely second on a page you navigated to for one
+ * tool. Putting it just outside the panel keeps it the first thing after the
+ * form, on page ground rather than panel ground so the two lists read as two
+ * lists. `docs/review/03-ia.md` §C.3 argues the strip belongs high, and it
+ * still does — on the homepage, which this script never touches.
+ *
+ * It is a pure line move at a single indent level, same as the fold, and the
+ * same two guards run over it: line count unchanged, element ids unchanged.
+ *
+ * WHY THIS IS A MOVE AND NOT A `hidden` CHECK ALONE
+ * The move is self-healing — put the strip back in the hero and the next build
+ * puts it back below the builder — but it only knows about the one block it
+ * was written for. So it is followed by an assertion that NOTHING above the
+ * builder form is `hidden`, on any builder page. That is the defect class,
+ * stated once: a build script cannot measure a runtime height, so anything
+ * above the form that starts collapsed and later expands invalidates the fold
+ * silently. If a new one appears, the build stops and says so rather than
+ * quietly shipping a button below the fold for the visitors who have state.
  */
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -32,7 +75,11 @@ const PRIMARY = {
   "coffee-roulette": 2,      // names
   "fact-matcher": 2,         // names
   "gift-ideas": 1,           // recipient is required and already first
-  "grand-final-sweep": 1,    // teamA/teamB are the first thing you must type
+  /* teamA/teamB look required but aren't: sweep.js reads them with
+     `.value.trim() || fallback`, defaulting to "Team one"/"Team two". The
+     actual required field is #names (min two), hand-reordered to column 1
+     ahead of the button — this map's "1" was wrong until then. */
+  "grand-final-sweep": 1,    // names
   "group-card": 1,           // recipient
   "kris-kringle": 2,         // names
   "kudos-wall": 1,           // nothing required; one-tap button is already up top
@@ -69,9 +116,9 @@ const SKIP = {
 const indentOf = (l) => (l.trim() === "" ? -1 : l.length - l.trimStart().length);
 
 /** Index of the line closing a block opened at `open`, matched on indent. */
-function closingLine(lines, open, indent) {
+function closingLine(lines, open, indent, close = "</div>") {
   for (let i = open + 1; i < lines.length; i++)
-    if (indentOf(lines[i]) === indent && lines[i].trim() === "</div>") return i;
+    if (indentOf(lines[i]) === indent && lines[i].trim() === close) return i;
   return -1;
 }
 
@@ -151,6 +198,59 @@ function formIds(html) {
   return (html.slice(s, e).match(/id="[a-zA-Z]+"/g) || []).sort();
 }
 
+/** Every id on the page. The strip move crosses the form boundary, so the
+ *  guard has to be wider than formIds. */
+const pageIds = (html) => (html.match(/id="[a-zA-Z]+"/g) || []).sort();
+
+/* Lift `#madeStrip` from the hero to just below the builder panel.
+   Position, never text, decides whether it has already run — same reason the
+   fold does: the block can be re-indented by the move, so a text comparison
+   would flip state on alternate runs. */
+function liftStrip(dir, html) {
+  const lines = html.split("\n");
+
+  const stripAt = lines.findIndex((l) => l.includes('id="madeStrip"'));
+  if (stripAt === -1) return { html, why: "no made-strip" };
+  const secAt = lines.findIndex((l) => l.trim().startsWith('<section class="builder'));
+  if (secAt === -1) return { html, why: "no builder section" };
+  if (stripAt > secAt) return { html, why: "already below the builder" };
+
+  const stripIndent = indentOf(lines[stripAt]);
+  const stripEnd = closingLine(lines, stripAt, stripIndent);
+  if (stripEnd === -1) throw new Error(`${dir}: unclosed made-strip`);
+  if (lines[stripEnd + 1].trim() !== "")
+    throw new Error(`${dir}: expected a blank line after the made-strip`);
+
+  const block = lines.slice(stripAt, stripEnd + 1);
+  const rest = lines.slice(0, stripAt).concat(lines.slice(stripEnd + 2));
+
+  const secStart = rest.findIndex((l) => l.trim().startsWith('<section class="builder'));
+  const secIndent = indentOf(rest[secStart]);
+  const secEnd = closingLine(rest, secStart, secIndent, "</section>");
+  if (secEnd === -1) throw new Error(`${dir}: unclosed builder section`);
+  if (rest[secEnd + 1].trim() !== "")
+    throw new Error(`${dir}: expected a blank line after the builder section`);
+
+  // Same trick as the fold: shift the whole block by one delta so relative
+  // indentation inside it survives. On every page today the delta is 0.
+  const shift = secIndent - stripIndent;
+  const moved = block.map((l) =>
+    l.trim() === "" ? l : " ".repeat(Math.max(0, indentOf(l) + shift)) + l.trim());
+
+  const rebuilt = rest.slice(0, secEnd + 2).concat(moved, [""], rest.slice(secEnd + 2));
+  return { html: rebuilt.join("\n"), why: null };
+}
+
+/* Nothing above the builder form may start `hidden`. See the header. */
+function guardHiddenAboveForm(dir, html) {
+  const lines = html.split("\n");
+  const formAt = lines.findIndex((l) => l.trim().startsWith("<form"));
+  if (formAt === -1) return null;
+  for (let i = 0; i < formAt; i++)
+    if (/<\w+[^>]*\shidden(\s|>)/.test(lines[i])) return { line: i + 1, text: lines[i].trim() };
+  return null;
+}
+
 const dirs = readdirSync(PUB, { withFileTypes: true })
   .filter((d) => d.isDirectory() && existsSync(join(PUB, d.name, "index.html")))
   .map((d) => d.name)
@@ -179,3 +279,45 @@ for (const dir of dirs) {
   console.log(`  ->  ${dir}${PRIMARY[dir] === 2 ? " (columns swapped)" : ""}`);
 }
 console.log(`\n${written} written, ${already} already folded, ${skipped} skipped (${dirs.length} two-column builders)`);
+
+/* Pass two: the made-strip. Wider set than the fold — a one-column builder
+   still has a hero for the strip to sit in, and `gift-registry` is only on
+   the SKIP list above because of where its submit button may go, which has
+   nothing to do with where the strip goes. */
+const stripDirs = readdirSync(PUB, { withFileTypes: true })
+  .filter((d) => d.isDirectory() && existsSync(join(PUB, d.name, "index.html")))
+  .map((d) => d.name)
+  .filter((d) => {
+    const h = readFileSync(join(PUB, d, "index.html"), "utf8");
+    return h.includes('id="madeStrip"') && h.includes('<section class="builder');
+  })
+  .sort();
+
+let lifted = 0, inPlace = 0;
+for (const dir of stripDirs) {
+  const file = join(PUB, dir, "index.html");
+  const before = readFileSync(file, "utf8");
+  const { html, why } = liftStrip(dir, before);
+  if (why) { inPlace++; console.log(`  ok  ${dir} (${why})`); }
+  else {
+    const a = pageIds(before).join(","), b = pageIds(html).join(",");
+    if (a !== b) { console.error(`  !!  ${dir}: ids changed — refusing to write`); process.exit(1); }
+    if (before.split("\n").length !== html.split("\n").length) {
+      console.error(`  !!  ${dir}: line count changed — this must be a pure move`); process.exit(1);
+    }
+    writeFileSync(file, html);
+    lifted++;
+    console.log(`  ->  ${dir} (made-strip lifted below the builder)`);
+  }
+
+  const bad = guardHiddenAboveForm(dir, why ? before : html);
+  if (bad) {
+    console.error(`  !!  ${dir}:${bad.line} is hidden and sits above the form:`);
+    console.error(`      ${bad.text}`);
+    console.error(`      A block that starts collapsed and expands at runtime moves the`);
+    console.error(`      submit button by a height this script cannot measure. Put it`);
+    console.error(`      below the builder, or teach this script to move it.`);
+    process.exit(1);
+  }
+}
+console.log(`${lifted} lifted, ${inPlace} already below the builder (${stripDirs.length} pages with a shared made-strip)`);

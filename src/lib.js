@@ -66,11 +66,64 @@ export function newSlug(nouns) {
    recorded (see noteFailure in worker.js), so a create path that
    returns a 4xx instead of throwing drops silently out of the
    failure ledger and makes "nobody tried" indistinguishable from
-   "everybody was refused". */
-export function badInput(message) {
+   "everybody was refused".
+
+   `reason` is a short kebab-case tag that rides on the error and ends
+   up in the events row as `fail:400:<reason>`. It exists because the
+   ledger without it was unreadable at the volumes that matter: two
+   kringle 400s in August could equally have been two people refused
+   at the form or two empty POSTs from a scanner walking /api-docs/,
+   and telling those apart took a code read instead of a query. It
+   changes NOTHING a caller sees - same status, same message, and the
+   published error table in scripts/api-tools.json stays true. Omit it
+   and the label degrades to the old bare `fail:400`. */
+export function badInput(message, reason) {
   const e = new Error(message);
   e.status = 400;
+  if (reason) e.reason = reason;
   return e;
+}
+
+/* Every create reads its body as `readJson(request)`, never
+   `request.json().catch(() => ({}))`.
+
+   Both hand a create the same empty object, and that is deliberate:
+   an unparseable body SHOULD fall through to the ordinary "you need
+   three names" refusal, because that is what the API docs promise and
+   because a human never sees it - the builder page only ever sends
+   valid JSON. What the bare catch could not do is say so afterwards.
+   The marker below is a Symbol, so it cannot collide with a field
+   name, does not serialise, and does not survive into stored data -
+   it exists purely so a parse function can tag its refusal
+   `unparseable` on the way past. */
+export const UNPARSEABLE = Symbol("unparseable body");
+
+export async function readJson(request) {
+  try {
+    const body = await request.json();
+    return body && typeof body === "object" ? body : {};
+  } catch {
+    return { [UNPARSEABLE]: true };
+  }
+}
+
+/* The site's calendar runs on Australian local time, not the Worker's UTC.
+   Every seasonal decision - the homepage feature card, and the "what's next"
+   banner on a settled sweep - has to agree about what day it is, or they
+   disagree for the eleven hours a day where Sydney and UTC are on different
+   dates. Sydney is 11 hours ahead in November, so a UTC-midnight boundary
+   fires at 11am Sydney the same day - half a day early, and on 4 November
+   that put a settled Cup sweep and the homepage card on opposite sides of
+   the season while both looked correct in isolation.
+
+   Returns "MM-DD", which is all any caller needs: the seasonal windows are
+   year-agnostic and compare as strings. */
+export function sydneyMonthDay(now = new Date()) {
+  const p = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Australia/Sydney", month: "2-digit", day: "2-digit",
+  }).formatToParts(now);
+  const get = (t) => p.find((x) => x.type === t).value;
+  return `${get("month")}-${get("day")}`;
 }
 
 /* ---------- data access ------------------------------------- */
@@ -128,6 +181,18 @@ export async function markShared(env, editToken) {
     ).bind(new Date().toISOString(), editToken).run();
   }
   return new Response(null, { status: 204 });
+}
+
+/* Someone opened the shared /s/ page — anyone, not necessarily a second
+   person, which is why stats.mjs only trusts this past COLD_MINUTES. Same
+   three rules as markShared: first write wins, it never throws into the
+   page (called via ctx.waitUntil from the /s/ handler, and swallowed
+   there too), and it is the only reach signal sweep and bracket have,
+   since they write to neither claims nor participants. */
+export async function markFirstOpened(env, id) {
+  await env.DB.prepare(
+    "UPDATE instances SET first_opened_at = ? WHERE id = ? AND first_opened_at IS NULL"
+  ).bind(new Date().toISOString(), id).run();
 }
 
 /* Drop this into any participant page that tracks a viewed tick. */
@@ -380,11 +445,72 @@ function shareTags(shareType, title, slug, img) {
 <meta property="og:image" content="${esc(share.image)}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${d}">
 <meta property="og:url" content="${esc(share.url)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${t}">
 <meta name="twitter:description" content="${d}">
 <meta name="twitter:image" content="${esc(share.image)}">`;
+}
+
+/* The organiser is one tap from pasting this into a group of thirty and has
+ * never seen what unfurls — the title field they may have left blank is the
+ * only lever they have on it. Same data shareTags() uses, rendered as
+ * visible HTML on the organiser's own /e/ page instead of meta tags nobody
+ * reads. Leaving the title blank now has a visible consequence: the preview
+ * says the tool's generic name back at them, in the exact spot their own
+ * words would have gone. */
+export function cardPreview(shareType, title, img) {
+  const s = SHARE[shareType];
+  if (!s) return "";
+  const t = esc(title || s[1]), d = esc(s[2]);
+  return `
+  <div class="card-preview">
+    <img class="card-preview-img" src="/art/${esc(img || s[0])}.png" alt="" width="120" height="63">
+    <div class="card-preview-text">
+      <p class="card-preview-title">${t}</p>
+      <p class="card-preview-desc">${d}</p>
+      <p class="card-preview-domain">bitibybit.com</p>
+    </div>
+  </div>`;
+}
+
+/* ---------- the fill ---------------------------------------- */
+
+/* One mark for "N of M", specified in docs/review/08-fill.md and drawn
+ * by .fill-track in public/styles.css. The rule that decides whether a
+ * tool may call this at all is in that document and is short enough to
+ * repeat here:
+ *
+ *   A FILL MAY ONLY DRAW A NUMBER THAT A VIEWER OF THAT SAME PAGE COULD
+ *   ALREADY OBTAIN BY COUNTING WHAT IS RENDERED ON IT.
+ *
+ * So a roster's bar is the roster, counted; a Coffee Roulette bar over
+ * the whole name list is the list, counted — and a bar over the PAIRS is
+ * a new fact, because watching one name flip from open to claimed and
+ * seeing which pair moved identifies a pairing in one reload. There is
+ * no granularity at which that is safe. Same for a per-role bar on
+ * Secret Roles, which publishes a count and no names.
+ *
+ * Returning "" when there is no real denominator is the whole safety
+ * design and is why this is a helper rather than twenty `if`s: a storage
+ * ceiling (MAX_MESSAGES, MAX_GUESSES, MAX_VOTERS) is not an M, and a row
+ * whose stored shape predates a capacity field renders exactly as it
+ * does today. A tool with no total gets its sentence and no bar.
+ *
+ * Notched at M <= 24 and smooth above it — the reasoning, and the
+ * 11.04px it comes from, is with the CSS. aria-hidden because the
+ * sentence immediately above says the same thing in words, and a screen
+ * reader announcing both says it twice.
+ *
+ * This renders into <body>. It must never reach a share card: see the
+ * rule above SHARE. */
+export function fillTrack({ n, m } = {}) {
+  const total = Number(m);
+  if (!Number.isFinite(total) || total <= 0) return "";
+  const done = Math.min(total, Math.max(0, Number(n) || 0));
+  return `
+  <div class="fill-track${total <= 24 ? " notched" : ""}" style="--n:${done};--m:${total}" aria-hidden="true"><i></i></div>`;
 }
 
 /* ---------- page shell -------------------------------------- */
@@ -393,8 +519,19 @@ function shareTags(shareType, title, slug, img) {
    organiser page at /e/ and the private participant page at /p/ must
    never render a card — a preview fetcher would hand their contents to
    whatever channel the link was pasted into. Leaving the fields off is
-   what keeps them silent. */
+   what keeps them silent.
+
+   That same pair is the only reliable way to know, from in here, which
+   of the three page types is being rendered, so it also sets
+   class="shared" on <body>. /s/ is the one page a stranger sees — five
+   to thirty of them per link — and public/styles.css draws it as a
+   poster rather than as a form: the organiser's title at the homepage's
+   scale, the status line a rung above body text, the board sooner. /e/
+   and /p/ pass neither field and are untouched by every one of those
+   rules. Nothing about the class reaches <head>, so it cannot change
+   what a preview fetcher reads. */
 export function pageShell({ title, body, shareType, shareSlug, shareImg }) {
+  const shared = Boolean(shareType && shareSlug);
   return `<!doctype html>
 <html lang="en-AU">
 <head>
@@ -410,12 +547,11 @@ export function pageShell({ title, body, shareType, shareSlug, shareImg }) {
 <link rel="icon" href="/favicon.svg">
 <link rel="stylesheet" href="/styles.css">
 </head>
-<body>
+<body${shared ? ` class="shared"` : ""}>
 <header class="site-head wrap">
   <a class="wordmark" href="/" aria-label="biti by bit — home">
     <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
     biti by bit
-    <span class="beta-badge">beta</span>
   </a>
 </header>
 ${body}

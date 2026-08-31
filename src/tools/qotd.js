@@ -47,7 +47,7 @@
 import {
   esc, json, html, randomString, shuffle, badInput, pageShell, fmtDate,
   getBySlug, getByToken, getParticipant, getInstanceById,
-  createInstance, deleteInstance, logEvent, shareNudge,
+  createInstance, deleteInstance, logEvent, shareNudge, ownCta, cardPreview,
 } from "../lib.js";
 import { QUESTIONS } from "./qotd-questions.js";
 
@@ -744,11 +744,6 @@ function dailyBlock(q) {
   return `
   <form id="qotdBallot" class="qotd-ballot panel" novalidate>
     <p class="qotd-ask">Tap your side.</p>
-    <label class="field qotd-namefield">
-      <span>Your name <em>(optional — only the organiser sees it)</em></span>
-      <input type="text" id="qotdName" maxlength="${MAX_VOTER_NAME}" autocomplete="name"
-             placeholder="So the organiser knows who's chimed in">
-    </label>
     <div class="qotd-choices">
       <button class="qotd-choice" type="button" data-choice="a">
         <span class="qotd-choice-key">A</span>
@@ -760,9 +755,11 @@ function dailyBlock(q) {
       </button>
     </div>
     <p class="form-error" id="qotdErr" role="alert" hidden></p>
-    <p class="fine">The split stays hidden until you've voted — the numbers
-    aren't even in this page until then, so nobody gets swayed by whoever
-    got in first.</p>
+    <label class="field qotd-namefield">
+      <span>Your name <em>(optional — only the organiser sees it)</em></span>
+      <input type="text" id="qotdName" maxlength="${MAX_VOTER_NAME}" autocomplete="name"
+             placeholder="So the organiser knows who's chimed in">
+    </label>
   </form>
 
   <div class="qotd-voted" id="qotdVoted" role="status" tabindex="-1" hidden>
@@ -779,7 +776,8 @@ function dailyBlock(q) {
     ${blankBars(q)}
     <p class="fine"><span id="qotdCount"></span>One vote per person is on the
     honour system — this browser remembers yours, but there are no accounts.
-    It's a talking point, not a ballot box.</p>
+    It's a talking point, not a ballot box. The split stayed hidden until you
+    voted, so nobody got swayed by whoever got in first.</p>
   </section>`;
 }
 
@@ -949,15 +947,13 @@ function dailyScript(row, day, qi, q) {
 </script>`;
 }
 
-/** Yesterday + the collapsible archive. Pure history, safe to show. */
+/* Yesterday + the archive, collapsed behind one summary. Pure history, safe
+   to show — but it isn't the decision, so it isn't open by default. */
 function historyBlock(data, createdDay, today, byDay) {
   if (today < 1) {
     return `
-  <section class="qotd-history">
-    <h2>Yesterday's answer</h2>
-    <p class="qotd-empty">Nothing yet — this is day one. Tomorrow's question turns
-    up here with today's split beside it.</p>
-  </section>`;
+  <p class="qotd-empty qotd-history">Day one — tomorrow's question turns up
+  here with today's split beside it.</p>`;
   }
 
   const yDay = today - 1;
@@ -986,19 +982,20 @@ function historyBlock(data, createdDay, today, byDay) {
       </li>`);
   }
 
+  const summary = items.length
+    ? `Yesterday's answer, and ${items.length} earlier question${items.length === 1 ? "" : "s"}`
+    : "Yesterday's answer";
   const archive = items.length ? `
-    <details class="qotd-archive">
-      <summary>Earlier questions (${items.length})</summary>
-      <ul class="qotd-archive-list">${items.join("")}</ul>
-      <p class="fine">The last ${ARCHIVE_DAYS} days, minus the days nobody voted.</p>
-    </details>` : "";
+    <p class="fine">Earlier questions:</p>
+    <ul class="qotd-archive-list">${items.join("")}</ul>
+    <p class="fine">The last ${ARCHIVE_DAYS} days, minus the days nobody voted.</p>` : "";
 
   return `
-  <section class="qotd-history">
-    <h2>Yesterday's answer</h2>
+  <details class="qotd-archive qotd-history">
+    <summary>${summary}</summary>
     ${yesterday}
     ${archive}
-  </section>`;
+  </details>`;
 }
 
 /* ---------- public page (/s/:slug) -------------------------- */
@@ -1030,6 +1027,9 @@ async function publicPage(row, env) {
     post anything.
   </div>
 
+  ${ownCta("qotd",
+    "Fancy a daily question for your own crew?",
+    "Start your own")}
   <footer class="page-foot">
     <p class="fine">Your name, if you put one, is visible to whoever set this up.
     Everyone else sees just the two numbers.</p>
@@ -1109,17 +1109,21 @@ async function editPage(row, env, origin) {
   </div>
   ${fullWarning}
 
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("qotd", team ? `${team} — question of the day` : "Question of the day")}
+
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link once — it's the same one every day</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge(`🪧 Question of the day${team ? " for " + team : ""} — today's: "${q.text}" — ${q.a} or ${q.b}? Tap and pick. Fresh one every morning, same link: ${shareUrl}`, row.edit_token)}
 
   ${dailyBlock(q)}
   ${voterNames}
+  <button class="btn" id="printBtn" type="button">Print today's split</button>
 
   <h2>Not feeling today's?</h2>
   <p class="lede">Skip it and the next question in your rotation takes its place
@@ -1179,6 +1183,7 @@ ${dailyScript(row, today, qi, q)}
   var token = ${sj(row.edit_token)};
   var orgErr = document.getElementById("orgErr");
 
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   document.getElementById("copyBtn").addEventListener("click", function () {
     var input = document.getElementById("shareUrl");
     input.select();

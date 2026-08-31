@@ -32,7 +32,6 @@
   <a class="wordmark" href="/" aria-label="biti by bit — home">
     <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
     biti by bit
-    <span class="beta-badge">beta</span>
   </a>
   <nav class="site-nav">
     <a href="/#tools">more tools</a>
@@ -67,12 +66,12 @@ Nic P
 Tony H"></textarea>
           </label>
           <p class="status-line" id="statusLine"></p>
-          <p class="form-error" id="formError" hidden></p>
+          <p class="form-error" id="formError" role="alert" hidden></p>
           <button type="submit" class="btn primary big" id="makeBtn">Collect the facts →</button>
         </div>
         <div>
           <label class="field">
-            <span>Game title <em>(optional)</em></span>
+            <span>Game title <em>(optional — this is what shows in the group chat)</em></span>
             <input type="text" id="title" maxlength="80" placeholder="New starters — August icebreaker">
           </label>
           <label class="field">
@@ -93,6 +92,13 @@ Tony H"></textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+  <div class="prev-sweeps" id="madeStrip" hidden>
+    <p class="fine">Things you've made in this browser</p>
+    <ul></ul>
+    <p class="fine">Saved in this browser and nowhere else — there's no account
+    to keep them in. Bookmark the ones you'll want in a year.</p>
+  </div>
 
 
     <div class="tool-hero-art">
@@ -217,6 +223,7 @@ Tony H"></textarea>
   ]
 }
 </script>
+<script src="/made.js"></script>
 <script src="/fact.js"></script>
 <!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
      Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,

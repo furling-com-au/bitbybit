@@ -8,9 +8,10 @@
    learns who drew whom — it only shows claimed / opened status.
    ============================================================ */
 import {
-  esc, json, html, rand, randomString, badInput, pageShell,
+  esc, json, html, rand, randomString, badInput, readJson, UNPARSEABLE, pageShell,
   getBySlug, getByToken, getParticipant, getInstanceById,
-  createInstance, deleteInstance, logEvent, fmtDate, shareNudge, viewedBeacon} from "../lib.js";
+  createInstance, deleteInstance, logEvent, fmtDate, shareNudge, viewedBeacon, ownCta, cardPreview,
+  fillTrack} from "../lib.js";
 
 const MAX_TITLE = 80;
 const MIN_NAMES = 3;
@@ -64,20 +65,31 @@ const allParticipants = async (env, instanceId) =>
 
 function parseCreate(body) {
   const title = String(body.title || "").trim().slice(0, MAX_TITLE);
+  /* Truncated BEFORE the duplicate check below, and the browser's
+     parseNames does the same, because the check has to run on the string
+     that actually gets stored and drawn on a tile. Dedupe the untyped
+     length instead and two people whose names agree for forty characters
+     both get a tile reading the same forty characters - which is the exact
+     ambiguity this refusal exists to prevent. */
   const names = (Array.isArray(body.names) ? body.names : [])
     .map((s) => String(s).trim().replace(/\s+/g, " ").slice(0, MAX_NAME_LEN))
     .filter(Boolean);
 
+  /* The three refusals below are all 400s and all say so to the caller in
+     the same way. They are tagged apart only in the events ledger: see the
+     badInput comment in lib.js for why that was worth doing. */
   if (names.length < MIN_NAMES)
-    throw badInput("Add at least three names — with two it's not a secret, it's a swap.");
+    throw badInput("Add at least three names — with two it's not a secret, it's a swap.",
+      body[UNPARSEABLE] ? "unparseable" : "too-few");
   if (names.length > MAX_NAMES)
-    throw badInput("That's more than 100 people — split it into two draws.");
+    throw badInput("That's more than 100 people — split it into two draws.", "too-many");
 
   const seen = new Set();
   for (const n of names) {
     const key = n.toLowerCase();
     if (seen.has(key))
-      throw badInput(`"${n}" is in the list twice — add a surname initial so the right one gets claimed.`);
+      throw badInput(`"${n}" is in the list twice — add a surname initial so the right one gets claimed.`,
+        "duplicate");
     seen.add(key);
   }
 
@@ -93,7 +105,7 @@ function parseCreate(body) {
 
 async function create(request, env) {
   const { title, names, budget, exchangeDate, note } =
-    parseCreate(await request.json().catch(() => ({})));
+    parseCreate(await readJson(request));
   const { id, slug, editToken } = await createInstance(env, {
     toolType: "kringle", title,
     data: JSON.stringify({ names, budget, exchangeDate, note }),
@@ -199,10 +211,24 @@ function chips(data) {
 const noteBlock = (data) =>
   data.note ? `<div class="pixel-note kk-note">${esc(data.note)}</div>` : "";
 
+/* The lead rung, one per page, and the only bar this tool ever gets.
+   N and M are the two numbers the sentence above it has just printed —
+   claimed, out of everyone in the hat — and both pages that draw it
+   also publish every name with its own claimed state beside it: the
+   grid on /s/, the table on /e/. The bar is that list added up, which
+   is the only thing docs/review/08-fill.md lets a fill be.
+
+   Segmenting it would break that on the spot. A bar per giver, per
+   receiver or per budget band is a fact neither page publishes, and the
+   one fact this tool exists to keep is who drew whom. One bar over
+   everybody, or none. */
+const leadFill = (claimed, total) => fillTrack({ n: claimed, m: total });
+
 async function publicPage(row, env) {
   const data = JSON.parse(row.data);
   const parts = await allParticipants(env, row.id);
   const claimed = parts.filter((p) => p.claimed_at).length;
+  const full = parts.length > 0 && claimed >= parts.length;
 
   const cards = parts.map((p) => p.claimed_at
     ? `<li><div class="kk-name is-claimed">
@@ -218,7 +244,9 @@ async function publicPage(row, env) {
 <main class="wrap page">
   <p class="kicker">Kris Kringle — the names are drawn</p>
   <h1>${esc(row.title || "Kris Kringle")}</h1>
-  <p class="page-sub">${parts.length} in the hat · ${claimed} claimed so far</p>
+  <p class="page-sub">${parts.length} in the hat · <strong>${claimed}</strong> claimed so far${
+    full ? ` <span role="img" aria-label="everyone has claimed">✓</span>` : ""}</p>
+  ${leadFill(claimed, parts.length)}
   ${chips(data)}
   ${noteBlock(data)}
 
@@ -227,13 +255,14 @@ async function publicPage(row, env) {
     <a class="kk-rejoin" id="kkRejoin" href="#">Link not working, or not you? Claim again</a>
   </div>
 
-  <p class="lede">Find your name and claim it. You'll get a private page
-  showing who you're buying for — nobody else sees it, including the
-  organiser.</p>
+  <p class="lede">Find your name and claim it.</p>
 
-  <p class="form-error" id="kkError" hidden></p>
+  <p class="form-error" id="kkError" role="alert" hidden></p>
   <ul class="kk-grid">${cards}</ul>
 
+  ${ownCta("kringle",
+    "Another group, another Christmas?",
+    "Draw your own names")}
   <footer class="page-foot">
     <p class="fine">One claim per name. Grabbed the wrong one, or someone
     pinched yours? The organiser can reset it.</p>
@@ -319,6 +348,7 @@ async function participantPage(prow, row, env) {
     <span class="kk-reveal-label">You're buying for</span>
     <span class="kk-giftee">${esc(pdata.givesTo)}</span>
   </div>
+  <p class="fine">Nobody else sees this, including the organiser.</p>
 
   <h2>Their wishlist</h2>
   ${gifteeWish
@@ -383,6 +413,7 @@ async function editPage(row, env, url) {
   const data = JSON.parse(row.data);
   const parts = await allParticipants(env, row.id);
   const claimed = parts.filter((p) => p.claimed_at).length;
+  const full = parts.length > 0 && claimed >= parts.length;
   const shareUrl = `${url.origin}/s/${row.slug}`;
 
   const tableRows = parts.map((p) => `
@@ -402,14 +433,19 @@ async function editPage(row, env, url) {
 
   <p class="kicker">Organiser view</p>
   <h1>${esc(row.title || "Kris Kringle")}</h1>
-  <p class="page-sub">${parts.length} in the draw · ${claimed} claimed · drawn ${fmtDate(row.updated_at)}</p>
+  <p class="page-sub">${parts.length} in the draw · <strong>${claimed}</strong> claimed · drawn ${fmtDate(row.updated_at)}${
+    full ? ` <span role="img" aria-label="everyone has claimed">✓</span>` : ""}</p>
+  ${leadFill(claimed, parts.length)}
   ${chips(data)}
+
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("kringle", row.title || "Kris Kringle")}
 
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link — everyone claims their own name</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("🎁 Kris Kringle time — claim your name and see who you drew (takes 10 seconds, no emails): " + shareUrl, row.edit_token)}

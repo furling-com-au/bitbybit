@@ -32,7 +32,6 @@
   <a class="wordmark" href="/" aria-label="biti by bit — home">
     <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
     biti by bit
-    <span class="beta-badge">beta</span>
   </a>
   <nav class="site-nav">
     <a href="/#tools">more tools</a>
@@ -44,9 +43,7 @@
   <section class="tool-hero">
     <p class="kicker">Free · no emails · one shareable link</p>
     <h1>Kris Kringle</h1>
-    <p class="lede">The name-drawing hat, minus the hat and the reply-all.
-    Type the names, share one link in the group chat, and everyone quietly
-    finds out who they're buying for. Wishlists included.</p>
+    <p class="lede">The name-drawing hat, minus the hat and the reply-all.</p>
 
     <p class="see-example">Not sure what you get? <a href="/s/demo-kris-kringle">See a finished Kris Kringle &rarr;</a></p>
 
@@ -72,12 +69,12 @@ Con S"></textarea>
           </div>
           <!-- live-preview:end -->
           <p class="status-line" id="statusLine"></p>
-          <p class="form-error" id="formError" hidden></p>
+          <p class="form-error" id="formError" role="alert" hidden></p>
           <button type="submit" class="btn primary big" id="drawBtn">Draw the names →</button>
         </div>
         <div>
           <label class="field">
-            <span>Title <em>(optional)</em></span>
+            <span>Title <em>(optional — this is what shows in the group chat)</em></span>
             <input type="text" id="title" maxlength="80" placeholder="Warehouse crew Kris Kringle">
           </label>
           <div class="builder-cols">
@@ -105,6 +102,13 @@ Con S"></textarea>
     </div>
   </section>
 
+  <div class="prev-sweeps" id="madeStrip" hidden>
+    <p class="fine">Things you've made in this browser</p>
+    <ul></ul>
+    <p class="fine">Saved in this browser and nowhere else — there's no account
+    to keep them in. Bookmark the ones you'll want in a year.</p>
+  </div>
+
     <div class="tool-hero-art">
       <img class="pixel" decoding="async" src="/art/kringle-hero.png"
            alt="Pixel art of a string of fairy lights over a row of wrapped presents against an evening sky"
@@ -115,7 +119,8 @@ Con S"></textarea>
     <h2>How it works</h2>
     <p>Paste the names and hit draw. The assignment is a single loop through
     everyone, so nobody can draw themselves — not by luck, by maths. Share the
-    one link; each person taps their own name and sees only who they got.</p>
+    one link; each person taps their own name and sees only who they got.
+    Wishlists included.</p>
 
     <p>New to running one, or trying to settle the annual budget argument? <a href="/kris-kringle/rules/">The Kris Kringle rules</a> cover what to spend and how to make it stick, when to draw and when to swap, the office gifts that reliably go wrong, and what to do when someone joins late or leaves before the day — plus gift ideas that work between $10 and $30.</p>
 
@@ -212,6 +217,7 @@ Con S"></textarea>
   ]
 }
 </script>
+<script src="/made.js"></script>
 <script type="module" src="/kringle.js"></script>
 <!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
      Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,

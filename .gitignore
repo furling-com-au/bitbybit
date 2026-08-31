@@ -4,3 +4,15 @@ node_modules/
 
 # Local operational data: the daily stats watcher appends to this.
 .stats-history.jsonl
+
+# Local D1 dumps. These hold real production rows — participant names and
+# organiser edit_tokens in plaintext — and the edit token is the only
+# credential a board has. This repo is public; the backups stay local.
+backups/
+
+# Claude Code's scratch worktrees (a full second copy of the repo).
+.claude/worktrees/
+
+# Dev-server logs. Anything under public/ is served by the assets layer,
+# so a stray log here would be published at the site root.
+public/*.log

@@ -23,7 +23,8 @@
    ============================================================ */
 import {
   esc, json, html, randomString, rand, shuffle, badInput, pageShell,
-  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge,
+  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge, ownCta, cardPreview,
+  fillTrack,
 } from "../lib.js";
 import { STARTERS } from "./coffee-starters.js";
 
@@ -247,12 +248,38 @@ function chips(data) {
 const noteBlock = (data) =>
   data.note ? `<div class="pixel-note">${esc(data.note)}</div>` : "";
 
+/* ONE undivided bar over the whole roster, on the two pages that
+   already list the roster name by name, and nothing else ever.
+
+   Why it is safe here: both /s/ and /e/ print every person with their
+   own claimed / not-claimed state beside them, so N is a sum a reader
+   can do by eye and M is the length of the list they are looking at.
+   The bar adds no fact — docs/review/08-fill.md §B.1.
+
+   Why nothing else is: data.groups — the pairings — appears nowhere on
+   this page. It appears nowhere at all except each person's own /p/
+   page, which is the promise the footer makes in words. A bar per pair
+   sitting beside a per-name list would hand that back in one reload:
+   watch a single name flip from open to claimed, see which pair's bar
+   moved, and you have learned who that person is having coffee with.
+   Differencing does not care how coarse the buckets are, so there is no
+   granularity at which this becomes acceptable — not per pair, not per
+   round, not "3 of 4 pairs have met". If a future round of this file
+   wants a second bar, the answer is no. */
+const leadFill = (claimed, total) => fillTrack({ n: claimed, m: total });
+
 /* ---------- public page (/s/:slug) --------------------------- */
 
 async function publicPage(row, env) {
   const data = JSON.parse(row.data);
   const parts = await allParticipants(env, row.id);
   const claimed = new Set(parts.filter((p) => p.claimed_at).map((p) => p.name));
+  /* Counted off the list this page is about to print rather than off
+     the participants rows, so the figure in the sentence is provably
+     the number of "claimed" labels below it and not a number from
+     somewhere the reader cannot check. */
+  const claimedHere = data.names.filter((n) => claimed.has(n)).length;
+  const full = data.names.length > 0 && claimedHere >= data.names.length;
 
   const list = data.names.map((n) => {
     const taken = claimed.has(n);
@@ -270,15 +297,18 @@ async function publicPage(row, env) {
   <p class="kicker">Coffee roulette</p>
   <h1>${esc(row.title || "Coffee roulette")}</h1>
   ${chips(data)}
+  <p class="page-sub"><strong>${claimedHere}</strong> of ${data.names.length} have claimed their name${
+    full ? ` <span role="img" aria-label="everyone has claimed">✓</span>` : ""}</p>
+  ${leadFill(claimedHere, data.names.length)}
   ${noteBlock(data)}
-
-  <p class="meal-intro">Find your name and tap it once. You'll get a private
-  link — bookmark it. Every round it shows who you're having a coffee with next,
-  and something to talk about. You only claim your name once, not every round.</p>
 
   <ul class="claim-list">${list}
   </ul>
+  <p class="fine">You only claim your name once, not every round.</p>
 
+  ${ownCta("coffee",
+    "Want to mix up coffees on your own team?",
+    "Start your own roulette")}
   <footer class="page-foot">
     <p class="fine">Your pairing shows only on your own page. The organiser sees
     who has claimed a name, not who got who — though they can reset a name, which
@@ -368,6 +398,7 @@ async function editPage(row, env, origin) {
   const data = JSON.parse(row.data);
   const parts = await allParticipants(env, row.id);
   const claimed = parts.filter((p) => p.claimed_at).length;
+  const full = data.names.length > 0 && claimed >= data.names.length;
   const shareUrl = `${origin}/s/${row.slug}`;
 
   const rows = parts.map((p) => `
@@ -387,14 +418,19 @@ async function editPage(row, env, origin) {
   <p class="kicker">Organiser view</p>
   <h1>${esc(row.title || "Coffee roulette")}</h1>
   ${chips(data)}
-  <p class="page-sub">${claimed} of ${data.names.length} have claimed their name</p>
+  <p class="page-sub"><strong>${claimed}</strong> of ${data.names.length} have claimed their name${
+    full ? ` <span role="img" aria-label="everyone has claimed">✓</span>` : ""}</p>
+  ${leadFill(claimed, data.names.length)}
   ${noteBlock(data)}
+
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("coffee", row.title || "Coffee roulette")}
 
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with the team</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("☕ Coffee roulette — tap your name once and you'll get a private link that shows who you're paired with each round: " + shareUrl, row.edit_token)}
@@ -412,6 +448,7 @@ async function editPage(row, env, origin) {
   were paired with — that lives only on their own page. Resetting is the one
   exception: it frees that name for whoever taps it next, including you, so use
   it when somebody has genuinely lost their link.</p>
+  <button class="btn" id="printBtn" type="button">Print this list</button>
   <div class="table-scroll">
     <table class="api-table">
       <thead><tr><th>Name</th><th>Claimed</th><th></th></tr></thead>
@@ -434,6 +471,7 @@ async function editPage(row, env, origin) {
 <script>
 (function () {
   var token = ${JSON.stringify(row.edit_token)};
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   function post(path, body) {
     return fetch("/api/coffee/" + token + "/" + path, {
       method: "POST",

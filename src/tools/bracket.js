@@ -14,7 +14,7 @@
 import {
   esc, json, html, shuffle, badInput, pageShell,
   getByToken, createInstance, updateInstanceData, deleteInstance,
-  logEvent, shareNudge,
+  logEvent, shareNudge, ownCta, cardPreview, fillTrack,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -188,16 +188,37 @@ function roundLabel(r, total) {
 
 const champion = (data) => data.rounds[data.rounds.length - 1][0].winner;
 
+/* A game is decided when it had two entrants and one of them won. A
+   bye is neither: one name, no opponent, nothing played. And a match
+   waiting on an earlier round has one occupied slot at most, which is
+   not half a result. So both ends of the count exclude them, and the
+   denominator is entrants − 1, the number of games a single-elimination
+   bracket actually contains — not the padded bracket size. */
+const decidedGames = (data) => data.rounds.flat()
+  .filter((m) => m.a !== null && m.b !== null && m.winner !== null).length;
+
 function subLine(data) {
   const n = data.entrants.length;
   const size = data.rounds[0].length * 2;
   const byes = size - n;
-  const decided = data.rounds.flat()
-    .filter((m) => m.a !== null && m.b !== null && m.winner !== null).length;
   return `${n} entrants · bracket of ${size}` +
     (byes ? ` · ${byes} bye${byes === 1 ? "" : "s"}` : "") +
-    ` · ${decided} of ${n - 1} games decided`;
+    ` · <strong>${decidedGames(data)}</strong> of ${n - 1} games decided`;
 }
+
+/* The lead rung, one per page. N and M are the last two numbers
+   subLine() just put into words above it — this draws the same fact,
+   never a different one. Both are already countable on the page below
+   it: every match renders its two names and marks its winner, so a
+   viewer who counted the boxes would land on the same fraction.
+
+   No per-round rungs. A .bracket-col already shows a round's state by
+   drawing it, and a bar under each column is a second copy of a picture
+   that is on the screen. The full state needs no ✓ either: the champion
+   banner appears exactly when the final is decided, which for a bracket
+   is exactly N = M, and it says the word. */
+const leadFill = (data) =>
+  fillTrack({ n: decidedGames(data), m: data.entrants.length - 1 });
 
 function renderBracket(data, organiser) {
   const total = data.rounds.length;
@@ -249,8 +270,12 @@ function publicPage(row) {
   <p class="kicker">Single elimination — lose once, you're done</p>
   <h1>${esc(row.title || "Tournament bracket")}</h1>
   <p class="page-sub">${subLine(data)}</p>
+  ${leadFill(data)}
   ${champBanner(champion(data))}
   ${renderBracket(data, false)}
+  ${ownCta("bracket",
+    "Got an office ping pong ladder?",
+    "Make your own bracket")}
   <footer class="page-foot">
     <p class="fine">Results land as the organiser taps them in — refresh for
     the latest. Reckon a score's wrong? Bail up the organiser, not us.</p>
@@ -276,12 +301,16 @@ function editPage(row, origin) {
   <p class="kicker">Organiser view</p>
   <h1>${esc(row.title || "Tournament bracket")}</h1>
   <p class="page-sub">${subLine(data)}</p>
+  ${leadFill(data)}
+
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("bracket", row.title || "Tournament bracket")}
 
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with the group</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("🏆 The bracket’s live — watch it fill in: " + shareUrl, row.edit_token)}
@@ -290,6 +319,8 @@ function editPage(row, origin) {
   the shared link sees it live-ish (on refresh). Tapped the wrong name? Tap the
   winner again to clear it, or tap the other name to switch — later results
   that built on that game are wiped either way.</p>
+
+  <button class="btn" id="printBtn" type="button">Print this bracket</button>
 
   ${champBanner(champion(data))}
   ${renderBracket(data, true)}
@@ -309,6 +340,7 @@ function editPage(row, origin) {
 <script>
 (function () {
   var token = ${JSON.stringify(row.edit_token)};
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   document.getElementById("copyBtn").addEventListener("click", function () {
     var input = document.getElementById("shareUrl");
     input.select();

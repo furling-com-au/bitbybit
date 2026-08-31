@@ -66,6 +66,7 @@
 
       const editUrl = `/e/${data.editToken}`;
       savePrev({ title, editUrl, at: new Date().toISOString() });
+      if (window.bbbRemember) window.bbbRemember("card", title, editUrl);
       location.href = editUrl;
     } catch (ex) {
       fail(ex.message || "Something went wrong — try again.");

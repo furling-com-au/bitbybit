@@ -32,7 +32,6 @@
   <a class="wordmark" href="/" aria-label="biti by bit — home">
     <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
     biti by bit
-    <span class="beta-badge">beta</span>
   </a>
   <nav class="site-nav">
     <a href="/#tools">more tools</a>
@@ -44,9 +43,7 @@
   <section class="tool-hero">
     <p class="kicker">Free · no signup · one shareable link</p>
     <h1>Bring a Plate</h1>
-    <p class="lede">The potluck board that prevents six pavlovas and no salad.
-    Set the categories, share the link, and everyone puts their name on a spot
-    with what they're bringing. The board fills in; the doubling-up doesn't.</p>
+    <p class="lede">The potluck board that prevents six pavlovas and no salad.</p>
 
     <p class="see-example is-one-tap">Six categories are already filled in, Mains through Wildcards. <a href="/s/demo-bring-a-plate">See a finished list &rarr;</a></p>
     <p class="one-tap"><button type="submit" form="plateForm" id="makeBtnTop" class="btn primary">Make the board now &rarr;</button><a class="fine" href="#plateForm">or change them below</a></p>
@@ -103,12 +100,12 @@ Wildcards x3</textarea>
           </div>
           <!-- live-preview:end -->
           <p class="status-line" id="statusLine"></p>
-          <p class="form-error" id="formError" hidden></p>
+          <p class="form-error" id="formError" role="alert" hidden></p>
           <button type="submit" class="btn primary big" id="makeBtn">Set the table →</button>
         </div>
         <div>
           <label class="field">
-            <span>Board title <em>(optional)</em></span>
+            <span>Board title <em>(optional — this is what shows in the group chat)</em></span>
             <input type="text" id="title" maxlength="80" placeholder="Street Christmas lunch">
           </label>
           <label class="field">
@@ -129,6 +126,13 @@ Wildcards x3</textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+  <div class="prev-sweeps" id="madeStrip" hidden>
+    <p class="fine">Things you've made in this browser</p>
+    <ul></ul>
+    <p class="fine">Saved in this browser and nowhere else — there's no account
+    to keep them in. Bookmark the ones you'll want in a year.</p>
+  </div>
 
 
     <div class="tool-hero-art">
@@ -170,7 +174,8 @@ Wildcards x3</textarea>
     <p>Guests tap an open spot, type their name and what they're bringing,
     done. Each category shows a running count, gets a tick when it's full, and
     stops accepting names — that's the whole trick. Changed plans? Everyone
-    can take their own name back off.</p>
+    can take their own name back off. The board fills in; the doubling-up
+    doesn't.</p>
 
     <p><strong>Not sure what to actually bring?</strong> We wrote the long version:
     <a href="/bring-a-plate/ideas/">bring a plate ideas</a> — what the phrase means
@@ -257,6 +262,7 @@ Wildcards x3</textarea>
   ]
 }
 </script>
+<script src="/made.js"></script>
 <script type="module" src="/plate.js"></script>
 <!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
      Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,

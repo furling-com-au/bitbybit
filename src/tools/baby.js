@@ -14,7 +14,7 @@
 import {
   esc, json, html, randomString, badInput, pageShell,
   getBySlug, getByToken, getParticipant, getInstanceById,
-  createInstance, updateInstanceData, deleteInstance, logEvent, fmtDate, shareNudge,
+  createInstance, updateInstanceData, deleteInstance, logEvent, fmtDate, shareNudge, ownCta, cardPreview,
 } from "../lib.js";
 
 const MAX_PARENTS = 80;
@@ -232,6 +232,21 @@ function guessCard(d, p, removable) {
       </li>`;
 }
 
+/* Unbounded (08-fill.md §F.9): MAX_GUESSES is a storage ceiling, not
+   a denominator, so this gets the line and no lead fill. No tally
+   either — the guess wall/leaderboard right below this line already
+   draws one row per guess, the same reason kudos.js skips a tally
+   under its wall (08-fill.md §G.1): a row of squares on top of a
+   list of rows would just repeat the count in a blander shape.
+   data.result is a second, binary bit of state (has the baby
+   landed) — it's already said in words ("arrival recorded" /
+   the arrival banner) rather than folded into this count, per
+   08-fill.md §F.9's note that it "is already said in words".
+   <strong> around the numeral is 08-fill.md §D.1. */
+function subLine(n) {
+  return `<strong>${n}</strong> ${n === 1 ? "guess" : "guesses"}`;
+}
+
 function wall(guesses, removable) {
   if (!guesses.length)
     return `<p class="bb-empty">No guesses yet — someone's got to go first.
@@ -283,7 +298,7 @@ async function publicPage(row, env) {
   const beforeBody = `
   <p class="kicker">Guess the arrival — closest wins</p>
   <h1>${esc(data.parents)}</h1>
-  <p class="page-sub">${n} ${n === 1 ? "guess" : "guesses"} in${n ? ' · <a href="#bbGuess">add yours ↓</a>' : ""}</p>
+  <p class="page-sub">${subLine(n)} in${n ? ' · <a href="#bbGuess">add yours ↓</a>' : ""}</p>
   ${chips(data)}
   ${noteBlock(data)}
   ${wall(guesses, false)}
@@ -310,7 +325,7 @@ async function publicPage(row, env) {
           <span>Message <em>(optional)</em></span>
           <input type="text" id="gMsg" maxlength="${MAX_MESSAGE}" placeholder="A big spring baby — calling it now.">
         </label>
-        <p class="form-error" id="gErr" hidden></p>
+        <p class="form-error" id="gErr" role="alert" hidden></p>
         <button class="btn primary" id="gBtn" type="submit">Lock in my guess →</button>
       </form>
     </div>
@@ -327,13 +342,16 @@ async function publicPage(row, env) {
   ${chips(data)}
   ${noteBlock(data)}
   <h2>Leaderboard</h2>
-  <p class="page-sub">${n} ${n === 1 ? "guess" : "guesses"} · closest to the mark wins</p>
+  <p class="page-sub">${subLine(n)} · closest to the mark wins</p>
   ${leaderboard(scored(guesses, result), false)}
   ${scoringNote}` : "";
 
   const body = `
 <main class="wrap page">
   ${result ? afterBody : beforeBody}
+  ${ownCta("baby",
+    "Another bub on the way at your office?",
+    "Start your own pool")}
   <footer class="page-foot">
     <p class="fine">No accounts here — this browser remembers which guesses are
     yours. On someone else's phone? Just ask the organiser to shift things.</p>
@@ -458,15 +476,18 @@ async function editPage(row, env, origin) {
 
   <p class="kicker">Organiser view</p>
   <h1>${esc(data.parents)}</h1>
-  <p class="page-sub">${n} ${n === 1 ? "guess" : "guesses"} in${result ? " · arrival recorded" : ""}</p>
+  <p class="page-sub">${subLine(n)} in${result ? " · arrival recorded" : ""}</p>
   ${chips(data)}
   ${noteBlock(data)}
+
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("baby", `${data.parents} — baby guess pool`)}
 
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with the group</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("👶 Baby pool for " + data.parents + " — guess the arrival date and weight, closest wins: " + shareUrl, row.edit_token)}
@@ -492,7 +513,7 @@ async function editPage(row, env, origin) {
           <input type="text" id="rTime" maxlength="${MAX_ARRIVED}" placeholder="2:14am"
             value="${esc(result ? result.arrivedAt : "")}">
         </label>
-        <p class="form-error" id="rErr" hidden></p>
+        <p class="form-error" id="rErr" role="alert" hidden></p>
         <div class="bb-record-actions">
           <button class="btn primary" id="rBtn" type="submit">${result ? "Update the result" : "Record it & reveal the winner →"}</button>
           ${result ? `<button class="btn ghost" id="clearBtn" type="button">Reopen guessing</button>` : ""}
@@ -504,6 +525,8 @@ async function editPage(row, env, origin) {
     clear it and try again.</p>
     ${scoringNote}
   </section>
+
+  <button class="btn" id="printBtn" type="button">Print this pool</button>
 
   ${result
     ? `<h2>Leaderboard</h2>${leaderboard(scored(guesses, result), true)}`
@@ -526,6 +549,7 @@ async function editPage(row, env, origin) {
 <script>
 (function () {
   var token = ${JSON.stringify(row.edit_token)};
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   document.getElementById("copyBtn").addEventListener("click", function () {
     var input = document.getElementById("shareUrl");
     input.select();

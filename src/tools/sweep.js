@@ -6,7 +6,7 @@
 import {
   esc, json, html, shuffle, badInput, pageShell,
   getByToken, createInstance, updateInstanceData, deleteInstance,
-  logEvent, fmtDate, ownCta, shareNudge,
+  logEvent, fmtDate, ownCta, shareNudge, cardPreview, sydneyMonthDay,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -106,14 +106,29 @@ async function remove(token, env) {
 
 
 /* The spike-to-spike chain: once one season's event has run, its
-   shared pages point the crowd at the next tool on the calendar. */
-function seasonBanner(kind) {
-  const now = new Date();
-  const y = now.getFullYear();
-  if (kind !== "cup" && now > new Date(y, 9, 5))
+   shared pages point the crowd at the next tool on the calendar.
+
+   The two dates below are the CLOSING days of the footy and Cup windows in
+   SEASONS (src/worker.js), so a settled sweep starts pointing at the next
+   tool on the same day the homepage card switches to it. They are duplicated
+   here rather than imported because worker.js imports this module, and
+   check-seasons.mjs fails the build if the two ever drift apart.
+
+   Sydney, not UTC. `new Date(y, 10, 4)` was midnight in the Worker's own
+   timezone, which is UTC - and UTC midnight on 4 November is 11am Sydney the
+   same day. So the Kris Kringle banner used to switch on thirteen hours EARLY:
+   from late morning on 4 November, a settled sweep told people the season was
+   over while the homepage card was still featuring the Cup, because the Cup
+   window in SEASONS runs to the end of 11-04. Two halves of the site
+   disagreeing about which day it is, for one afternoon a year. */
+const SEASON_ENDS = { gf: "10-05", cup: "11-04" };
+
+function seasonBanner(kind, now = new Date()) {
+  const md = sydneyMonthDay(now);
+  if (kind !== "cup" && md > SEASON_ENDS.gf)
     return `<p class="pixel-note season-next">Footy's done for the year — the
       <a href="/melbourne-cup-sweep/">Melbourne Cup sweep</a> is up next.</p>`;
-  if (kind === "cup" && now > new Date(y, 10, 4))
+  if (kind === "cup" && md > SEASON_ENDS.cup)
     return `<p class="pixel-note season-next">Race run, sweep settled. Next on
       the calendar: <a href="/kris-kringle/">Kris Kringle</a> — draw names
       without the group chat seeing.</p>`;
@@ -155,6 +170,7 @@ function publicPage(row) {
   <p class="kicker">A sweep, drawn fair and square</p>
   <h1>${esc(row.title || "The office sweep")}</h1>
   <p class="page-sub">${subLine(data)}</p>
+  <button class="btn" id="printBtn" type="button">Print this sweep</button>
   ${grid(data, { reveal: true })}
   ${seasonBanner(data.kind)}
   ${ownCta(data.kind === "cup" ? "cup" : "gf",
@@ -163,7 +179,11 @@ function publicPage(row) {
   <footer class="page-foot">
     <p><a class="quiet-link" href="/via/${data.kind === "cup" ? "cup" : "gf"}">made with biti by bit →</a></p>
   </footer>
-</main>`;
+</main>
+
+<script>
+document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
+</script>`;
   return html(pageShell({
     title: row.title || "Sweep", body,
     // one module, two products: the Cup gets its own artwork
@@ -186,14 +206,19 @@ function editPage(row, origin) {
   <h1>${esc(row.title || "The office sweep")}</h1>
   <p class="page-sub">${subLine(data)}</p>
 
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("sweep", row.title || "Sweep", data.kind === "cup" ? "og-cup" : "og-sweep")}
+
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with the group</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge((data.kind === "cup" ? "🐎 Cup sweep’s drawn! Find your horse: " : "🏉 The sweep’s drawn — come see what you pulled: ") + shareUrl, row.edit_token)}
+
+  <button class="btn" id="printBtn" type="button">Print this sweep</button>
 
   ${grid(data, { reveal: false })}
 
@@ -212,6 +237,7 @@ function editPage(row, origin) {
 <script>
 (function () {
   var token = ${JSON.stringify(row.edit_token)};
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   document.getElementById("copyBtn").addEventListener("click", function () {
     var input = document.getElementById("shareUrl");
     input.select();

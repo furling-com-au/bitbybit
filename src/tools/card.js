@@ -12,7 +12,7 @@
 import {
   esc, json, html, randomString, badInput, pageShell,
   getBySlug, getByToken, getParticipant, getInstanceById,
-  createInstance, deleteInstance, logEvent, shareNudge,
+  createInstance, deleteInstance, logEvent, shareNudge, ownCta, cardPreview,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -150,9 +150,18 @@ const briefBlock = (data) =>
   data.note ? `<div class="pixel-note card-brief">${esc(data.note)}</div>` : "";
 
 /* The title defaults to "A card for <recipient>"; when it's still
-   that, repeating it under the big "For <recipient>" is just noise. */
+   that, repeating it under the big "For <recipient>" is just noise.
+
+   Unbounded (08-fill.md §F.6): MAX_MESSAGES is a storage ceiling, not
+   a denominator, so this gets the line and no lead fill — see the
+   comment above fillTrack() in lib.js for why a ceiling can't stand
+   in for M. No tally either: the sticky-note board below this line
+   already IS the growing picture (same call kudos.js makes for its
+   wall, 08-fill.md §G.1) — a row of squares under a wall of notes
+   would just be a second, blander drawing of the thing already on
+   the page. <strong> around the numeral is 08-fill.md §D.1. */
 function subLine(row, data, n, extra = "") {
-  const count = `${n} ${n === 1 ? "message" : "messages"} so far`;
+  const count = `<strong>${n}</strong> ${n === 1 ? "message" : "messages"} so far`;
   const custom = row.title &&
     row.title.toLowerCase() !== `a card for ${data.recipient}`.toLowerCase();
   return `${custom ? `${esc(row.title)} · ` : ""}${count}${extra}`;
@@ -183,7 +192,7 @@ async function publicPage(row, env) {
           <textarea id="signMsg" rows="4" maxlength="${MAX_MESSAGE}"
             placeholder="Good luck, congratulations, we'll miss you — say it how you'd say it."></textarea>
         </label>
-        <p class="form-error" id="signErr" hidden></p>
+        <p class="form-error" id="signErr" role="alert" hidden></p>
         <button class="btn primary" id="signBtn" type="submit">Sign the card →</button>
       </form>
     </div>
@@ -191,6 +200,9 @@ async function publicPage(row, env) {
     remembers which messages are yours, so you can take one back off.</p>
   </section>
 
+  ${ownCta("card",
+    "Someone else leaving, or turning 40?",
+    "Start a card")}
   <footer class="page-foot">
     <p><a class="quiet-link" href="/via/card">made with biti by bit →</a></p>
   </footer>
@@ -306,11 +318,14 @@ async function editPage(row, env, origin) {
   <p class="page-sub">${subLine(row, data, parts.length)}</p>
   ${briefBlock(data)}
 
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("card", row.title || `A card for ${data.recipient}`)}
+
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with the group</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("✍️ We’re signing a card — add your message before it gets handed over: " + shareUrl, row.edit_token)}
@@ -318,6 +333,8 @@ async function editPage(row, env, origin) {
   <p class="pixel-note">Share the link with everyone <strong>except
   ${esc(data.recipient)}</strong>. When it's full, share it with them too —
   or print this page (the print view is just the card, no buttons).</p>
+
+  <button class="btn" id="printBtn" type="button">Print the card</button>
 
   ${board(parts, true)}
 
@@ -338,6 +355,7 @@ async function editPage(row, env, origin) {
 <script>
 (function () {
   var token = ${JSON.stringify(row.edit_token)};
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   document.getElementById("copyBtn").addEventListener("click", function () {
     var input = document.getElementById("shareUrl");
     input.select();

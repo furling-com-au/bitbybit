@@ -116,6 +116,7 @@ const LIVE = {
   "bring-a-plate": "plate",
   "hens-planner": "hens",
   "kris-kringle": "kringle",
+  "tournament-bracket": "bracket",
 };
 
 for (const [dir, modName] of Object.entries(LIVE)) {

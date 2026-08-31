@@ -22,7 +22,8 @@
 import {
   esc, json, html, randomString, badInput, pageShell,
   getBySlug, getByToken, getParticipant, getInstanceById,
-  createInstance, deleteInstance, logEvent, shareNudge,
+  createInstance, deleteInstance, logEvent, shareNudge, ownCta, cardPreview,
+  fillTrack,
 } from "../lib.js";
 
 const MAX_RECIPIENT = 80;
@@ -267,9 +268,31 @@ function metaBlock(data) {
   return chipRow + note;
 }
 
+/* This board is two mechanics with two different answers under
+   08-fill.md §F.14 / §G.3:
+
+   - Suggesting ideas is unbounded (MAX_IDEAS is a storage ceiling,
+     not a denominator) — that half gets no fill of any kind, not
+     even a tally. voteBar() already draws a ranking per idea, which
+     is the useful question ("which idea is winning"); a tally would
+     only answer "how many ideas are there", which nobody's asking.
+   - Claiming is bounded: every claim is a claim on one of the
+     ideas.length rows, so N/M is real. That half gets the lead rung
+     — see claimFill() below, called from both rendered pages, only
+     once there's at least one idea to claim against.
+
+   <strong> around both numerals is 08-fill.md §D.1. */
 function subLine(ideas, claimed) {
   const n = ideas.length;
-  return `${n} ${n === 1 ? "idea" : "ideas"} · ${claimed} being bought`;
+  return `<strong>${n}</strong> ${n === 1 ? "idea" : "ideas"} · <strong>${claimed}</strong> being bought`;
+}
+
+/* The claim-half's lead rung. M = ideas.length is a real declared
+   total the moment there's at least one idea on the board; a bar of
+   0 of 0 on a fresh board is noise, so fillTrack (which already
+   returns "" for a falsy m) is only reached once M >= 1. */
+function claimFill(ideas, claimed) {
+  return ideas.length ? fillTrack({ n: claimed, m: ideas.length }) : "";
 }
 
 function linkHtml(link) {
@@ -363,6 +386,7 @@ async function publicPage(row, env) {
   <p class="kicker">Group gift — ideas &amp; who's buying</p>
   <h1>Gift ideas for ${esc(data.recipient)}</h1>
   <p class="page-sub">${subLine(ideas, claims.length)}</p>
+  ${claimFill(ideas, claims.length)}
 
   <div class="gi-surprise">
     <strong>Keep it a surprise.</strong> This board is for everyone
@@ -395,7 +419,7 @@ async function publicPage(row, env) {
           <input type="text" id="ideaBy" maxlength="${MAX_BY}"
             placeholder="So people know whose idea it was" autocomplete="name">
         </label>
-        <p class="form-error" id="ideaErr" hidden></p>
+        <p class="form-error" id="ideaErr" role="alert" hidden></p>
         <button class="btn primary" id="ideaBtn" type="submit">Add the idea →</button>
       </form>
     </div>
@@ -403,6 +427,9 @@ async function publicPage(row, env) {
     ideas you added and the ones you're buying, so you can take them back.</p>
   </section>
 
+  ${ownCta("giftidea",
+    "Another birthday to chip in for?",
+    "Start your own idea board")}
   <footer class="page-foot">
     <p><a class="quiet-link" href="/via/giftidea">made with biti by bit →</a></p>
   </footer>
@@ -661,6 +688,7 @@ async function editPage(row, env, origin) {
   <p class="kicker">Organiser view</p>
   <h1>Gift ideas for ${esc(data.recipient)}</h1>
   <p class="page-sub">${subLine(ideas, claims.length)}</p>
+  ${claimFill(ideas, claims.length)}
 
   <div class="gi-surprise">
     <strong>Keep it a surprise.</strong> Share the link with
@@ -670,14 +698,19 @@ async function editPage(row, env, origin) {
 
   ${metaBlock(data)}
 
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("giftidea", `Gift ideas for ${data.recipient}`)}
+
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with the group (not the recipient)</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("🎁 Chipping in for " + data.recipient + "? Add gift ideas, vote, and tap “I’ll get this” on whatever you’ll buy so we don’t double up (don’t show " + data.recipient + "): " + shareUrl, row.edit_token)}
+
+  <button class="btn" id="printBtn" type="button">Print this list</button>
 
   ${listHtml}
 
@@ -698,6 +731,7 @@ async function editPage(row, env, origin) {
 <script>
 (function () {
   var token = ${JSON.stringify(row.edit_token)};
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   document.getElementById("copyBtn").addEventListener("click", function () {
     var input = document.getElementById("shareUrl");
     input.select();

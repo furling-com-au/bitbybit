@@ -85,6 +85,7 @@
 
       const editUrl = `/e/${data.editToken}`;
       savePrev({ teamName, editUrl, at: new Date().toISOString() });
+      if (window.bbbRemember) window.bbbRemember("qotd", teamName, editUrl);
       location.href = editUrl;
     } catch (ex) {
       err.textContent = ex.message || "Something went wrong — try again.";

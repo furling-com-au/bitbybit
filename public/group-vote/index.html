@@ -32,7 +32,6 @@
   <a class="wordmark" href="/" aria-label="biti by bit — home">
     <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
     biti by bit
-    <span class="beta-badge">beta</span>
   </a>
   <nav class="site-nav">
     <a href="/#tools">more tools</a>
@@ -78,7 +77,7 @@ Sunday</textarea>
       </label>
 
       <p class="status-line" id="statusLine"></p>
-      <p class="form-error" id="formError" hidden></p>
+      <p class="form-error" id="formError" role="alert" hidden></p>
       <button type="submit" class="btn primary big" id="makeBtn">Start the vote →</button>
       <p class="fine">Picking a date? Put one date per line and tick "let people
       pick more than one" — you'll see at a glance which day suits the most people.</p>
@@ -89,6 +88,13 @@ Sunday</textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+  <div class="prev-sweeps" id="madeStrip" hidden>
+    <p class="fine">Things you've made in this browser</p>
+    <ul></ul>
+    <p class="fine">Saved in this browser and nowhere else — there's no account
+    to keep them in. Bookmark the ones you'll want in a year.</p>
+  </div>
 
 
     <div class="tool-hero-art">
@@ -211,6 +217,7 @@ Sunday</textarea>
   ]
 }
 </script>
+<script src="/made.js"></script>
 <script src="/poll.js"></script>
 <!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
      Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,

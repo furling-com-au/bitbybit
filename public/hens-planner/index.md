@@ -2,7 +2,7 @@
 
 Free · no signup · one shareable link
 
-Plan a hens do, a bridal shower, a baby shower — or any group celebration. Set who's bringing what, lay out the plan for the day, and add a plain-language note about how the kitty gets split. Share one link; everyone puts their name down. No accounts, no chasing.
+Plan a hens do, a bridal shower, a baby shower — or any group celebration.
 
 Not sure what you get? [See a finished plan →](https://bitibybit.com/s/demo-hens-planner)
 
@@ -28,7 +28,7 @@ Pop the agenda in, one line per item — lunch, the cocktail class, dinner. It s
 
 ### 3. Share the link
 
-You get two links: a **share link** for the group chat, and an **organiser link** that can remove claims or delete the board. Bookmark the organiser one — there are no accounts, so the link is the only key. Guests tap an open spot, add their name and what they've got, done.
+You get two links: a **share link** for the group chat, and an **organiser link** that can remove claims or delete the board. Bookmark the organiser one — there are no accounts, so the link is the only key. Guests tap an open spot, add their name and what they've got, done. No accounts, no chasing.
 
 ## The kitty, without the money
 

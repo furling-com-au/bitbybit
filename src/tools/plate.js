@@ -7,7 +7,8 @@
    ============================================================ */
 import {
   esc, json, html, randomString, badInput, pageShell,
-  getBySlug, getByToken, createInstance, deleteInstance, logEvent, ownCta, shareNudge,
+  getBySlug, getByToken, createInstance, deleteInstance, logEvent, ownCta, shareNudge, cardPreview,
+  fillTrack,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -169,7 +170,7 @@ function board(data, bySlot, organiser) {
       } else {
         cards.push(`
       <li class="plate-slot open" data-slot="${sid}">
-        <button class="btn plate-put" type="button">Put me down</button>
+        <button class="btn primary plate-put" type="button">Put me down</button>
         <form class="plate-form" hidden>
           <input type="text" name="name" maxlength="${MAX_NAME}" placeholder="Your name" aria-label="Your name" autocomplete="name">
           <input type="text" name="dish" maxlength="${MAX_DISH}" placeholder="What are you bringing?" aria-label="What are you bringing?">
@@ -183,10 +184,18 @@ function board(data, bySlot, organiser) {
       }
     }
     const full = sorted >= cat.capacity;
+    // Section rung: same N/M as .plate-count just above it, so this is
+    // the heading's own count redrawn as a bar, not a second fact. Reuse
+    // the lead-rung helper and rename the class — .fill-track and
+    // .fill-sect share --n/--m plumbing and only differ in geometry
+    // (public/styles.css), and a per-category capacity (max 20) is
+    // always <= 24 so this is always notched.
+    const sectFill = fillTrack({ n: sorted, m: cat.capacity }).replace("fill-track", "fill-sect");
     return `
   <section class="plate-cat">
-    <h2 class="plate-cat-head">${esc(cat.name)} <span class="plate-count">— ${sorted} of ${cat.capacity} sorted</span>${
+    <h2 class="plate-cat-head">${esc(cat.name)} <span class="plate-count">— <strong>${sorted}</strong> of ${cat.capacity} sorted</span>${
       full ? ` <span class="plate-tick" role="img" aria-label="all sorted">✓</span>` : ""}</h2>
+    ${sectFill}
     <ul class="plate-grid">${cards.join("")}
     </ul>
   </section>`;
@@ -200,11 +209,28 @@ function topMeta(data) {
   return chip + note;
 }
 
+const totalCapacity = (data) => data.categories.reduce((s, c) => s + c.capacity, 0);
+
+/* The tick is not decoration. The lead bar is aria-hidden by design, so at
+   N = M a full board announced completion in no word at all — the picture was
+   full and the sentence still read "10 of 10 spots sorted", which is true but
+   is not "you are done". Every per-category head already ticks at capacity
+   (08-fill.md §D.5); the board-level line was the one place the state had no
+   word. Same shape as roles.js:156 and roster.js:247. */
 function subLine(data, claimCount) {
-  const total = data.categories.reduce((s, c) => s + c.capacity, 0);
+  const total = totalCapacity(data);
   const n = data.categories.length;
-  return `${claimCount} of ${total} spots sorted · ${n} ${n === 1 ? "category" : "categories"}`;
+  const full = total > 0 && claimCount >= total;
+  return `<strong>${claimCount}</strong> of ${total} spots sorted · ${n} ${n === 1 ? "category" : "categories"}${
+    full ? ` <span role="img" aria-label="every spot is sorted">✓</span>` : ""}`;
 }
+
+// Lead rung: N = claims across the whole board, M = the declared total
+// capacity (sum of every category's spot count) — the same two numbers
+// subLine() already says in words, drawn as the one bar per page
+// (docs/review/08-fill.md §D.2). MAX_CATS x MAX_CAP caps this at 240,
+// so it is smooth (not notched) on any board bigger than 24 spots.
+const leadFill = (data, claimCount) => fillTrack({ n: claimCount, m: totalCapacity(data) });
 
 async function publicPage(row, env) {
   const data = JSON.parse(row.data);
@@ -217,6 +243,7 @@ async function publicPage(row, env) {
   <p class="kicker">Who's bringing what</p>
   <h1>${esc(row.title || "Bring a plate")}</h1>
   <p class="page-sub">${subLine(data, claims.length)}</p>
+  ${leadFill(data, claims.length)}
   ${topMeta(data)}
   ${board(data, bySlot, false)}
   ${ownCta("plate",
@@ -370,16 +397,22 @@ async function editPage(row, env, origin) {
   <p class="kicker">Organiser view</p>
   <h1>${esc(row.title || "Bring a plate")}</h1>
   <p class="page-sub">${subLine(data, claims.length)}</p>
+  ${leadFill(data, claims.length)}
   ${topMeta(data)}
+
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("plate", row.title || "Bring a plate")}
 
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with the group</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("🍴 Put your name on a plate — pick what you’re bringing: " + shareUrl, row.edit_token)}
+
+  <button class="btn" id="printBtn" type="button">Print this list</button>
 
   ${board(data, bySlot, true)}
 
@@ -399,6 +432,7 @@ async function editPage(row, env, origin) {
 <script>
 (function () {
   var token = ${JSON.stringify(row.edit_token)};
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   document.getElementById("copyBtn").addEventListener("click", function () {
     var input = document.getElementById("shareUrl");
     input.select();

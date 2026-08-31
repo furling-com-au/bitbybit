@@ -32,7 +32,6 @@
   <a class="wordmark" href="/" aria-label="biti by bit — home">
     <span class="wordmark-blocks" aria-hidden="true"><i></i><i></i><i></i></span>
     biti by bit
-    <span class="beta-badge">beta</span>
   </a>
   <nav class="site-nav">
     <a href="/#tools">more tools</a>
@@ -45,8 +44,7 @@
     <p class="kicker">Free · no signup · one shareable link</p>
     <h1>Volunteer Roster</h1>
     <p class="lede">The sign-up sheet for the fete, the canteen, the working bee,
-    the sausage sizzle. Set the shifts, share one link, and volunteers put their
-    own name down. You watch it fill in — and print or export the lot when it's done.</p>
+    the sausage sizzle.</p>
 
     <p class="see-example is-one-tap">Five shifts are already filled in, setup through pack-down. <a href="/s/demo-volunteer-roster">See a finished roster &rarr;</a></p>
     <p class="one-tap"><button type="submit" form="rosterForm" id="makeBtnTop" class="btn primary">Build the roster now &rarr;</button><a class="fine" href="#rosterForm">or change them below</a></p>
@@ -104,12 +102,12 @@ Pack down 1-2pm x4</textarea>
           </div>
           <!-- live-preview:end -->
           <p class="status-line" id="statusLine"></p>
-          <p class="form-error" id="formError" hidden></p>
+          <p class="form-error" id="formError" role="alert" hidden></p>
           <button type="submit" class="btn primary big" id="makeBtn">Build the roster →</button>
         </div>
         <div>
           <label class="field">
-            <span>Roster title <em>(optional)</em></span>
+            <span>Roster title <em>(optional — this is what shows in the group chat)</em></span>
             <input type="text" id="title" maxlength="80" placeholder="Spring Fair — canteen">
           </label>
           <label class="field">
@@ -130,6 +128,13 @@ Pack down 1-2pm x4</textarea>
       <ul id="prevList"></ul>
     </div>
   </section>
+
+  <div class="prev-sweeps" id="madeStrip" hidden>
+    <p class="fine">Things you've made in this browser</p>
+    <ul></ul>
+    <p class="fine">Saved in this browser and nowhere else — there's no account
+    to keep them in. Bookmark the ones you'll want in a year.</p>
+  </div>
 
 
     <div class="tool-hero-art">
@@ -305,6 +310,7 @@ Pack down 1-2pm x4</textarea>
 }
 </script>
 <script src="/roster-presets.js"></script>
+<script src="/made.js"></script>
 <script type="module" src="/roster.js"></script>
 <!-- Cloudflare Web Analytics: no cookies, no fingerprinting, aggregate only.
      Deliberately loaded on these public pages ONLY — never on /s/, /e/ or /p/,

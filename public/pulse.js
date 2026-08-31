@@ -63,6 +63,7 @@
 
       const editUrl = `/e/${data.editToken}`;
       savePrev({ title: team ? team + " — weekly pulse" : "Weekly pulse", editUrl, at: new Date().toISOString() });
+      if (window.bbbRemember) window.bbbRemember("pulse", team ? team + " — weekly pulse" : "", editUrl);
       location.href = editUrl;
     } catch (ex) {
       err.textContent = ex.message || "Something went wrong — try again.";

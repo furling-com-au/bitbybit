@@ -126,6 +126,7 @@ import { parseISO, fmtDay, buildDates as buildDateList, previewSummary,
 
       const editUrl = `/e/${data.editToken}`;
       savePrev({ title: "Meals for " + forWhom, editUrl, at: new Date().toISOString() });
+      if (window.bbbRemember) window.bbbRemember("meal", "Meals for " + forWhom, editUrl);
       location.href = editUrl;
     } catch (ex) {
       fail(ex.message || "Something went wrong — try again.");

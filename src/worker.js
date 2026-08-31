@@ -13,7 +13,7 @@
    contract below, import it, add it to TOOLS.
    ============================================================ */
 
-import { json, getBySlug, getByToken, getParticipant, getInstanceById, notFoundPage, logEvent, markViewed, markShared } from "./lib.js";
+import { json, getBySlug, getByToken, getParticipant, getInstanceById, notFoundPage, logEvent, markViewed, markShared, markFirstOpened, sydneyMonthDay } from "./lib.js";
 import { handleMcp } from "./mcp.js";
 import sweep from "./tools/sweep.js";
 import kringle from "./tools/kringle.js";
@@ -194,15 +194,6 @@ const SEASONS = [
     blurb: "Canteen, BBQ, gate and ground duty, already filled in for ten sports. Set the shifts, share one link, and volunteers put their own name down." },
 ];
 
-/* "MM-DD" in Australia/Sydney. */
-function todayInSydney(now = new Date()) {
-  const p = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Australia/Sydney", month: "2-digit", day: "2-digit",
-  }).formatToParts(now);
-  const get = (t) => p.find((x) => x.type === t).value;
-  return `${get("month")}-${get("day")}`;
-}
-
 function pickSeason(md) {
   for (const s of SEASONS) {
     // A window that wraps the new year (12-25 -> 02-14) is two ranges.
@@ -216,22 +207,31 @@ function pickSeason(md) {
    can never disagree. The previous version of this card was edited a piece at
    a time and a selector drifted off its heading — a half-swapped card that
    says "Melbourne Cup Sweep" under "Footy finals" is worse than a stale one,
-   because it looks deliberate. */
+   because it looks deliberate.
+
+   The four children are flat — tag, art, heading, blurb, no wrapper div —
+   and the ORDER is load-bearing, matching public/index.html exactly. The
+   phone rule in public/styles.css floats the art so the text can use the
+   full 343px, a float only affects what comes after it, and the tag has to
+   come before the float: an inline-block that cannot fit in the shortened
+   line beside a float is pushed below it whole, which measured +78px on the
+   two SEASONS entries with long tags. This string is what the browser
+   actually gets on every request, so an order that disagrees with the
+   stylesheet breaks the layout for everyone while the file on disk still
+   looks correct. */
 function seasonalHomepage(res, now) {
-  const s = pickSeason(todayInSydney(now));
+  const s = pickSeason(sydneyMonthDay(now));
   return new HTMLRewriter()
     .on("a.feature-card", {
       element(el) {
         el.setAttribute("href", s.href);
         el.setInnerContent(
-          `<div>` +
-            `<span class="feature-tag">${s.tag}</span>` +
-            `<h2>${s.title}</h2>` +
-            `<p>${s.blurb}</p>` +
-          `</div>` +
+          `<span class="feature-tag">${s.tag}</span>` +
           `<div class="feature-art">` +
             `<img class="pixel" src="/icons/${s.icon}" alt="" width="150" height="150">` +
-          `</div>`,
+          `</div>` +
+          `<h2>${s.title}</h2>` +
+          `<p>${s.blurb}</p>`,
           { html: true }
         );
       },
@@ -432,6 +432,7 @@ export default {
         const row = await getBySlug(env, m[1]);
         const tool = row && BY_TYPE[row.tool_type];
         if (!tool) return notFoundPage(env);
+        if (ctx && !DEMO_RE.test(m[1])) ctx.waitUntil(markFirstOpened(env, row.id).catch(() => {}));
         const res = await tool.publicPage(row, env, url);
         if (!DEMO_RE.test(m[1])) return res;
         const body = await res.text();
@@ -485,8 +486,13 @@ export default {
     } catch (e) {
       const status = e.status || 500;
       if (status >= 500) console.error(e);
+      /* `e.reason` is set by badInput at the throw site, so the ledger
+         records WHICH refusal fired - fail:400:too-few reads as a person
+         who was turned away at the form, fail:400:unparseable as a POST
+         that never carried a body at all. Errors without one keep the
+         bare fail:<status>, which is every 429 and every 500. */
       const cm = request.method === "POST" ? CREATE_RE.exec(path) : null;
-      if (cm) noteFailure(cm[1], "fail:" + status);
+      if (cm) noteFailure(cm[1], "fail:" + status + (e.reason ? ":" + e.reason : ""));
       return json({ error: e.status ? e.message : "Something went wrong." }, status);
     }
   },

@@ -21,7 +21,7 @@
    ============================================================ */
 import {
   esc, json, html, randomString, badInput, pageShell,
-  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge,
+  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge, ownCta, cardPreview,
 } from "../lib.js";
 
 const MAX_TEAM = 60;
@@ -311,6 +311,9 @@ async function publicPage(row, env) {
 
   ${past ? `<h2 class="meal-section-h">Earlier</h2>${past}` : ""}
 
+  ${ownCta("kudos",
+    "Want a place to say thanks on your own team?",
+    "Start your own wall")}
   <footer class="page-foot">
     <p class="fine">Notes are signed on purpose — a thank-you from nobody in
     particular isn't worth much. This browser remembers the ones you put up, so
@@ -408,11 +411,14 @@ async function editPage(row, env, origin) {
   <h1>${esc(row.title || "Kudos wall")}</h1>
   <p class="page-sub">Week of ${esc(weekLabel(week))} · ${count} note${count === 1 ? "" : "s"} · ${rows.length} in total</p>
 
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("kudos", row.title || "Kudos wall")}
+
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link once — the team bookmarks it</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("👏 Kudos wall — if someone's done something worth saying out loud, put it up here. Same link every week: " + shareUrl, row.edit_token)}
@@ -423,6 +429,8 @@ async function editPage(row, env, origin) {
     at the top of a Monday stand-up. It takes ninety seconds and it is the reason
     people keep posting. A wall nobody reads out goes quiet within a month.</p>
   </div>
+
+  <button class="btn" id="printBtn" type="button">Print the wall</button>
 
   <h2 class="meal-section-h">This week</h2>
   ${thisWeek}
@@ -444,6 +452,7 @@ async function editPage(row, env, origin) {
 <script>
 (function () {
   var token = ${JSON.stringify(row.edit_token)};
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   document.getElementById("copyBtn").addEventListener("click", function () {
     var i = document.getElementById("shareUrl");
     i.select();

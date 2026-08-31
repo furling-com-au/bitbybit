@@ -33,6 +33,16 @@ export const MIN_NAMES = 3;
 export const MAX_NAMES = 100;
 export const SHOW_NAMES = 6;
 
+/* Mirrors MAX_NAME_LEN in src/tools/kringle.js, and it has to. The server
+   truncates each name to forty characters and only THEN looks for
+   duplicates, so two names that agree for forty characters are one name by
+   the time they are stored. Parsing here without the same cut let the
+   browser see two distinct names, pass its own duplicate check, and post a
+   list the server refused with a message quoting a name the typist can
+   plainly see only once. Rare - it needs a forty-character name - but the
+   only way a person using the form could be shown a 400 at all. */
+export const MAX_NAME_LEN = 40;
+
 /* People type a list two ways: one per line, or comma-separated on a single
    line. The second used to be a dead end — splitting on newlines returned one
    item and the tool refused it with "add at least three names", which reads as
@@ -50,7 +60,9 @@ const listPieces = (v) => {
 };
 
 export const parseNames = (text) =>
-  listPieces(String(text || "")).map((s) => s.trim().replace(/\s+/g, " ")).filter(Boolean);
+  listPieces(String(text || ""))
+    .map((s) => s.trim().replace(/\s+/g, " ").slice(0, MAX_NAME_LEN))
+    .filter(Boolean);
 
 /* First name that appears twice (case-insensitive), or null. Two identical
    tiles are two people who cannot tell which one is theirs. */

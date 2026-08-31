@@ -21,7 +21,8 @@
    ============================================================ */
 import {
   esc, json, html, randomString, badInput, pageShell,
-  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge,
+  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge, ownCta, cardPreview,
+  fillTrack,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -197,7 +198,7 @@ function board(data, bySlot, organiser) {
       } else {
         cards.push(`
       <li class="plate-slot open" data-slot="${sid}">
-        <button class="btn plate-put" type="button">I've got this</button>
+        <button class="btn primary plate-put" type="button">I've got this</button>
         <form class="plate-form" hidden>
           <input type="text" name="name" maxlength="${MAX_NAME}" placeholder="Your name" aria-label="Your name" autocomplete="name">
           <input type="text" name="message" maxlength="${MAX_MESSAGE}" placeholder="What exactly? (optional)" aria-label="What are you bringing or sorting?">
@@ -211,10 +212,16 @@ function board(data, bySlot, organiser) {
       }
     }
     const full = sorted >= cat.capacity;
+    // Section rung: same N/M as .plate-count just above it — mechanically
+    // identical to Bring a Plate's board() (08-fill.md §F.15), down to
+    // reusing the .plate-cat markup wholesale. Per-list capacity (max 20)
+    // is always <= 24, so this is always notched.
+    const sectFill = fillTrack({ n: sorted, m: cat.capacity }).replace("fill-track", "fill-sect");
     return `
   <section class="plate-cat">
-    <h2 class="plate-cat-head">${esc(cat.name)} <span class="plate-count">— ${sorted} of ${cat.capacity} sorted</span>${
+    <h2 class="plate-cat-head">${esc(cat.name)} <span class="plate-count">— <strong>${sorted}</strong> of ${cat.capacity} sorted</span>${
       full ? ` <span class="plate-tick" role="img" aria-label="all sorted">✓</span>` : ""}</h2>
+    ${sectFill}
     <ul class="plate-grid">${cards.join("")}
     </ul>
   </section>`;
@@ -258,11 +265,24 @@ const agendaBlock = (data) =>
     <li>${esc(a)}</li>`).join("")}
   </ol>` : "";
 
+const totalCapacity = (data) => data.categories.reduce((s, c) => s + c.capacity, 0);
+
+/* Ticks at capacity, for the reason plate.js gives above the same function:
+   the lead bar is aria-hidden, so without this a fully sorted board says it is
+   finished only by being visually full. */
 function subLine(data, claimCount) {
-  const total = data.categories.reduce((s, c) => s + c.capacity, 0);
+  const total = totalCapacity(data);
   const n = data.categories.length;
-  return `${claimCount} of ${total} sorted · ${n} ${n === 1 ? "list" : "lists"}`;
+  const full = total > 0 && claimCount >= total;
+  return `<strong>${claimCount}</strong> of ${total} sorted · ${n} ${n === 1 ? "list" : "lists"}${
+    full ? ` <span role="img" aria-label="everything is sorted">✓</span>` : ""}`;
 }
+
+// Lead rung: N = claims across every list, M = the declared total
+// capacity, the same pair subLine() already says (08-fill.md §D.2, §F.15
+// — mechanically identical to plate's leadFill). MAX_CATS x MAX_CAP caps
+// this at 240, so most boards are smooth past 24.
+const leadFill = (data, claimCount) => fillTrack({ n: claimCount, m: totalCapacity(data) });
 
 async function publicPage(row, env) {
   const data = JSON.parse(row.data);
@@ -276,6 +296,7 @@ async function publicPage(row, env) {
   <h1>${esc(row.title || "Hens & shower planner")}</h1>
   ${forLine(data)}
   <p class="page-sub">${subLine(data, claims.length)}</p>
+  ${leadFill(data, claims.length)}
   ${factsBlock(data)}
   ${noteBlock(data)}
   ${kittyBlock(data)}
@@ -284,6 +305,9 @@ async function publicPage(row, env) {
   <h2>Who's bringing what</h2>
   ${board(data, bySlot, false)}
 
+  ${ownCta("hens",
+    "Got a hens, a shower or a farewell to plan?",
+    "Start your own planner")}
   <footer class="page-foot">
     <p class="fine">No accounts — this browser remembers which spots are yours,
     and your own cards get an undo. On someone else's phone? Just ask the
@@ -433,21 +457,26 @@ async function editPage(row, env, origin) {
   <h1>${esc(row.title || "Hens & shower planner")}</h1>
   ${forLine(data)}
   <p class="page-sub">${subLine(data, claims.length)}</p>
+  ${leadFill(data, claims.length)}
   ${factsBlock(data)}
   ${noteBlock(data)}
   ${kittyBlock(data)}
   ${agendaBlock(data)}
 
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("hens", row.title || "Hens & shower planner")}
+
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with the group</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("🥂 Helping plan " + (row.title || "the do") + " — pop your name on what you're bringing: " + shareUrl, row.edit_token)}
 
   <h2>Who's bringing what</h2>
+  <button class="btn" id="printBtn" type="button">Print this plan</button>
   ${board(data, bySlot, true)}
 
   <div class="organiser-actions">
@@ -467,6 +496,7 @@ async function editPage(row, env, origin) {
 <script>
 (function () {
   var token = ${JSON.stringify(row.edit_token)};
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   document.getElementById("copyBtn").addEventListener("click", function () {
     var input = document.getElementById("shareUrl");
     input.select();

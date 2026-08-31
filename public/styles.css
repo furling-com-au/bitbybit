@@ -91,12 +91,53 @@
 
      Softening is done by REMOVING shadows, never by blurring them. A
      blur radius is the fastest route from cosy pixel to generic SaaS,
-     so there is not one anywhere in this file. Buttons are deliberately
-     untouched: they were already 3px, so they lead the moment the cards
-     stop shouting. */
+     so there is not one anywhere in this file.
+
+     This paragraph used to end "Buttons are deliberately untouched:
+     they were already 3px, so they lead the moment the cards stop
+     shouting." That was a prediction, and it was measured and found
+     false. Text fields carried 'border: 3px solid var(--line-firm)'
+     — --edge-lead's WIDTH in --edge-card's COLOUR, a third rung this
+     paragraph says does not exist, and three pixels of it inside a
+     two-pixel .panel. Summing painted border and shadow area at 375px
+     across each builder, fields outpainted the buttons below them
+     8.86:1 on /gift-registry/, 7.30:1 on /meal-train/, 5.07:1 on
+     /kris-kringle/, 2.37:1 on /volunteer-roster/ and 2.24:1 on
+     /bring-a-plate/. Buttons did not lead. They could not.
+
+     The fix is not a thinner button — that version was built and it
+     reads as a text box, which for this audience is worse. Fields
+     drop to --edge-card and join the containers they sit in; every
+     control a person PRESSES keeps --edge-lead's 3px silhouette, and
+     varies only its ink by role (--ink for a control, --terra-dark
+     for a destructive one, --line-firm for a way out). That is one
+     width for containers and fields, one width for controls — still
+     two rungs, no third.
+
+     Elevation is what tells them apart now, exactly as it did for the
+     cards. Border says "this is a control"; a hard offset shadow says
+     "this is the one". Only .btn.primary carries it. See the buttons
+     section for the numbers after. */
   --edge-card:  2px solid var(--ink-faint);
   --edge-lead:  3px solid var(--ink);
   --line-firm:  var(--ink-faint);
+
+  /* Dashed borders had drifted to four unrelated jobs across this file: an
+     empty slot waiting to be filled, an item already claimed, a section
+     divider, and a notice block — 29 declarations, one keyword, four
+     meanings. The costly pair was the first two: "nobody has filled this
+     in" and "somebody already has" were opposite states drawn identically
+     — dashed, --line-firm, no shadow, opacity down — on a Kris Kringle
+     board, a Fact Matcher list, a Gift Ideas card, a registry part.
+
+     Dashed now means exactly one thing: NOT FILLED IN YET. A claimed,
+     taken or "soon" item instead reads SETTLED — border: var(--edge-card),
+     solid, no shadow, the same opacity drop these rules already used. That
+     is the quiet rung a filled container already sits at; it is not a
+     third weight invented for this. Dividers and notice blocks lost the
+     dash entirely and are plain solid rules now — neither was ever an
+     empty state or a claimed one, so dashed on them was decoration wearing
+     the empty-slot's signal for no reason. */
 
   /* Elevation, for the lead rung only. Opaque rather than rgba: black at
      12% composites to 1.31:1 over cream, and over #241f2b it comes to
@@ -109,12 +150,27 @@
 
   /* --gold is a BACKGROUND almost everywhere it appears (with #2b2216 on
      top), and it is fine at that job. As a text colour it is not: #d9a441
-     measures 1.89:1 on paper. --gold-ink is the same hue taken down to a
-     legible weight, for the handful of places gold is the ink rather than
-     the ground. Dark mode puts the bright one back — there it is light text
-     on a dark ground, and it already measured 6.34:1. */
+     measures 1.89:1 on paper. --gold-ink is the same hue at a weight that
+     clears AA, for the handful of places gold is the ink rather than the
+     ground.
+
+     It was #ab7613, which was taken down by eye and stopped short: it
+     measured 3.30:1 on paper and 3.01:1 on paper-2, so the one token in
+     this block that was not measured was also the only one that failed.
+     #7c560e is the same hue (39.1deg) and the same saturation, lightness
+     dropped from 37.3% to 27%:
+
+       --gold-ink   5.51:1 on paper, 5.03:1 on paper-2
+
+     Which puts it on the same rung as --accent (5.45 / 4.97) and
+     --sage-dark (5.35 / 4.88), where an accent ink belongs. The first
+     value that merely cleared 4.5 was #855c0f at 4.98 / 4.55, and a
+     0.05 margin on the harder ground is not a margin.
+
+     Dark mode puts the bright one back — there it is light text on a dark
+     ground, and it already measured 6.34:1. */
   --gold:       #d9a441;
-  --gold-ink:   #ab7613;
+  --gold-ink:   #7c560e;
   --sky:        #a9cdd8;
   --plum:       #9d6880;
   --grass:      #6f9862;
@@ -240,14 +296,56 @@ h1 {
 }
 @media (prefers-color-scheme: dark) { h1 { color: var(--sage); } }
 
+/* This used to be the same small tracked eyebrow as .kicker and
+   .feature-tag: .78rem, .1em tracking, uppercase, --ink-faint. Measured at
+   375x812 that computed to 11.84px, which made the five section headings on
+   the homepage the SMALLEST type on the page — below the 12.48px blurbs
+   inside the cards they label, below the fine print, below the guides' own
+   headings. On a page whose whole job is putting 22 things in front of
+   somebody, the five labels that make the shelf scannable were the least
+   visible text on it.
+
+   The evidence that the base rule was wrong is that three separate places
+   had already escaped it, each written on its own:
+
+     .feature-card h2   opts out of the case, the tracking, the colour and
+                        the trailing rule, because "the seasonal card's
+                        heading is a real title"
+     .meal-section-h    resets the size and tracking on every /s/ section
+                        heading the meal train, kudos wall and coffee
+                        roulette render
+     .rost-shift-head   opts out with an argument that is this one: "a
+                        hundred characters of letterspaced uppercase is four
+                        lines of shouting that nobody reads"
+
+   When three call sites independently override a base rule, the base rule
+   is the thing that is wrong. So: a real heading. Sentence case, --ink
+   (10.24:1 on paper), 1.3rem — a clear step above h3 at 1.05rem and well
+   above .tool-name.
+
+   Uppercase survives exactly where the h1 comment above says it should, on
+   the eyebrow and the chip: .kicker and .feature-tag. Not here.
+
+   display:flex stays. It is load-bearing for .plate-cat-head and
+   .rost-shift-head, which both set gap and flex-wrap on it to run a count
+   alongside the heading text. */
 h2 {
-  font-size: .78rem; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--ink-faint); margin: 2.6rem 0 1rem; font-weight: 700;
+  font-size: 1.3rem; letter-spacing: -.005em; line-height: 1.25;
+  color: var(--ink); margin: 2.6rem 0 1rem; font-weight: 700;
   display: flex; align-items: center; gap: .9rem;
 }
-h2::after {
+/* The trailing rule is now scoped to the shelf. It was on every h2 on the
+   site, where it read as a divider and demoted the words to a caption on a
+   line; behind a 1.3rem sentence-case heading on a 2,000-word guide page it
+   would just be decoration. On the homepage it still does a job — five
+   bands of cards need separating — and the heading now dominates it rather
+   than the other way round. It used to be drawn as a dashed-look repeating
+   gradient; dashed is reserved for empty states now (see the :root note
+   above --shade), so this is a plain 2px rule instead — a divider, not a
+   claim about what's in the section below it. */
+#tools > h2::after {
   content: ""; flex: 1; height: 2px;
-  background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 8px);
+  background: var(--line);
 }
 
 h3 { font-size: 1.05rem; margin: 1.4rem 0 .4rem; }
@@ -276,22 +374,86 @@ a { color: var(--terra-dark); }
 /* ------------------------------------------------------------
    buttons & inputs
    ------------------------------------------------------------ */
+/* Every button used to be elevated. A hard offset shadow sat on .btn
+   itself, so Copy, Print, Download CSV, Delete this roster and Make
+   another all stood off the page as far as the one button the page was
+   built around — and the organiser's last row read as three equal
+   choices, one of which is permanent deletion.
+
+   Elevation now says exactly one thing: THIS IS THE ONE. Border says
+   "this is a control" and is the same 3px silhouette on all of them;
+   ink says what kind (--ink ordinary, --terra-dark destructive,
+   --line-firm the way out); the shadow belongs to .btn.primary and to
+   the share row, which is the one block whose action the markup never
+   marked primary — see the note on that rule. Nothing
+   was thinned to get there — .btn is still 49px at 375px and .btn.big
+   still 59.6px, because those two are the things on this site already
+   right for the audience.
+
+   --btn-lift is the offset, not a new rung: 3px at full size, 2px on
+   the small tier, which is what the nine per-tool size rules
+   (.plate-mini, .meal-mini, .card-mini and the rest) were each
+   hard-coding a shadow to say. They are size rules again now and set
+   only the number.
+
+   Measured at 375px, painted border-plus-shadow area, every field on
+   the page against every button on it: /gift-registry/ 8.86:1 ->
+   5.90:1, /meal-train/ 7.30:1 -> 4.96:1, /kris-kringle/ 5.07:1 ->
+   3.38:1, /volunteer-roster/ 2.37:1 -> 1.66:1, /bring-a-plate/
+   2.24:1 -> 1.49:1. A third off each, and not one of them reaches
+   parity, because that total can't: a builder with ten fields and one
+   submit will always have more field perimeter than button perimeter,
+   however it is drawn. Per CONTROL is the number that answers whether
+   the button leads the field beside it, and it crosses over — mean
+   button area against mean field area goes 1.13 -> 1.69 on
+   /gift-registry/, 1.23 -> 1.81 on /meal-train/, 0.99 -> 1.48 on
+   /kris-kringle/, 1.05 -> 1.51 on /volunteer-roster/ and 0.89 -> 1.34
+   on /bring-a-plate/. Before this pass the average submit painted
+   about as much edge as the average text box next to it, and on two
+   of five it painted less. */
 .btn {
+  --btn-lift: 3px;
   font: inherit; font-size: .92rem; font-weight: 600;
   padding: .6rem 1.15rem; cursor: pointer; text-decoration: none;
   display: inline-block; text-align: center;
   background: var(--paper-2); color: var(--ink); border: 3px solid var(--ink);
-  box-shadow: 3px 3px 0 0 var(--ink);
-  transition: transform .06s steps(2), box-shadow .06s steps(2);
+  box-shadow: none;
+  transition: transform .06s steps(2), box-shadow .06s steps(2), background .06s steps(2);
 }
-.btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 0 var(--ink); }
-.btn:active { transform: translate(2px,2px); box-shadow: 0 0 0 0 var(--ink); }
+/* An unelevated button cannot answer a press by dropping onto the page,
+   so it answers with ground and a one-pixel nudge instead. Still steps(2)
+   — nothing here eases. */
+.btn:hover { background: var(--paper); }
+.btn:active { transform: translate(1px,1px); }
 .btn.primary { background: var(--sage-dark); color: #f6f1e4; }
+/* Elevation is declared here and nowhere else in the file, so there is one
+   place to read to know what is raised. .share-row is the second selector
+   because the share block's action was never marked .primary and cannot be:
+   src/lib.js:241 keeps Copy "visible everywhere as a peer, not a fallback",
+   and on a desktop with no share sheet #nudgeShare is hidden and Copy is
+   the only button in the block. Copying or sharing is also the only
+   observable moment between "made a thing" and "someone opened it" —
+   check-share-nudge.mjs fails the build over it — so demoting it to a flat
+   secondary would have quietened the one step of the funnel that reports
+   back. Both peers keep the lift. */
+.btn.primary,
+.share-row .btn { box-shadow: var(--btn-lift) var(--btn-lift) 0 0 var(--ink); }
+.btn.primary:hover,
+.share-row .btn:hover {
+  transform: translate(-1px,-1px);
+  box-shadow: calc(var(--btn-lift) + 1px) calc(var(--btn-lift) + 1px) 0 0 var(--ink);
+}
+.btn.primary:active,
+.share-row .btn:active { transform: translate(2px,2px); box-shadow: 0 0 0 0 var(--ink); }
 .btn.big { font-size: 1.02rem; padding: .85rem 1.6rem; }
 .btn.ghost { box-shadow: none; border-color: var(--line-firm); color: var(--ink-soft); }
-.btn.danger { border-color: var(--terra-dark); color: var(--terra-dark); box-shadow: 3px 3px 0 0 var(--terra-dark); }
+/* Findable, never leading. Destructive is the one role that must not be
+   the most raised object in its row, and before this pass it was the only
+   raised object left in the organiser's last row once the way-out went
+   flat. It keeps the terracotta ink and loses the shadow. */
+.btn.danger { border-color: var(--terra-dark); color: var(--terra-dark); box-shadow: none; }
 @media (prefers-color-scheme: dark) {
-  .btn.danger { border-color: var(--accent); color: var(--accent); box-shadow: 3px 3px 0 0 var(--accent); }
+  .btn.danger { border-color: var(--accent); color: var(--accent); }
 }
 .btn[disabled] { opacity: .5; cursor: not-allowed; transform: none; }
 .btn:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
@@ -308,11 +470,20 @@ a { color: var(--terra-dark); }
 .field em { color: var(--ink-faint); font-style: normal; font-weight: 400; }
 /* 1.05rem is 16.8px: iOS zooms the viewport when a focused input is under
    16px, which on a builder yanks the page sideways mid-typing. 67% of
-   visits are phones, so this size is a fix, not a preference. */
+   visits are phones, so this size is a fix, not a preference.
+
+   The edge is --edge-card, and every other text field in this file now
+   matches it. It used to be '3px solid var(--line-firm)' — the lead
+   rung's width in the card rung's colour, three pixels of border inside
+   a two-pixel .panel, and the reason a builder's fields outpainted its
+   submit button by up to 8.86:1. The colour has not moved: --line-firm
+   IS --ink-faint, so this is still 5.00:1 on paper and 5.12:1 after
+   dark, comfortably past WCAG 1.4.11's 3:1 for a control boundary. Only
+   the width came off, and a field is 2px shorter for it. */
 .field input, .field textarea {
   width: 100%; font: inherit; font-size: 1.05rem;
   padding: .55rem .65rem; background: var(--paper); color: var(--ink);
-  border: 3px solid var(--line-firm); resize: vertical;
+  border: var(--edge-card); resize: vertical;
 }
 .field input:focus, .field textarea:focus { outline: none; border-color: var(--sage-dark); }
 
@@ -330,14 +501,254 @@ a { color: var(--terra-dark); }
 }
 
 /* ------------------------------------------------------------
+   the fill — one way to say "N of M"
+   ------------------------------------------------------------
+   This component was already in the file twice. .rg-meter-bar (the
+   registry meter) and .poll-bar-track (a vote share) were written six
+   hundred lines apart and agreed on everything — a 22px box, a 3px --ink
+   frame, a --paper-3 ground and a character-for-character identical
+   135deg sage hatch. The only thing they disagreed about was the step
+   count in a transition. docs/review/08-fill.md is the write-up; this is
+   the rule it asks for, and naming the language deletes a duplicate
+   rather than adding a third bar.
+
+   TWO RUNGS, for the same reason the edges have two (see --edge-card
+   above): a lead rung, one per page, under the <h1>; and a section rung,
+   repeated once per shift, category, day or group. Do not add a third.
+
+     .fill-track  22px, --edge-lead, ground --paper-3   one per page
+     .fill-sect   10px, 2px --ink,   ground --paper     one per section
+
+   THE 3px FRAME IS NOT DECORATION. Measured for 08-fill.md §C.3: the
+   sage hatch sits at 2.01:1 against its own ground in light and 1.97:1
+   in dark — under WCAG 1.4.11's 3:1 for a graphic that carries meaning,
+   because the hatch differs from the ground in hue far more than in
+   lightness. The filled/empty boundary is carried entirely by the --ink
+   frame, at 8.27:1 light and 9.98:1 dark. Whatever a control-quietening
+   pass concludes about form chrome, a progress bar is not form chrome
+   and this frame stays.
+
+   NOTCHED UP TO M=24, smooth past it. At M=24 there is 11.04px of ink
+   between notches on the 343px column — the last M at which a cell is
+   wider than the 8px hatch stripe inside it. At M=40 it is 5.43px and
+   the notches stop reading as divisions and start reading as texture.
+   The number is not new: this fill's transition has said steps(24) since
+   it was written. The server picks the class from M, so one instance is
+   the same picture at 375px and at 1280px — these pages get
+   screenshotted and pasted around, and two readings of one board is how
+   a group starts arguing.
+
+   The notch sits at the START of each cell, so the first one lands at
+   x=0 against the inside of the left frame. That is deliberate: a notch
+   at each cell END puts a 3px ink rule against the inside of the RIGHT
+   frame in every partial state, which reads as a 6px edge on one side
+   only. At the left it is covered by the fill the moment N is 1, and the
+   one state where it shows — an empty board — is the state where a
+   heavier left edge costs nothing.
+
+   The transition below is the registry's .7s steps(24, end) rather than
+   the poll bar's .6s steps(16, end): the two had to agree to become one
+   rule, and 24 is the count the threshold above is derived from. Poll
+   bars now resolve across 8 more steps and 100ms slower.
+
+   Nothing here ever reaches a share card. A fill renders in <body> and
+   nowhere else — the rule above SHARE in src/lib.js, about what a link
+   preview may carry, is the one this component is most likely to break
+   while believing it is being helpful. */
+.fill-track,
+.rg-meter-bar,
+.poll-bar-track {
+  height: 22px; background: var(--paper-3);
+  border: var(--edge-lead); position: relative; overflow: hidden;
+}
+.fill-track > i,
+.rg-meter-fill,
+.poll-bar-track > i {
+  display: block; height: 100%; width: 0;
+  background: repeating-linear-gradient(135deg, var(--sage) 0 8px, var(--sage-dark) 8px 16px);
+  transition: width .7s steps(24, end);
+}
+.fill-sect,
+.rg-sect-bar {
+  height: 10px; background: var(--paper); border: 2px solid var(--ink);
+  position: relative; overflow: hidden;
+}
+.fill-sect > i,
+.rg-sect-bar > i { display: block; height: 100%; width: 0; transition: width .6s steps(16, end); }
+.fill-sect > i {
+  background: repeating-linear-gradient(135deg, var(--sage) 0 8px, var(--sage-dark) 8px 16px);
+}
+/* The server hands these two numbers and nothing else. */
+.fill-track > i, .fill-sect > i { width: calc(var(--n) / var(--m) * 100%); }
+.fill-track.notched::after,
+.fill-sect.notched::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(90deg,
+    var(--ink) 0 3px, transparent 3px calc(100% / var(--m)));
+}
+.fill-sect.notched::after {
+  background: repeating-linear-gradient(90deg,
+    var(--ink) 0 2px, transparent 2px calc(100% / var(--m)));
+}
+/* Print restates the colours literally. @media print does not reset
+   prefers-color-scheme, so a reader whose OS is dark would otherwise
+   print a cream notch onto white paper, which is not there. Backgrounds
+   are dropped from print by default in any case, and that is an
+   acceptable outcome: the sentence above the bar carries the state, and
+   the bar is never the only thing saying it. */
+@media print {
+  .fill-track, .fill-sect, .rg-meter-bar, .rg-sect-bar { border-color: #000; background: #fff; }
+  .fill-track > i, .fill-sect > i, .rg-meter-fill { background: #ddd; }
+}
+
+/* ------------------------------------------------------------
    the shelf (hub)
    ------------------------------------------------------------ */
 .hero { padding: 2.6rem 0 .5rem; }
 .hero h1 { font-size: clamp(2.05rem, 7vw, 3.2rem); }
 .hero .lede { font-size: 1.12rem; }
 
+/* Both numbers above are desktop decisions that were being applied at every
+   width, and the page they were set for no longer exists: nothing sat
+   between the hero and the shelf then. Three full-width bands do now — the
+   router, the made-strip and the seasonal card. Measured at 375x812 against
+   the working tree, the first tool card had fallen to 979px on a first
+   visit and 1168px for a browser with two things in its made-list, against
+   an 812px fold.
+
+   The padding is worth 51px of that on a phone. 2.6rem above the h1 is
+   41.6px of air on top of the 44px header, on the one page here that is a
+   shelf rather than an article; and the .5rem below it is what stops the
+   lede's own 1.6rem bottom margin collapsing into the gap beneath, so the
+   two stack instead of overlapping. 1.5rem 0 0 takes the air off the top
+   and lets that margin collapse as it should.
+
+   The .lede up-size is worth 11px more. It is a measure decision, and a
+   measure needs a column: inside a 343px .wrap the paragraph is six lines
+   at 1.12rem and six lines at 1.05rem, so the extra size buys leading and
+   nothing else. Phones only — on a wide column it still earns its keep.
+
+   Recorded so nobody re-derives it: narrowing .lede's max-width on mobile
+   is a no-op. 56ch never binds at 375px, because .wrap is already 343px.
+   Measured, not assumed.
+
+   Hero 329px -> 267px at 375px; first card 979 -> 917 empty, 1168 -> 1087
+   populated. Still below the fold, and the arithmetic for why is in
+   docs/review/07-visual.md D4 — the hero was never where the pixels were.
+
+   SECOND PASS. The pixels were in the seasonal card (309px, fixed above) and
+   in the lede (six lines, 163px, rewritten to three in public/index.html and
+   recorded in docs/review/04-copy.md Band 2). With those two paid, the hero
+   was asked for the rest, and there are three honest sources and no fourth:
+
+     - 1.5rem -> .5rem above the h1 (-16px). .site-head is padding 1.1rem 0 0
+       with no border and no bottom padding, so this padding is the ONLY
+       separation between the nav row and the h1. 8px is the floor; 0 sets the
+       heading flush against "about" and is not worth 8px.
+     - h1 margin-bottom .4rem -> .3rem (-1.6px), and the lede's 1.6rem bottom
+       margin -> 1rem, met by a matching 1rem on .occasion-row below so the
+       collapse resolves to 16px instead of 27px (-11px). The gap above the
+       router's label still exceeds the gap below it, which is the only rule
+       that band boundary has to obey.
+     - The clamp on .hero h1 is NOT one of them. It floors at 2.05rem, which
+       is 32.8px and two lines of 36.7px at 375px; taking it to 1.9rem buys
+       5px and shrinks the only heading a stranger reads.
+
+   The .lede override earns its keep for a new reason now. The old argument
+   was that six lines at 1.12rem and six at 1.05rem differ only in leading.
+   The three-line lede is 124 characters: three lines at 1.05rem (82px) and
+   four at 1.12rem, so on a phone the smaller size is now worth a whole line,
+   not just leading.
+
+   Hero 267px -> 168px at 375px, and the whole page with it: the first tool
+   card was at 932px and is at 688.7px, so 119.3px of card ends at 808px
+   against an 812px fold — the first one of the twenty-two is finally above
+   it, on a first visit, in both colour schemes. With two things in the
+   made-list the strip is 150.7px and the card starts at 858.6px, which no
+   arrangement of these four bands reaches; that state is measured and
+   reported, not chased. */
+@media (max-width: 34rem) {
+  .hero { padding: .5rem 0 0; }
+  .hero h1 { margin-bottom: .3rem; }
+  .hero .lede { font-size: 1.05rem; margin-bottom: 1rem; }
+}
+
+/* The occasion row — six situations, each a plain link straight to a card.
+   Not a control: static HTML, no JS, no layout shift on load. See
+   docs/review/03-ia.md §"Model 5 (tested)" for why a filter was rejected.
+
+   The 1.7rem top margin is met by .hero .lede's own bottom margin and the
+   larger of the two wins the collapse, so it is half of one band boundary
+   and not a value on its own — see the phone rule above the hero, which
+   sets both sides to 1rem so the gap resolves to 16px. */
+.occasion-row { margin: 1.7rem 0 0; }
+@media (max-width: 34rem) { .occasion-row { margin-top: 1rem; } }
+/* line-height 1.3, not the body's 1.6. This is one line of 11.52px all-caps
+   and it never wraps at any width the site has; caps have no descenders to
+   clear, and 19.2px of line box around 11.52px of type reads as a gap rather
+   than as a label attached to the pills below it. 19.2px -> 15px, at both
+   widths, and the row is 4px shorter for it. */
+.occasion-label {
+  font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+  font-weight: 700; color: var(--ink-faint); margin: 0 0 .6rem;
+  line-height: 1.3;
+}
+.occasion-pills {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+  padding: 0; margin: 0; list-style: none;
+}
+.occasion-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: .86rem; font-weight: 600;
+  color: var(--ink); background: var(--paper-2);
+  border: var(--edge-card); padding: .4rem .8rem;
+  text-decoration: none; min-height: 44px;
+}
+.occasion-pill:hover { border-color: var(--ink); box-shadow: 2px 2px 0 0 var(--ink); }
+
+/* 176px at 375px, against the ~90px docs/review/03-ia.md §E.2 estimates for
+   it. The budget is not reachable and the row is not at fault: the six
+   settled labels measure 706px of pill against 343px of .wrap, and the 44px
+   min-height is docs/review/07-visual.md §F.4 and D7's tap-target floor and
+   does not move. Three rows of 44px is the floor — 132px of it before a
+   single gap or the label.
+
+   What was actually available is 15.2px, and 11.2px of it is here:
+
+     - row-gap .5rem -> .25rem (-8px). COLUMN gap stays .5rem deliberately: it
+       is what decides where the six pills wrap, and 147+8+125 already
+       overflows 343px, so any change to it re-packs the row rather than
+       shortening it.
+     - the label's bottom margin .6rem -> .4rem (-3.2px), which still leaves
+       the gap below the label smaller than the 16px above it.
+
+   The other 4px is the label's line-height, set in the rule above because it
+   is right at every width rather than only on a phone. 176.6 -> 161.4.
+
+   The two things that would buy more, and why neither is here. Setting the
+   label inline as the first flex item costs a row, not saves one: 106px of
+   label plus a gap pushes the packing from 2/2/2 to 1/2/2/1 and the row goes
+   to four lines. A horizontal scroller gets it to one row and hides four of
+   the six occasions behind a swipe, on the element that exists to be the
+   homepage's router. 161px is the honest floor for six pills at these labels
+   on a 375px phone, and the ~90px in §E.2 is not reachable at this width by
+   anything short of dropping two occasions. */
+@media (max-width: 34rem) {
+  .occasion-label { margin-bottom: .4rem; }
+  .occasion-pills { gap: .25rem .5rem; }
+}
+
+/* Four flat children — .feature-tag, .feature-art, h2, p — placed explicitly
+   below rather than wrapped in a text div and auto-placed. The wrapper is
+   what the phone rule could not work with: it floats the art so the text gets
+   the full 343px, a float only affects what follows it in source, and the tag
+   has to precede the float while the heading and blurb have to follow it.
+   That order crosses the wrapper, so the wrapper had to go. src/worker.js
+   rebuilds this card's children on every request and carries the same order. */
 .feature-card {
-  display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center;
+  display: grid; grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto 1fr;
+  gap: 0 1rem; align-items: center;
   background: linear-gradient(180deg, var(--paper-2), var(--paper-3));
   border: var(--edge-lead); box-shadow: var(--lift);
   padding: 1.3rem 1.4rem; margin: 1.8rem 0 .4rem;
@@ -350,16 +761,80 @@ a { color: var(--terra-dark); }
   text-transform: uppercase; color: #f6f1e4; background: var(--terra-dark);
   padding: .22rem .6rem; margin-bottom: .55rem;
 }
-/* The base h2 is the small tracked eyebrow with a dashed rule after it.
-   The seasonal card's heading is a real title, so it opts out of all of
-   that — the case, the tracking, the faint colour and the trailing rule. */
+/* The base h2 is now a real heading, so most of what this rule used to undo
+   — the uppercase, the tracking, the faint colour — is undone at the source,
+   and only the size, the display and the margin are left to set.
+
+   The shelf rules are scoped with a child combinator (#tools > h2) rather
+   than a descendant one, which matters here: .feature-card sits inside
+   #tools, so under `#tools h2` the ID beat this rule's single class and the
+   phone override took the seasonal card's title down with the section
+   headings. Measured before the fix, at 375px: 11.84px, on the one thing the
+   homepage promotes. The old .74rem override had the same bug and nobody
+   caught it, because a heading that small on a card that loud does not read
+   as broken — it reads as an eyebrow.
+
+   With the > in place the card is outside both shelf rules, so the explicit
+   ::after { content: none } that used to sit here is gone with them. */
 .feature-card h2 {
   display: block; margin: 0 0 .3rem; font-size: 1.45rem;
   text-transform: none; letter-spacing: -.01em; color: var(--ink);
 }
-.feature-card h2::after { content: none; }
 .feature-card p { margin: 0; font-size: .95rem; color: var(--ink-soft); max-width: 50ch; }
+/* Desktop placement, undoing source order: the text stacks down column 1 and
+   the art sits centred in column 2 across all three rows. The third row is
+   the flexible one so that a season whose text stack is shorter than the
+   150px art puts the slack under the blurb, instead of the grid distributing
+   it as gaps between the tag, the heading and the blurb. Row gap is 0 — the
+   three text elements keep their own margins, exactly as they did inside the
+   wrapper this replaced — and the 1rem is the column gap only.
+
+   justify-self keeps the tag a chip: a grid item is blockified, so the
+   inline-block set on it above would otherwise stretch its ground across the
+   whole column and stop reading as a label. */
+.feature-card .feature-tag { grid-column: 1; grid-row: 1; justify-self: start; }
+.feature-card h2 { grid-column: 1; grid-row: 2; }
+.feature-card p { grid-column: 1; grid-row: 3; }
+.feature-art { grid-column: 2; grid-row: 1 / -1; align-self: center; }
 .feature-art img { display: block; width: clamp(96px, 18vw, 150px); height: auto; }
+
+/* The seasonal card was 309px tall at 375px — against the ~200px
+   docs/review/03-ia.md §C.5 budgets for it, and a third of the 932px that
+   stood between the top of the page and the first tool card.
+
+   None of it was copy. `grid-template-columns: 1fr auto` with the art at its
+   96px clamp floor left the text column 180px wide inside a 343px .wrap, so
+   the blurb ran six lines and the heading two. Measured at 23.2px, four of
+   the five SEASONS titles are 123-198px wide and the fifth (Melbourne Cup
+   Sweep) is 242px: none of them fit 180px, and all five fit the 292px the
+   card has to give.
+
+   So on a phone the card becomes a block and the art floats. The text runs
+   the full width, the heading takes one line for four windows of the five,
+   and the blurb wraps at 292px instead of 180px — four lines instead of six.
+   72px is the largest art that still leaves 207px beside the heading, which
+   is enough for the current window's "Grand Final Sweep" at 198px, and short
+   enough that the float has ended before the blurb starts, so the blurb is
+   never the narrow thing. The art is 24px smaller than it was, it is still
+   the only picture above the fold on a phone, and — this is the point of the
+   float — it now costs the card no height at all: the text stack is taller
+   than it in four windows of five, so deleting the art on mobile would buy
+   nothing, and docs/review/07-visual.md §F.5 never has to be argued with.
+
+   Measured, all five windows, 375x812, both schemes: 204.0px for Grand Final
+   Sweep, Kris Kringle, Bring a Plate and Volunteer Roster — 309.2 -> 204.0 —
+   and 233.0px for Melbourne Cup Sweep, whose 242px title is the one that
+   still wraps beside the art. That window is 30 days of the year (10-06 to
+   11-04) and it is the one window where the first tool card does not clear
+   the fold: 717.7px against the 693px it needs.
+   Buying it back needs the art under ~42px, which is not a trade worth
+   making for 8% of the year. */
+@media (max-width: 34rem) {
+  .feature-card { display: block; padding: 1rem 1.1rem; margin: 1rem 0 .4rem; }
+  .feature-tag { margin-bottom: .35rem; }
+  .feature-art { float: right; margin: 0 0 .4rem .8rem; }
+  .feature-art img { width: 72px; }
+}
 
 .tool-grid {
   display: grid; gap: .8rem;
@@ -372,8 +847,13 @@ a { color: var(--terra-dark); }
   box-shadow: none;
   padding: 1rem; text-decoration: none; color: inherit; position: relative;
   transition: transform .08s steps(2), box-shadow .08s steps(2);
+  /* So an occasion-pill arrival leaves the section heading visible above
+     the card it lands on, instead of the browser scrolling it flush to
+     the top of the viewport. */
+  scroll-margin-top: 4rem;
 }
 a.tool-card:hover { transform: translate(-1px,-1px); border-color: var(--ink); box-shadow: 3px 3px 0 0 var(--ink); }
+a.tool-card:target { border-color: var(--terra-dark); box-shadow: 3px 3px 0 0 var(--terra-dark); }
 .tool-card img { width: 56px; height: 56px; }
 .tool-card .tool-name { font-weight: 700; font-size: 1.02rem; line-height: 1.3; }
 .tool-card .tool-desc { font-size: .86rem; color: var(--ink-soft); line-height: 1.5; flex: 1; }
@@ -408,10 +888,17 @@ a.tool-card:hover { transform: translate(-1px,-1px); border-color: var(--ink); b
     color: var(--ink-soft); flex: 0 0 auto;
   }
   .tool-card .tool-name { font-size: .9rem; line-height: 1.25; }
-  #tools h2 { margin: 1.5rem 0 .6rem; font-size: .74rem; letter-spacing: .1em; }
+  /* A step down from the 1.3rem base for density, still a clear step up
+     from .tool-name at .9rem. */
+  #tools > h2 { margin: 1.6rem 0 .6rem; font-size: 1.15rem; }
 }
 
-.tool-card.soon { border-style: dashed; border-color: var(--line-firm); box-shadow: none; opacity: .75; }
+/* .tool-card already sits at --edge-card with no shadow, so a "settled"
+   card needs nothing extra there — dashed used to signal it here, but
+   dashed is an empty-slot signal now and this card is neither empty nor
+   claimed, just not open yet. Opacity and the desaturated icon below carry
+   the whole read, plus the SOON chip. */
+.tool-card.soon { opacity: .75; }
 .tool-card.soon img { filter: saturate(.35) opacity(.7); }
 .soon-chip {
   position: absolute; top: .6rem; right: .6rem;
@@ -483,9 +970,104 @@ a.tool-card:hover { transform: translate(-1px,-1px); border-color: var(--ink); b
   font-size: .9rem; margin: 0 0 1rem;
 }
 
+/* Two links and two lines of fine print measured 170px at 375px — a fifth
+   of a phone viewport, for a strip whose whole argument is that it costs
+   everyone who doesn't need it nothing. Almost none of that was content:
+   both <p class="fine"> carried the UA's 1em block margin (13.44px a side)
+   and the <ul> added its own .4rem on top, so three separate default gaps
+   stacked between four short things. Set explicitly instead: 170px -> 151px
+   populated, with nothing removed and nothing made smaller.
+
+   Shared with the per-tool strips on all 22 builder pages, where the same
+   19px sits directly above the submit button. That is the small half of
+   what docs/review/07-visual.md V8 measures.
+
+   The large half was not a size problem and no rule here fixes it: the
+   remaining 157px was the whole strip, in the hero, above the form. It is
+   now below the builder panel on all 21 tool pages, moved in the markup by
+   scripts/builder-above-fold.mjs and enforced by it. Which is why there is
+   still no `.builder .prev-sweeps` override and should not be one — the
+   strip is the same 151px wherever it stands, and the fix was where it
+   stood, not how tall it was. */
 .prev-sweeps { margin-top: 1.2rem; }
-.prev-sweeps ul { list-style: none; margin: .4rem 0 0; padding: 0; font-size: .9rem; }
-.prev-sweeps li { padding: .2rem 0; }
+.prev-sweeps > .fine { margin: 0 0 .35rem; }
+.prev-sweeps ul { list-style: none; margin: 0; padding: 0; font-size: .9rem; }
+.prev-sweeps li { padding: .1rem 0; }
+.prev-sweeps ul + .fine { margin: .55rem 0 0; }
+
+/* ------------------------------------------------------------
+   the shared page, as a poster
+   ------------------------------------------------------------
+   /s/ is the only surface most people who ever see this product will
+   meet, and the only one they did not choose — five to thirty of them
+   per link, per the note above ownCta() in src/lib.js. It was drawn with
+   the page furniture a builder uses, because it is the same furniture:
+   the same 28px h1 as a form page, a status line one rung SMALLER than
+   body text, and the participant's own action ranked below the invitation
+   to go and make one of their own.
+
+   pageShell() puts class="shared" on <body> for exactly the renders that
+   pass a share type and a slug — the twenty tools' /s/ pages, twenty-one
+   call sites because Fact Matcher has one per stage. /e/ and /p/ pass
+   neither, by the rule written above pageShell, so nothing here can
+   reach an organiser page or a private one.
+
+   Three measurements from 375x812, taken across eleven live demo pages
+   before any of this:
+
+     h1                28px. The homepage's own headline is 32.8px at the
+                       same width, so the organiser's title — the one
+                       thing on the page that is theirs — was smaller
+                       than ours.
+     .page-sub         15.2px --ink-soft, against 16.5px body. The
+                       sentence that says what is filled and what is left
+                       ("3 of 12 spots filled") was the second-smallest
+                       text in the masthead.
+     first board row   283px on the roster, after 211px of masthead.
+
+   So: the title takes the homepage's scale, the status line steps up a
+   rung to --ink at 16.8px with tabular figures, and both are paid for
+   out of the air around them rather than out of the board — 12.8px off
+   the kicker's top margin and 9.6px off the status line's bottom.
+   Measured after, on the roster: the title is 32px and the first board
+   row is 272px — eleven pixels HIGHER than it was, with a title 14%
+   larger.
+
+   The floor is 2rem and not a pixel more, and that is measured rather
+   than chosen. At 375px, "Warrnambool Primary fete — sausage sizzle"
+   holds two lines up to 32px and breaks to three at 33.6px (63px ->
+   72px -> 113px); "Friday arvo team lunch" holds one line to 32px and
+   breaks at 33.6px (31 -> 36 -> 75). A gained line costs about 36px, so
+   the largest size that leaves both real titles where they were is the
+   right one. Longer titles will still wrap; that is the correct thing
+   for a headline to do, and it is why the pixels above were found in
+   the margins rather than borrowed against.
+
+   :where() is doing real work in these selectors. It contributes no
+   specificity, so `:where(body.shared) h1` weighs the same as the base
+   `h1` rule and simply comes later — which leaves h1.qotd-q, whose
+   smaller clamp exists so a long custom question cannot push a phone
+   sideways, still winning. A page-level modifier must not out-rank the
+   component rules it passes over.
+
+   The slot under the status line is where a .fill-track goes when the
+   tools grow one (docs/review/08-fill.md §D.2). It is reserved here so
+   that dropping one in is an addition and not a re-layout: 22px of bar
+   plus .6rem beneath it, 32px in total, against the 11px this pass just
+   gave the roster back. Nothing else moves sideways or changes size. */
+:where(body.shared) h1 { font-size: clamp(2rem, 8vw, 3rem); }
+:where(body.shared) .kicker { margin-top: 1rem; }
+:where(body.shared) .page-sub {
+  font-size: 1.05rem; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 1rem;
+}
+:where(body.shared) .page-sub + .fill-track { margin: 0 0 .6rem; }
+/* The numerals are the sentence. On /e/, where .page-sub stays
+   --ink-soft, this lifts them to --ink (10.24:1) inside a softer line;
+   on /s/ the whole line is already --ink and this leaves the figures
+   monospaced-in-width so a count does not jitter as it changes. */
+.page-sub strong { color: var(--ink); font-variant-numeric: tabular-nums; }
 
 /* ------------------------------------------------------------
    draw results
@@ -535,11 +1117,26 @@ a.tool-card:hover { transform: translate(-1px,-1px); border-color: var(--ink); b
 .share-input {
   flex: 1; font-size: 1rem; min-width: 0;
   padding: .55rem .65rem; background: var(--paper); color: var(--ink);
-  border: 3px solid var(--line-firm);
+  border: var(--edge-card);
 }
 .share-input:focus { outline: none; border-color: var(--sage-dark); }
 .organiser-actions { display: flex; gap: .7rem; flex-wrap: wrap; margin: 1.8rem 0 0; }
 .page-foot { margin-top: 2.6rem; }
+
+/* What actually unfurls when this gets pasted into a group chat — the
+   organiser's own title (or the tool's generic name, if they left it
+   blank), the fixed description, the artwork. Same data shareTags() sends
+   as og: meta tags, rendered as visible HTML instead. */
+.card-preview {
+  display: flex; gap: .8rem; align-items: center;
+  margin: .5rem 0 1.4rem; padding: .7rem; max-width: 420px;
+  background: var(--paper-2); border: var(--edge-card);
+}
+.card-preview-img { width: 90px; height: 47px; object-fit: cover; flex: 0 0 auto; }
+.card-preview-text { min-width: 0; }
+.card-preview-title { margin: 0 0 .15rem; font-weight: 700; font-size: .92rem; line-height: 1.3; word-break: break-word; }
+.card-preview-desc { margin: 0 0 .2rem; font-size: .8rem; color: var(--ink-soft); line-height: 1.4; }
+.card-preview-domain { margin: 0; font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
 
 /* ------------------------------------------------------------
    long-form content below tools
@@ -554,7 +1151,7 @@ a.tool-card:hover { transform: translate(-1px,-1px); border-color: var(--ink); b
    print — offices stick these on the fridge
    ------------------------------------------------------------ */
 @media print {
-  .site-head, .organiser-banner, .share-box, .share-nudge, .season-next,
+  .site-head, .organiser-banner, .share-box, .share-nudge, .season-next, .card-preview,
   .organiser-actions, .page-foot, .btn { display: none !important; }
   body { background: #fff; color: #000; }
   .feature-card, .kk-reveal, .fact-prompt, .bracket-champ,
@@ -605,7 +1202,12 @@ button.kk-name:disabled { cursor: not-allowed; }
 .kk-person { font-weight: 700; font-size: 1rem; line-height: 1.25; word-break: break-word; }
 .kk-cta { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--terra-dark); }
 @media (prefers-color-scheme: dark) { .kk-cta { color: var(--accent); } }
-.kk-name.is-claimed { border-width: 2px; border-style: dashed; border-color: var(--line-firm); box-shadow: none; cursor: default; opacity: .7; }
+/* Claimed reads SETTLED, not provisional: --edge-card (solid, --line-firm)
+   in place of the loud --edge-lead the un-claimed button uses below, no
+   shadow, opacity down. Not dashed — dashed here used to mean the same
+   border as an empty slot on the exact board where "empty" and "claimed"
+   are opposite states; see the :root note above --shade. */
+.kk-name.is-claimed { border: var(--edge-card); box-shadow: none; cursor: default; opacity: .7; }
 .kk-name.is-claimed .kk-cta { color: var(--ink-faint); }
 
 .kk-reveal {
@@ -647,19 +1249,40 @@ button.kk-name:disabled { cursor: not-allowed; }
 .status-table .st-yes { color: var(--grass-dark); font-weight: 700; }
 .status-table .st-no { color: var(--ink-faint); }
 .status-table .st-action { text-align: right; }
-.status-table .btn { font-size: .68rem; padding: .3rem .7rem; box-shadow: 2px 2px 0 0 var(--ink); }
+.status-table .btn { --btn-lift: 2px; font-size: .68rem; padding: .3rem .7rem; }
 @media (prefers-color-scheme: dark) { .status-table .st-yes { color: var(--grass); } }
 
 /* ------------------------------------------------------------
    secret role dealer
    ------------------------------------------------------------ */
-.btn.small { font-size: .72rem; padding: .32rem .7rem; box-shadow: 2px 2px 0 0 var(--ink); }
-.btn.small:hover { box-shadow: 3px 3px 0 0 var(--ink); }
-.btn.small:active { box-shadow: 0 0 0 0 var(--ink); }
-.btn.small.danger, .btn.small.danger:hover { box-shadow: 2px 2px 0 0 var(--terra-dark); }
-.btn.small.danger:active { box-shadow: 0 0 0 0 var(--terra-dark); }
-@media (prefers-color-scheme: dark) {
-  .btn.small.danger, .btn.small.danger:hover { box-shadow: 2px 2px 0 0 var(--accent); }
+/* Tap targets for AA/AAA compliance: WCAG 2.5.8 (AA) sets a 24×24 minimum,
+   which these clear; WCAG 2.5.5 (AAA) and all platform HIGs set 44×44. For a
+   site that is two-thirds mobile serving an audience skewing older, 44px is
+   the standard to hold, not 24. min-height with flex centering ensures no
+   layout change, only expansion. */
+.btn.small {
+  --btn-lift: 2px;
+  font-size: .8rem; padding: .32rem .7rem;
+  min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+}
+
+/* The same floor, for the nine per-tool "-mini" classes.
+   .btn.small, .card-mini and .occasion-pill were raised first and the other
+   eight were missed, because the finding that started this (07-visual.md V4)
+   named only the three it had measured. An independent check afterwards found
+   .plate-mini, .bb-mini, .rost-mini, .meal-mini, .poll-mini, .recipe-mini,
+   .gi-mini and .gi-vote all still at 35.3px — which is to say the claim and
+   cancel buttons on Bring a Plate, Baby Guess Pool, the Volunteer Roster,
+   Meal Train, Group Vote, Recipe Collection and the Gift Idea Board were
+   under the floor while Group Card's identical button cleared it.
+
+   These nine are one button doing one job in nine tools, so the floor is
+   declared once here rather than nine times. Each tool's own rule keeps what
+   is genuinely local to it — .bb-mini's alignment, .poll-mini's flex: none,
+   .gi-vote's wider padding. */
+.plate-mini, .card-mini, .bb-mini, .rost-mini, .meal-mini,
+.poll-mini, .recipe-mini, .gi-mini, .gi-vote {
+  min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
 }
 
 .preset-row { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: 0 0 1rem; }
@@ -670,7 +1293,7 @@ button.kk-name:disabled { cursor: not-allowed; }
 }
 .count-field input {
   width: 4.4rem; font: inherit; font-size: .9rem; padding: .35rem .5rem;
-  background: var(--paper); color: var(--ink); border: 3px solid var(--line-firm);
+  background: var(--paper); color: var(--ink); border: var(--edge-card);
 }
 .count-field input:focus { outline: none; border-color: var(--sage-dark); }
 
@@ -765,12 +1388,12 @@ button.kk-name:disabled { cursor: not-allowed; }
   padding: .14rem .45rem;
 }
 .plate-put { width: 100%; }
-.plate-mini { font-size: .7rem; padding: .35rem .6rem; box-shadow: 2px 2px 0 0 var(--ink); }
+.plate-mini { --btn-lift: 2px; font-size: .7rem; padding: .35rem .6rem; }
 .plate-form { display: flex; flex-direction: column; gap: .45rem; width: 100%; }
 .plate-form input {
   width: 100%; font: inherit; font-size: .84rem;
   padding: .45rem .55rem; background: var(--paper); color: var(--ink);
-  border: 3px solid var(--line-firm);
+  border: var(--edge-card);
 }
 .plate-form input:focus { outline: none; border-color: var(--sage-dark); }
 .plate-form-row { display: flex; gap: .5rem; flex-wrap: wrap; }
@@ -856,6 +1479,11 @@ button.bracket-side:focus-visible { outline: 3px solid var(--gold); outline-offs
   .bracket-side.is-winner { background: #ddd; color: #000; }
 }
 
+/* The builder's live preview: round one only, stacked, reusing
+   .bracket-match/.bracket-side as-is rather than the horizontal
+   .bracket-cols layout, which needs every round to make sense. */
+.bracket-preview-col { display: flex; flex-direction: column; gap: .5rem; }
+
 /* ------------------------------------------------------------
    group card — sticky notes on a board
    ------------------------------------------------------------ */
@@ -875,6 +1503,17 @@ button.bracket-side:focus-visible { outline: 3px solid var(--gold); outline-offs
 }
 .card-note:nth-child(odd)  { transform: rotate(-1deg); }
 .card-note:nth-child(even) { transform: rotate(1deg); }
+
+/* Five hues, five sticky notes. Also applied directly to .tool-card on the
+   homepage shelf (styles.css:646) — one hue per section, so a returning
+   organiser has position plus colour to navigate the 22 cards by, not
+   position alone. .tool-card's own `border: var(--edge-card)` is a uniform
+   2px on all sides; these rules only override border-top-color, so the
+   shelf gets a 2px tint rather than .card-note's 9px band — thin enough
+   that it never competes with the 56px/32px pixel icon sitting beside it,
+   which already carries the saturated colour on that card. Source order is
+   load-bearing: same specificity as .tool-card's border shorthand, so these
+   have to stay after it in the cascade to win. */
 .card-hue-sage  { border-top-color: var(--sage); }
 .card-hue-terra { border-top-color: var(--terra); }
 .card-hue-gold  { border-top-color: var(--gold); }
@@ -898,7 +1537,7 @@ button.bracket-side:focus-visible { outline: 3px solid var(--gold); outline-offs
   text-transform: uppercase; background: var(--gold); color: #2b2216;
   padding: .14rem .45rem;
 }
-.card-mini { font-size: .7rem; padding: .35rem .6rem; box-shadow: 2px 2px 0 0 var(--ink); }
+.card-mini { --btn-lift: 2px; font-size: .7rem; padding: .35rem .6rem; }
 
 .card-empty {
   margin: 1.6rem 0 0; padding: 1.2rem 1rem; text-align: center;
@@ -951,16 +1590,8 @@ button.bracket-side:focus-visible { outline: 3px solid var(--gold); outline-offs
   text-transform: uppercase; color: var(--ink-faint);
 }
 
-/* the meter */
-.rg-meter-bar {
-  height: 22px; background: var(--paper-3);
-  border: var(--edge-lead); position: relative; overflow: hidden;
-}
-.rg-meter-fill {
-  height: 100%; width: 0%;
-  background: repeating-linear-gradient(135deg, var(--sage) 0 8px, var(--sage-dark) 8px 16px);
-  transition: width .7s steps(24, end);
-}
+/* the meter — the lead rung of the fill language, drawn by the rule near
+   .panel. Only the numbers around it live here. */
 .rg-meter-stats { margin: .7rem 0 0; font-size: .82rem; color: var(--ink-soft); }
 .rg-meter-stats strong { color: var(--ink); }
 .rg-dot { color: var(--ink-faint); }
@@ -990,8 +1621,6 @@ button.bracket-side:focus-visible { outline: 3px solid var(--gold); outline-offs
 .rg-sect-swatch { width: 12px; height: 12px; flex: none; }
 .rg-sect-name { font-size: .85rem; font-weight: 700; letter-spacing: .02em; }
 .rg-sect-blurb { font-size: .74rem; color: var(--ink-faint); line-height: 1.45; }
-.rg-sect-bar { height: 10px; background: var(--paper); border: 2px solid var(--ink); }
-.rg-sect-bar > i { display: block; height: 100%; width: 0; transition: width .6s steps(16, end); }
 .rg-sect-stats {
   display: flex; justify-content: space-between;
   font-size: .7rem; color: var(--ink-soft); letter-spacing: .06em;
@@ -1039,17 +1668,19 @@ button.bracket-side:focus-visible { outline: 3px solid var(--gold); outline-offs
 .rg-part-blurb { font-size: .74rem; color: var(--ink-soft); line-height: 1.45; flex: 1; }
 .rg-part-price { font-size: 1.15rem; font-weight: 700; color: var(--sage-dark); letter-spacing: .02em; }
 @media (prefers-color-scheme: dark) { .rg-part-price { color: var(--sage); } }
+/* Settled, not provisional — --edge-card, no shadow, opacity down. See
+   the :root note above --shade: dashed used to draw a taken part the same
+   way as an unclaimed slot, and this is the fix. */
 .rg-part.taken {
-  cursor: default; background: var(--paper); border-color: var(--line-firm);
+  cursor: default; background: var(--paper); border: var(--edge-card);
   box-shadow: none; opacity: .82;
-  border-width: 2px;
-  border-style: dashed;
 }
 .rg-part.taken:hover { transform: none; box-shadow: none; }
 .rg-part.taken .rg-part-price { color: var(--ink-faint); text-decoration: line-through; }
+/* A divider, not an empty-slot marker — plain solid rule, off the dash. */
 .rg-part-claimedby {
   font-size: .72rem; color: var(--terra-dark); line-height: 1.4;
-  border-top: 3px dashed var(--line); padding-top: .4rem;
+  border-top: 3px solid var(--line); padding-top: .4rem;
 }
 @media (prefers-color-scheme: dark) { .rg-part-claimedby { color: var(--accent); } }
 .rg-part.is-mine { border-color: var(--gold-ink); box-shadow: 0 0 0 3px rgba(217,164,65,.28); }
@@ -1109,7 +1740,8 @@ button.bracket-side:focus-visible { outline: 3px solid var(--gold); outline-offs
   background: var(--sage-dark); color: #f6f1e4;
   font-size: .68rem; letter-spacing: .16em; text-transform: uppercase;
 }
-.rg-payblock { background: var(--paper-2); border: 3px dashed var(--line); padding: .8rem .9rem; margin: 1rem 0; }
+/* A notice block, not an empty slot — plain solid rule, off the dash. */
+.rg-payblock { background: var(--paper-2); border: 3px solid var(--line); padding: .8rem .9rem; margin: 1rem 0; }
 .rg-payblock h4 { margin: 0 0 .5rem; font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-faint); }
 .rg-payblock dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: .2rem .8rem; font-size: .8rem; }
 .rg-payblock dt { color: var(--ink-faint); font-size: .72rem; }
@@ -1156,7 +1788,7 @@ button.bracket-side:focus-visible { outline: 3px solid var(--gold); outline-offs
 .tp-mode input[type="radio"] { margin: 0; width: 1rem; height: 1rem; accent-color: var(--sage-dark); }
 .tp-mode input[type="number"] {
   width: 4.4rem; font: inherit; font-size: .9rem; padding: .35rem .5rem;
-  background: var(--paper); color: var(--ink); border: 3px solid var(--line-firm);
+  background: var(--paper); color: var(--ink); border: var(--edge-card);
 }
 .tp-mode input[type="number"]:focus { outline: none; border-color: var(--sage-dark); }
 .tp-check {
@@ -1200,10 +1832,12 @@ button.bracket-side:focus-visible { outline: 3px solid var(--gold); outline-offs
    share nudge + season chain
    ------------------------------------------------------------ */
 .share-nudge { margin: .9rem 0 0; }
+/* A notice block holding copyable text, not an empty slot — plain solid
+   rule, off the dash. */
 .nudge-text {
   flex: 1; font: inherit; font-size: .8rem; min-width: 0; resize: none;
   padding: .5rem .6rem; background: var(--paper); color: var(--ink-soft);
-  border: 3px dashed var(--line); line-height: 1.45;
+  border: 3px solid var(--line); line-height: 1.45;
 }
 .season-next { margin-top: 1.6rem; }
 
@@ -1242,7 +1876,9 @@ button.fact-name:disabled { cursor: not-allowed; }
 .fact-person { font-weight: 700; font-size: 1rem; line-height: 1.25; word-break: break-word; }
 .fact-cta { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--terra-dark); }
 @media (prefers-color-scheme: dark) { .fact-cta { color: var(--accent); } }
-.fact-name.is-claimed { border-width: 2px; border-style: dashed; border-color: var(--line-firm); box-shadow: none; cursor: default; opacity: .8; }
+/* Settled, not provisional — see the .kk-name.is-claimed comment above and
+   the :root note above --shade. */
+.fact-name.is-claimed { border: var(--edge-card); box-shadow: none; cursor: default; opacity: .8; }
 .fact-name.is-joined .fact-cta { color: var(--ink-faint); }
 .fact-name.is-submitted .fact-cta { color: var(--grass-dark); }
 @media (prefers-color-scheme: dark) { .fact-name.is-submitted .fact-cta { color: var(--grass); } }
@@ -1321,7 +1957,8 @@ button.fact-name:disabled { cursor: not-allowed; }
   white-space: pre-wrap; word-break: break-word; margin-top: .1rem;
 }
 .bb-mini {
-  font-size: .7rem; padding: .35rem .6rem; box-shadow: 2px 2px 0 0 var(--ink);
+  --btn-lift: 2px;
+  font-size: .7rem; padding: .35rem .6rem;
   align-self: flex-start; margin-top: .35rem;
 }
 .bb-you {
@@ -1399,8 +2036,10 @@ button.fact-name:disabled { cursor: not-allowed; }
   text-transform: none; letter-spacing: .04em; font-weight: 400;
   color: var(--ink-faint); white-space: nowrap;
 }
-.rost-shift-head .rost-tick { color: var(--grass-dark); font-size: .95rem; }
-@media (prefers-color-scheme: dark) { .rost-shift-head .rost-tick { color: var(--grass); } }
+/* Unscoped: used per-shift in the heading and once more, roster-wide, in
+   the page-sub line when every shift is full — the ending. */
+.rost-tick { color: var(--grass-dark); font-size: .95rem; }
+@media (prefers-color-scheme: dark) { .rost-tick { color: var(--grass); } }
 
 .rost-grid {
   list-style: none; margin: 0; padding: 0;
@@ -1433,12 +2072,12 @@ button.fact-name:disabled { cursor: not-allowed; }
   padding: .14rem .45rem;
 }
 .rost-put { width: 100%; }
-.rost-mini { font-size: .7rem; padding: .35rem .6rem; box-shadow: 2px 2px 0 0 var(--ink); }
+.rost-mini { --btn-lift: 2px; font-size: .7rem; padding: .35rem .6rem; }
 .rost-form { display: flex; flex-direction: column; gap: .45rem; width: 100%; }
 .rost-form input {
   width: 100%; font: inherit; font-size: .84rem;
   padding: .45rem .55rem; background: var(--paper); color: var(--ink);
-  border: 3px solid var(--line-firm);
+  border: var(--edge-card);
 }
 .rost-form input:focus { outline: none; border-color: var(--sage-dark); }
 .rost-form-row { display: flex; gap: .5rem; flex-wrap: wrap; }
@@ -1452,12 +2091,17 @@ button.fact-name:disabled { cursor: not-allowed; }
   .rost-you { display: none; }
 }
 
-.beta-badge {
-  font-size: .58rem; letter-spacing: .12em; text-transform: uppercase;
-  /* --terra-dark: cream on --terra measured 3.30:1. Matches .feature-tag. */
-  background: var(--terra-dark); color: #f6f1e4; padding: .1rem .4rem;
-  border: 2px solid var(--ink); align-self: center; font-weight: 700;
-}
+/* .beta-badge was here. It sat in the header of the homepage, all 22 tool
+   pages, the 26 guides and every /s/, /e/ and /p/ render, drawn in exactly
+   the treatment reserved for .feature-tag — cream on --terra-dark inside a
+   2px --ink border, which is the emphasis the seasonal card uses for the one
+   thing the homepage promotes. So the third element in the header, on every
+   page, was a warning label at promotional weight.
+
+   The visitor is deciding whether to put the fete roster somewhere other
+   than a spreadsheet. "Beta" is an argument for the spreadsheet, and there
+   was no beta programme, waitlist or feedback loop on the other end of it to
+   buy anything back. Removed from 53 HTML files and src/lib.js:453. */
 .foot-links { display: flex; gap: 1.4rem; flex-wrap: wrap; margin-top: 1.1rem; }
 .foot-link { color: var(--ink-soft); text-decoration: none; font-size: .82rem; letter-spacing: .02em; }
 .foot-link:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
@@ -1512,6 +2156,9 @@ button.fact-name:disabled { cursor: not-allowed; }
 .meal-day-status.covered { color: var(--grass-dark); }
 @media (prefers-color-scheme: dark) { .meal-day-status.covered { color: var(--grass); } }
 .meal-day-status.open { color: var(--ink-faint); }
+/* The ending: shown once, in the page-sub line, when every day is covered. */
+.meal-tick { color: var(--grass-dark); font-size: .95rem; }
+@media (prefers-color-scheme: dark) { .meal-tick { color: var(--grass); } }
 
 .meal-day-slots {
   list-style: none; margin: 0; padding: 0;
@@ -1536,11 +2183,11 @@ button.fact-name:disabled { cursor: not-allowed; }
   text-transform: uppercase; background: var(--gold); color: #2b2216; padding: .14rem .45rem;
 }
 .meal-put { width: 100%; }
-.meal-mini { font-size: .7rem; padding: .35rem .6rem; box-shadow: 2px 2px 0 0 var(--ink); }
+.meal-mini { --btn-lift: 2px; font-size: .7rem; padding: .35rem .6rem; }
 .meal-form { display: flex; flex-direction: column; gap: .45rem; width: 100%; }
 .meal-form input {
   width: 100%; font: inherit; font-size: .84rem; padding: .45rem .55rem;
-  background: var(--paper); color: var(--ink); border: 3px solid var(--line-firm);
+  background: var(--paper); color: var(--ink); border: var(--edge-card);
 }
 .meal-form input:focus { outline: none; border-color: var(--sage-dark); }
 .meal-form-row { display: flex; gap: .5rem; flex-wrap: wrap; }
@@ -1598,12 +2245,10 @@ button.fact-name:disabled { cursor: not-allowed; }
 .poll-bar-count { font-size: .82rem; color: var(--ink-soft); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .poll-bar-unit { color: var(--ink-faint); }
 .poll-bar-pct { color: var(--ink-faint); }
-.poll-bar-track { height: 22px; background: var(--paper-3); border: 3px solid var(--ink); overflow: hidden; }
-.poll-bar-track > i {
-  display: block; height: 100%; width: 0;
-  background: repeating-linear-gradient(135deg, var(--sage) 0 8px, var(--sage-dark) 8px 16px);
-  transition: width .6s steps(16, end);
-}
+/* The track and its fill are the fill language, drawn by the rule near
+   .panel — a share of votes cast rather than progress toward a target,
+   which is a different denominator drawn with the same mark, and is
+   where that mark came from. Only the two states below are poll's own. */
 .poll-bar.is-leader .poll-bar-track > i {
   background: repeating-linear-gradient(135deg, var(--gold) 0 8px, #b5852f 8px 16px);
 }
@@ -1627,11 +2272,11 @@ button.fact-name:disabled { cursor: not-allowed; }
 }
 .poll-manage-text { font-size: .88rem; word-break: break-word; }
 .poll-manage-votes { color: var(--ink-faint); font-size: .74rem; letter-spacing: .04em; white-space: nowrap; }
-.poll-mini { font-size: .7rem; padding: .35rem .6rem; box-shadow: 2px 2px 0 0 var(--ink); flex: none; }
+.poll-mini { --btn-lift: 2px; font-size: .7rem; padding: .35rem .6rem; flex: none; }
 .poll-addopt { display: flex; gap: .6rem; margin: .9rem 0 0; flex-wrap: wrap; }
 .poll-addopt input {
   flex: 1; min-width: 12rem; font: inherit; font-size: .88rem; padding: .5rem .6rem;
-  background: var(--paper); color: var(--ink); border: 3px solid var(--line-firm);
+  background: var(--paper); color: var(--ink); border: var(--edge-card);
 }
 .poll-addopt input:focus { outline: none; border-color: var(--sage-dark); }
 
@@ -1658,7 +2303,8 @@ button.fact-name:disabled { cursor: not-allowed; }
   box-shadow: none;
   padding: 1.1rem 1.2rem 1.2rem; margin: 0 0 1.1rem;
 }
-.recipe-head { position: relative; border-bottom: 3px dashed var(--line); padding-bottom: .6rem; margin-bottom: .9rem; }
+/* A divider, not an empty-slot marker — plain solid rule, off the dash. */
+.recipe-head { position: relative; border-bottom: 3px solid var(--line); padding-bottom: .6rem; margin-bottom: .9rem; }
 .recipe-dish {
   margin: 0; font-size: 1.3rem; line-height: 1.2; letter-spacing: .01em;
   text-transform: none; color: var(--sage-dark); word-break: break-word;
@@ -1691,7 +2337,7 @@ button.fact-name:disabled { cursor: not-allowed; }
 }
 
 .recipe-actions { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-top: 1rem; }
-.recipe-mini { font-size: .7rem; padding: .35rem .6rem; box-shadow: 2px 2px 0 0 var(--ink); }
+.recipe-mini { --btn-lift: 2px; font-size: .7rem; padding: .35rem .6rem; }
 .recipe-you {
   position: absolute; top: 0; right: 0;
   font-size: .6rem; letter-spacing: .18em; text-transform: uppercase;
@@ -1704,7 +2350,7 @@ button.fact-name:disabled { cursor: not-allowed; }
 }
 
 /* the inline edit form injected onto your own recipe */
-.recipe-edit { margin-top: 1rem; padding-top: 1rem; border-top: 3px dashed var(--line); }
+.recipe-edit { margin-top: 1rem; padding-top: 1rem; border-top: 3px solid var(--line); }
 .recipe-edit-actions { margin-top: .2rem; align-items: center; }
 
 /* add-a-recipe form */
@@ -1761,7 +2407,11 @@ button.fact-name:disabled { cursor: not-allowed; }
   display: flex; flex-direction: column; gap: .5rem; align-items: flex-start;
 }
 .gi-card [hidden] { display: none !important; }
-.gi-card.claimed { background: var(--paper); border-style: dashed; border-color: var(--line-firm); box-shadow: none; }
+/* Settled, not provisional: the border was already --edge-card once dashed
+   is dropped (border-color here was always --line-firm, same value), so
+   the change is background plus the opacity drop the rest of the claimed
+   group already uses — see the :root note above --shade. */
+.gi-card.claimed { background: var(--paper); box-shadow: none; opacity: .82; }
 
 .gi-idea { margin: 0; font-weight: 700; font-size: 1rem; line-height: 1.35; word-break: break-word; }
 .gi-link {
@@ -1775,29 +2425,30 @@ button.fact-name:disabled { cursor: not-allowed; }
 .gi-votebar { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
 .gi-vote-count { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 1.05rem; }
 .gi-vote-word { font-size: .72rem; color: var(--ink-faint); letter-spacing: .04em; margin-right: .2rem; }
-.gi-vote { font-size: .7rem; padding: .35rem .7rem; box-shadow: 2px 2px 0 0 var(--ink); }
+.gi-vote { --btn-lift: 2px; font-size: .7rem; padding: .35rem .7rem; }
 .gi-vote[disabled], .gi-vote.is-voted {
   opacity: 1; cursor: default; background: var(--sage-dark);
   color: #f6f1e4; border-color: var(--ink); box-shadow: none; transform: none;
 }
 
-.gi-mini { font-size: .7rem; padding: .35rem .6rem; box-shadow: 2px 2px 0 0 var(--ink); }
+.gi-mini { --btn-lift: 2px; font-size: .7rem; padding: .35rem .6rem; }
 .gi-claimrow { width: 100%; display: flex; flex-direction: column; gap: .45rem; }
 .gi-claim-btn { align-self: flex-start; }
 .gi-claim-form { display: flex; flex-direction: column; gap: .45rem; width: 100%; }
 .gi-claim-form input {
   width: 100%; font: inherit; font-size: .84rem;
   padding: .45rem .55rem; background: var(--paper); color: var(--ink);
-  border: 3px solid var(--line-firm);
+  border: var(--edge-card);
 }
 .gi-claim-form input:focus { outline: none; border-color: var(--sage-dark); }
 .gi-claim-formrow { display: flex; gap: .5rem; flex-wrap: wrap; }
 .gi-claim-err { margin: 0; font-size: .72rem; color: var(--terra-dark); }
 @media (prefers-color-scheme: dark) { .gi-claim-err { color: var(--accent); } }
 
+/* A divider, not an empty-slot marker — plain solid rule, off the dash. */
 .gi-claimed {
   width: 100%; font-size: .82rem; color: var(--ink-soft);
-  border-top: 3px dashed var(--line); padding-top: .5rem; word-break: break-word;
+  border-top: 3px solid var(--line); padding-top: .5rem; word-break: break-word;
 }
 .gi-claimed-label {
   display: block; font-size: .62rem; letter-spacing: .16em;
@@ -1955,7 +2606,9 @@ h1.qotd-q {
 .qotd-archive[open] > summary { border-bottom: 3px solid var(--line); }
 .qotd-archive > .fine { padding: 0 .9rem .8rem; margin: 0; }
 .qotd-archive-list { list-style: none; margin: 0; padding: .8rem .9rem; display: flex; flex-direction: column; gap: .9rem; }
-.qotd-archive-item { border-bottom: 2px dashed var(--line); padding-bottom: .9rem; }
+/* A divider between archived questions, not an empty-slot marker — plain
+   solid rule matching .qotd-archive[open] > summary above, off the dash. */
+.qotd-archive-item { border-bottom: 2px solid var(--line); padding-bottom: .9rem; }
 .qotd-archive-item:last-child { border-bottom: 0; padding-bottom: 0; }
 .qotd-archive-meta { margin: 0; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
 .qotd-archive-q { margin: .15rem 0 .25rem; font-size: .9rem; line-height: 1.35; word-break: break-word; }
@@ -1986,8 +2639,10 @@ h1.qotd-q {
 .qotd-voter { background: var(--paper-2); border: 2px solid var(--line); padding: .14rem .45rem; margin-right: .3rem; white-space: nowrap; }
 .qotd-voter em { font-style: normal; color: var(--ink-faint); font-size: .7rem; }
 
-/* the sample on the tool page */
-.qotd-preview { border: 3px dashed var(--line); background: var(--paper-2); padding: 1.1rem; margin: 0 0 1.5rem; }
+/* the sample on the tool page — a notice block, not an empty slot, so
+   plain solid rule now (dashed is reserved for empty states; see the
+   :root note above --shade). */
+.qotd-preview { border: 3px solid var(--line); background: var(--paper-2); padding: 1.1rem; margin: 0 0 1.5rem; }
 .qotd-preview-kicker { margin: 0 0 .5rem; font-size: .66rem; letter-spacing: .24em; text-transform: uppercase; color: var(--ink-faint); }
 .qotd-preview-q { margin: 0 0 .9rem; font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
 .qotd-preview-opts { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; }
@@ -2026,16 +2681,18 @@ h1.qotd-q {
 .meal-admin-form {
   display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .9rem 0 0;
 }
+/* These two were the loudest fields in the file — 3px --ink, the lead
+   rung itself, on a text box. Same --edge-card as every other field now. */
 .meal-admin-form input[type="text"],
 .meal-admin-form input[type="url"] {
   flex: 1 1 14rem; min-width: 0; font: inherit; font-size: .85rem;
-  padding: .55rem .7rem; border: 3px solid var(--ink); background: var(--paper);
+  padding: .55rem .7rem; border: var(--edge-card); background: var(--paper);
   color: var(--ink);
 }
 .meal-admin-cap { font-size: .78rem; color: var(--ink-soft); display: flex; align-items: center; gap: .4rem; }
 .meal-admin-cap input {
   width: 4.2rem; font: inherit; font-size: .85rem; padding: .55rem .5rem;
-  border: 3px solid var(--ink); background: var(--paper); color: var(--ink);
+  border: var(--edge-card); background: var(--paper); color: var(--ink);
 }
 .meal-link-row { margin: 0 0 .5rem; }
 
@@ -2059,6 +2716,41 @@ h1.qotd-q {
 .guide-list a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line); }
 .guide-list a:hover { color: var(--ink); border-bottom-color: var(--ink); }
 .section-note { font-size: .84rem; color: var(--ink-faint); margin: .2rem 0 0; max-width: 46ch; }
+
+/* The shelf's count line, and why it is not a .section-note.
+
+   03-ia.md §C.6 specifies "one count line under the first heading", and that
+   was right when it was written: h2 was an 11.84px uppercase eyebrow in
+   --ink-faint, so nothing beneath it read as belonging to it, and the line sat
+   above the first grid as an introduction to the whole shelf.
+
+   Promoting h2 to a real 1.3rem heading in --ink changed what "under" means. A
+   heading that size owns what follows it, so "22 tools. All free, none need an
+   account." was captured by "A farewell, a wedding, a new baby" and read as a
+   claim about that section — which holds six. The sentence did not move; the
+   thing above it grew.
+
+   So it moves out and up, above the first heading, where it belongs to the
+   shelf rather than to a section. A small faint line ABOVE a bold heading
+   reads as a lead-in to the run; the same line below it read as a caption on
+   one section.
+
+   THE MARGINS ARE A ZERO-SUM SWAP, not an addition. The line already occupied
+   21.8px between the heading and the first grid, so moving it costs nothing
+   only if its two new margins add up to what the heading's top margin was
+   already spending — 1.6rem on a phone, via #tools > h2. Hence 1rem above and
+   .6rem below: 16 + 9.6 = 25.6px, exactly. The first tool card clears the
+   812px fold by four pixels (07-visual.md §0.6), so there is no slack to
+   spend here. Re-measure the card if you touch these.
+
+   The child combinator is load-bearing. `.shelf-note + h2` is (0,1,1) and
+   loses to the phone override `#tools > h2` at (1,0,1), so the rule below is
+   scoped to beat it. */
+.shelf-note {
+  font-size: .84rem; color: var(--ink-faint); max-width: 46ch;
+  margin: 1rem 0 0;
+}
+#tools > .shelf-note + h2 { margin-top: .6rem; }
 @media (max-width: 34rem) { .guide-list { columns: 1; } }
 
 /* ------------------------------------------------------------
@@ -2119,7 +2811,13 @@ h1.qotd-q {
   border: var(--edge-card); background: var(--paper);
   box-shadow: none; padding: .7rem .9rem;
 }
-.claim-name.taken { box-shadow: none; border-style: dashed; border-color: var(--line-firm); background: var(--paper-2); }
+/* Settled, not provisional. This is the exact case the dashed-doctrine
+   note above --shade in :root names: on a claim board, "available" and
+   "taken" are opposite states, and they used to be drawn identically. The
+   border is --edge-card either way (unclaimed sets it explicitly above;
+   taken no longer overrides the style), so background plus opacity is
+   what carries "taken" now. */
+.claim-name.taken { box-shadow: none; background: var(--paper-2); opacity: .82; }
 .cn-name { font-weight: 700; font-size: .95rem; }
 .claim-name.taken .cn-name { color: var(--ink-faint); font-weight: 400; }
 .cn-state { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
@@ -2185,7 +2883,9 @@ h1.qotd-q {
 .pulse-bar-fill { display: block; height: 100%; background: var(--sage, #7f9e78); }
 .pulse-bar-c { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
 
-.pulse-hold { border: 3px dashed var(--line-firm, var(--line)); padding: 1.1rem 1.3rem; margin: 1.6rem 0; }
+/* A notice block ("results held until N responses"), not an empty slot —
+   plain solid rule, off the dash. */
+.pulse-hold { border: 3px solid var(--line-firm, var(--line)); padding: 1.1rem 1.3rem; margin: 1.6rem 0; }
 .pulse-hold-n { font-weight: 700; margin: 0 0 .4rem; }
 
 .pulse-trend { list-style: none; display: flex; gap: .35rem; align-items: flex-end; margin: 1rem 0 0; padding: 0; overflow-x: auto; }
@@ -2246,11 +2946,13 @@ h1.qotd-q {
 }
 
 /* ---- "see a finished one" ------------------------------------------
-   A dashed border everywhere else on the site means solid: real control.
-   Dashed reads as "a sample", which is exactly what this offers. It sits
-   directly under the lede because on a phone the submit button is roughly
-   a screen and a half further down, and someone deciding whether this tool
-   is worth their time should not have to scroll to find that out. */
+   A sample, not a real control — but dashed is reserved for "not filled
+   in yet" now (see the :root note above --shade), and a sample is neither
+   empty nor waiting to be claimed, so it gets the plain solid border every
+   other notice block on the site uses. It sits directly under the lede
+   because on a phone the submit button is roughly a screen and a half
+   further down, and someone deciding whether this tool is worth their
+   time should not have to scroll to find that out. */
 /* ---------- the live preview ---------------------------------
    Sits INSIDE the builder, directly under the field that drives it,
    because a preview belongs beside its input and on a phone there is no
@@ -2268,7 +2970,7 @@ h1.qotd-q {
    problem this is meant to help with, not deepen. */
 .live-preview {
   margin: .1rem 0 .9rem; padding: .7rem .8rem .8rem;
-  border: 2px dashed var(--line-firm); background: var(--paper-2);
+  border: 2px solid var(--line-firm); background: var(--paper-2);
 
 }
 .live-preview:empty { display: none; }
@@ -2368,7 +3070,7 @@ h1.qotd-q {
 .see-example {
   display: flex; align-items: baseline; flex-wrap: wrap; gap: .3rem .6rem;
   max-width: 52ch; margin: 0 0 1.5rem; padding: .6rem .8rem;
-  border: 2px dashed var(--line); background: var(--paper-2);
+  border: 2px solid var(--line); background: var(--paper-2);
   font-size: .8rem; line-height: 1.5; color: var(--ink-soft);
 }
 .see-example a {
@@ -2380,9 +3082,11 @@ h1.qotd-q {
 /* ---- one tap to a real thing --------------------------------------
    Five tools need nothing typed. The button that proves it sits inside the
    form, roughly 1,400px down a phone screen, so this repeats it directly
-   under the promise at ~332px. Solid border, unlike the dashed example
-   strip above it: this one is a real control, and the difference should be
-   visible before it is read. */
+   under the promise at ~332px. Unlike the sample strip above it, this one
+   wraps a real .btn at full weight — 3px solid --ink, hard offset shadow —
+   so the difference between "a sample" and "a real control" is still
+   visible before it is read, even though both boxes now draw a plain
+   solid border. */
 .see-example.is-one-tap { margin-bottom: .7rem; }
 .one-tap {
   display: flex; align-items: center; flex-wrap: wrap; gap: .6rem .9rem;
@@ -2519,18 +3223,26 @@ body.is-demo { padding-bottom: 6rem; }
   border-left: 3px solid var(--gold); padding: .1rem 0 .1rem .7rem;
   margin: -.4rem 0 1rem; max-width: 52ch;
 }
+/* This one was already at the card rung, written longhand, while every
+   other field in the file was at 3px. It is the same declaration now. */
 .count-field select {
   font: inherit; font-size: .78rem; padding: .3rem .4rem;
-  background: var(--paper); color: var(--ink); border: 2px solid var(--line-firm);
+  background: var(--paper); color: var(--ink); border: var(--edge-card);
   max-width: 15rem;
 }
 
 /* Shift headings. These used to be short tags — "Setup 8-9am" — so the
-   global h2 treatment (uppercase, .24em letterspacing, .82rem) suited them.
+   letterspaced uppercase eyebrow the base h2 used to carry suited them.
    They are now real duty lines carrying times and accreditation
    requirements, and a hundred characters of letterspaced uppercase is four
    lines of shouting that nobody reads, on exactly the text a volunteer needs
-   to read before claiming a safety-critical slot. */
+   to read before claiming a safety-critical slot.
+
+   That argument has since been applied to the base h2 itself, which is no
+   longer uppercase or tracked, so the first two declarations below are
+   belt-and-braces rather than the load-bearing opt-out they were. The size
+   still is: these sit inside a claim card and must stay under the 1.3rem
+   base. */
 .rost-shift-head {
   text-transform: none;
   letter-spacing: .01em;

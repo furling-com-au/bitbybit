@@ -18,7 +18,7 @@
    ============================================================ */
 import {
   esc, json, html, randomString, badInput, pageShell,
-  getBySlug, getByToken, createInstance, deleteInstance, logEvent, ownCta, shareNudge,
+  getBySlug, getByToken, createInstance, deleteInstance, logEvent, ownCta, shareNudge, cardPreview, fillTrack,
 } from "../lib.js";
 
 const MAX_FORWHOM = 80;
@@ -424,7 +424,32 @@ const noteBlock = (data) =>
 function subLine(data, mealsCovered) {
   const total = data.dates.length * data.capacityPerDay;
   const n = data.dates.length;
-  return `${mealsCovered} of ${total} meals covered · ${n} ${n === 1 ? "day" : "days"}`;
+  const full = mealsCovered >= total;
+  return `<strong>${mealsCovered}</strong> of ${total} meals covered · ${n} ${n === 1 ? "day" : "days"}${
+    full ? ` <span class="meal-tick" role="img" aria-label="fully covered">✓</span>` : ""}`;
+}
+
+/* The lead rung — meals only, never jobs. A meal train has two boards
+   sharing one page, and 08-fill.md F.11 is explicit that only one gets
+   the lead rung: this is a meal train, the "other ways to help" board
+   is the secondary one, and two lead bars on one page would leave a
+   reader guessing which number is the actual score. Jobs still get
+   their own section rungs, drawn in taskBoard(). */
+function leadFill(data, mealsCovered) {
+  const total = data.dates.length * data.capacityPerDay;
+  return fillTrack({ n: mealsCovered, m: total });
+}
+
+/* The section rung, one per day or per job. Mirrors lib.js's fillTrack
+   (notched at M <= 24, nothing when M is falsy) but drawn with the
+   .fill-sect geometry rather than the lead rung's .fill-track — see
+   roster.js's fillSect for the fuller reasoning on why this stays
+   local rather than growing lib.js a second export. */
+function fillSect(n, m) {
+  if (!Number.isFinite(m) || m <= 0) return "";
+  const done = Math.min(m, Math.max(0, Number(n) || 0));
+  return `
+        <div class="fill-sect${m <= 24 ? " notched" : ""}" style="--n:${done};--m:${m}" aria-hidden="true"><i></i></div>`;
 }
 
 /* The non-meal jobs. Same claim mechanics as a day, different
@@ -457,7 +482,7 @@ function taskBoard(data, bySlot, organiser) {
       } else {
         slots.push(`
         <li class="meal-slot open" data-slot="${sid}">
-          <button class="btn meal-put" type="button">I can do this</button>
+          <button class="btn primary meal-put" type="button">I can do this</button>
           <form class="meal-form" hidden>
             <input type="text" name="name" maxlength="${MAX_NAME}" placeholder="Your name" aria-label="Your name" autocomplete="name">
             <input type="text" name="dish" maxlength="${MAX_DISH}" placeholder="Anything the coordinator should know — optional" aria-label="Note (optional)">
@@ -473,14 +498,14 @@ function taskBoard(data, bySlot, organiser) {
     const full = filled >= t.capacity;
     const status = full
       ? `<span class="meal-day-status covered">sorted ✓</span>`
-      : `<span class="meal-day-status open">${filled > 0 ? `${filled} of ${t.capacity}` : "open"}</span>`;
+      : `<span class="meal-day-status open">${filled > 0 ? `<strong>${filled}</strong> of ${t.capacity}` : "open"}</span>`;
     return `
     <li class="meal-day${full ? " is-covered" : ""}">
       <div class="meal-day-head">
         <span class="meal-day-date">${esc(t.label)}</span>
         ${status}
         ${organiser ? `<button class="btn ghost meal-mini meal-task-del" type="button" data-task="${t.id}">Delete job</button>` : ""}
-      </div>
+      </div>${fillSect(filled, t.capacity)}
       <ul class="meal-day-slots">${slots.join("")}
       </ul>
     </li>`;
@@ -538,7 +563,7 @@ function board(data, bySlot, organiser) {
       } else {
         slots.push(`
         <li class="meal-slot open" data-slot="${sid}">
-          <button class="btn meal-put" type="button">I'll cook this day</button>
+          <button class="btn primary meal-put" type="button">I'll cook this day</button>
           <form class="meal-form" hidden>
             <input type="text" name="name" maxlength="${MAX_NAME}" placeholder="Your name" aria-label="Your name" autocomplete="name">
             <input type="text" name="dish" maxlength="${MAX_DISH}" placeholder="What you'll bring — optional (helps avoid three lasagnes)" aria-label="What you'll bring (optional)">
@@ -554,13 +579,13 @@ function board(data, bySlot, organiser) {
     const full = filled >= data.capacityPerDay;
     const status = full
       ? `<span class="meal-day-status covered">covered ✓</span>`
-      : `<span class="meal-day-status open">${filled > 0 ? `${filled} of ${data.capacityPerDay}` : "open"}</span>`;
+      : `<span class="meal-day-status open">${filled > 0 ? `<strong>${filled}</strong> of ${data.capacityPerDay}` : "open"}</span>`;
     return `
     <li class="meal-day${full ? " is-covered" : ""}">
       <div class="meal-day-head">
         <span class="meal-day-date">${esc(fmtDay(iso))}</span>
         ${status}
-      </div>
+      </div>${fillSect(filled, data.capacityPerDay)}
       <ul class="meal-day-slots">${slots.join("")}
       </ul>
     </li>`;
@@ -582,11 +607,11 @@ async function publicPage(row, env) {
   <p class="kicker">A meal roster</p>
   <h1>Meals for ${esc(data.forWhom)}</h1>
   <p class="page-sub">${subLine(data, mealClaimCount(claims))}</p>
+  ${leadFill(data, mealClaimCount(claims))}
   ${allergiesBanner(data)}
   ${noteBlock(data)}
 
-  <p class="meal-intro">Pick a day you can cook and put your name down. No
-  account, no fuss — just a warm meal turning up when it's needed most. Not
+  <p class="meal-intro">Pick a day you can cook and put your name down. Not
   sure what to make? Leave the dish blank and decide closer to the day.</p>
 
   ${board(data, bySlot, false)}
@@ -761,15 +786,19 @@ async function editPage(row, env, origin) {
   <p class="kicker">Coordinator view</p>
   <h1>Meals for ${esc(data.forWhom)}</h1>
   <p class="page-sub">${subLine(data, mealClaimCount(claims))}</p>
+  ${leadFill(data, mealClaimCount(claims))}
   ${allergiesBanner(data)}
   ${noteBlock(data)}
   ${dropoffBlock}
+
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("meal", `Meals for ${data.forWhom}`)}
 
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with friends, family and neighbours</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("🍲 We're setting up meals for " + data.forWhom + " — grab a day you can cook a meal (takes 20 seconds, no sign-up): " + shareUrl, row.edit_token)}

@@ -2,7 +2,7 @@
 
 Free · no signup · one shareable link
 
-The sign-up sheet for the fete, the canteen, the working bee, the sausage sizzle. Set the shifts, share one link, and volunteers put their own name down. You watch it fill in — and print or export the lot when it's done.
+The sign-up sheet for the fete, the canteen, the working bee, the sausage sizzle.
 
 Five shifts are already filled in, setup through pack-down. [See a finished roster →](https://bitibybit.com/s/demo-volunteer-roster)
 

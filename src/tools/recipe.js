@@ -20,7 +20,7 @@
 import {
   esc, json, html, randomString, badInput, pageShell,
   getBySlug, getByToken, getParticipant, getInstanceById,
-  createInstance, deleteInstance, logEvent, shareNudge,
+  createInstance, deleteInstance, logEvent, shareNudge, ownCta, cardPreview,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -209,8 +209,15 @@ const book = (parts, mode) => parts.length
 const noteBlock = (data) =>
   data.note ? `<div class="pixel-note recipe-note">${esc(data.note)}</div>` : "";
 
+/* Unbounded (08-fill.md §F.13): MAX_RECIPES is a storage ceiling, not
+   a denominator, so this gets the line and no lead fill. No tally
+   either — the recipe book below this line already renders one card
+   per recipe, the same reason kudos.js skips a tally under its wall
+   (08-fill.md §G.1): a row of squares over a book that's already
+   growing page by page repeats the count rather than adding to it.
+   <strong> around the numeral is 08-fill.md §D.1. */
 function subLine(data, n, extra = "") {
-  const count = `${n} ${n === 1 ? "recipe" : "recipes"}${n ? " in" : " yet"}`;
+  const count = `<strong>${n}</strong> ${n === 1 ? "recipe" : "recipes"}${n ? " in" : " yet"}`;
   const forWhom = data.forWhom
     ? `For <strong>${esc(data.forWhom)}</strong> · ` : "";
   return `${forWhom}${count}${extra}`;
@@ -269,7 +276,7 @@ async function publicPage(row, env) {
           <textarea id="rStory" rows="3" maxlength="${MAX_STORY}"
             placeholder="Made every Christmas Eve since 1994. The secret is not skipping the resting time."></textarea>
         </label>
-        <p class="form-error" id="addErr" hidden></p>
+        <p class="form-error" id="addErr" role="alert" hidden></p>
         <button class="btn primary big" id="addBtn" type="submit">Add my recipe →</button>
       </form>
     </div>
@@ -277,6 +284,9 @@ async function publicPage(row, env) {
     remembers which recipes are yours, so you can tweak or pull them back later.</p>
   </section>
 
+  ${ownCta("recipe",
+    "Worth collecting your own family's recipes?",
+    "Start your own collection")}
   <footer class="page-foot">
     <p><a class="quiet-link" href="/via/recipe">made with biti by bit →</a></p>
   </footer>
@@ -511,11 +521,14 @@ async function editPage(row, env, origin) {
   <p class="page-sub">${subLine(data, parts.length)}</p>
   ${noteBlock(data)}
 
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("recipe", row.title || "Recipe Collection")}
+
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link — everyone adds a recipe</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("📖 We’re putting together a recipe book — add one of yours before it gets bound: " + shareUrl, row.edit_token)}

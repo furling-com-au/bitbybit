@@ -8,7 +8,8 @@
 import {
   esc, json, html, randomString, badInput, pageShell,
   getBySlug, getByToken, createInstance, deleteInstance,
-  logEvent, fmtDate, shareNudge, viewedBeacon} from "../lib.js";
+  logEvent, fmtDate, shareNudge, viewedBeacon, ownCta, cardPreview,
+  fillTrack} from "../lib.js";
 
 const MAX_TITLE = 80;
 const MAX_ROLES = 40;
@@ -126,6 +127,20 @@ async function remove(token, env) {
 
 /* ---------- rendering --------------------------------------- */
 
+/* The lead rung, one per page. This tool publishes no names and no
+   roles on the shared page — a count is the entire public state of it —
+   so the bar redraws the sentence directly above it and nothing else.
+   That is exactly what docs/review/08-fill.md asks a fill to be: the
+   page, counted.
+
+   It is also why there is no bar per role and never will be. "The
+   Doctor has been taken" is not on this page in any form, and by the
+   third person to join it stops being unattributable. The organiser
+   page draws the same one bar over the same one count: its table lists
+   who has joined, not what they were dealt, and the bar must not know
+   more than the table. */
+const leadFill = (dealt, total) => fillTrack({ n: dealt, m: total });
+
 async function publicPage(row, env) {
   const data = JSON.parse(row.data);
   const { n: taken } = await env.DB.prepare(
@@ -137,7 +152,9 @@ async function publicPage(row, env) {
 <main class="wrap page">
   <p class="kicker">Secret roles — one each</p>
   <h1>${esc(row.title || "Secret roles")}</h1>
-  <p class="page-sub">${taken} of ${data.total} roles dealt</p>
+  <p class="page-sub"><strong>${taken}</strong> of ${data.total} roles dealt${
+    full ? ` <span role="img" aria-label="all roles dealt">✓</span>` : ""}</p>
+  ${leadFill(taken, data.total)}
   ${data.note ? `<div class="pixel-note">${esc(data.note)}</div>` : ""}
 
   <div class="night-panel">
@@ -151,7 +168,7 @@ async function publicPage(row, env) {
         <span>Your name</span>
         <input type="text" id="joinName" maxlength="40" autocomplete="name" placeholder="Sam">
       </label>
-      <p class="form-error" id="joinError" hidden></p>
+      <p class="form-error" id="joinError" role="alert" hidden></p>
       <button type="submit" class="btn primary big" id="joinBtn">Deal me in →</button>
       <p class="fine night-fine">You&#39;ll get a private page only you can see.
       One role each, drawn at random.</p>
@@ -161,6 +178,9 @@ async function publicPage(row, env) {
     </div>
   </div>
 
+  ${ownCta("roles",
+    "Playing again next week?",
+    "Deal your own roles")}
   <footer class="page-foot">
     <p><a class="quiet-link" href="/via/roles">made with biti by bit →</a></p>
   </footer>
@@ -256,6 +276,7 @@ async function editPage(row, env, url) {
     "SELECT name, data, viewed_at FROM participants WHERE instance_id = ? AND claimed_at IS NOT NULL ORDER BY claimed_at"
   ).bind(row.id).all();
   const shareUrl = `${url.origin}/s/${row.slug}`;
+  const full = data.total > 0 && players.length >= data.total;
 
   const tableRows = players.map((p) => `
       <tr>
@@ -288,13 +309,18 @@ async function editPage(row, env, url) {
 
   <p class="kicker">Organiser view</p>
   <h1>${esc(row.title || "Secret roles")}</h1>
-  <p class="page-sub">${players.length} of ${data.total} roles dealt · created ${fmtDate(row.created_at)}</p>
+  <p class="page-sub"><strong>${players.length}</strong> of ${data.total} roles dealt · created ${fmtDate(row.created_at)}${
+    full ? ` <span role="img" aria-label="all roles dealt">✓</span>` : ""}</p>
+  ${leadFill(players.length, data.total)}
+
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("roles", row.title || "Secret roles")}
 
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with the players</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
     <p class="fine">Each player opens it, types their name, and draws a random role
     on a private page. Playing yourself? Join from the same link — roles stay

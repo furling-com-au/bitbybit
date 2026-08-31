@@ -20,7 +20,7 @@
 import {
   esc, json, html, randomString, badInput, pageShell,
   getBySlug, getByToken, getParticipant, getInstanceById,
-  createInstance, updateInstanceData, deleteInstance, logEvent, shareNudge, viewedBeacon} from "../lib.js";
+  createInstance, updateInstanceData, deleteInstance, logEvent, shareNudge, viewedBeacon, ownCta, cardPreview, fillTrack} from "../lib.js";
 
 const MAX_TITLE = 80;
 const MAX_PROMPT = 140;
@@ -205,6 +205,44 @@ async function remove(token, env) {
 const noteBlock = (data) =>
   data.note ? `<div class="pixel-note fact-note">${esc(data.note)}</div>` : "";
 
+/* Three numbers, one sentence, and the same sentence on the shared page
+   and the organiser's: names on the list, names claimed, facts landed.
+   The third is the one the bar under it draws, so it is the one in
+   <strong>. The ✓ carries the full state in a mark, because the gold a
+   full bar turns is a hue change and barely a lightness one — a reader
+   who cannot see the hue gets it from here (08-fill.md §D.5). */
+function subLine(parts, revealed) {
+  const claimed = parts.filter((p) => p.claimed_at).length;
+  const inCount = parts.filter((p) => pfact(p)).length;
+  const full = parts.length > 0 && inCount >= parts.length;
+  return `${parts.length} on the list · ${claimed} joined · ` +
+    `<strong>${inCount}</strong> fact${inCount === 1 ? "" : "s"} in` +
+    (full ? ` <span role="img" aria-label="every fact is in">✓</span>` : "") +
+    (revealed ? " · revealed" : "");
+}
+
+/* The lead rung, one per page. N is facts in and M is names on the
+   list — the third and the first number of the sentence above it. Facts
+   in, not names joined: the reveal is what the whole page is waiting
+   for, and a name that claimed itself but wrote nothing is not half a
+   fact.
+
+   Why this is safe on the one tool where it has to be argued. The grid
+   below labels every name already — "That's me", "joined", or
+   "submitted ✓" — so N is a count anyone can do by eye off the tiles,
+   and M is the number of tiles. The secret here is which fact belongs
+   to whom, and this is one undivided total over the whole roster: no
+   per-name segment and no per-fact segment, so there is nothing in it
+   to difference. Before the reveal a fact is on nobody's screen but its
+   author's (and the organiser's key, unnamed); after it, the answer key
+   prints the names itself.
+
+   Do not two-tone it to show joined-but-not-submitted. It doubles the
+   encoding for a distinction the sentence already makes, in a hatch
+   that only clears contrast because of its frame (08-fill.md §C.3). */
+const leadFill = (parts) =>
+  fillTrack({ n: parts.filter((p) => pfact(p)).length, m: parts.length });
+
 function answerKey(parts) {
   const submitted = shuffledSubmitted(parts);
   if (!submitted.length)
@@ -227,6 +265,10 @@ async function publicPage(row, env) {
   return collectionPage(row, data, parts);
 }
 
+/* No fill on this one. Collection is over — the thing a bar would have
+   been counting up to has happened, and this page's .page-sub is the
+   prompt rather than a count, so a track under it would be the only
+   thing carrying a number. The answer key below is the state now. */
 function revealedPage(row, data, parts) {
   const body = `
 <main class="wrap page">
@@ -238,6 +280,9 @@ function revealedPage(row, data, parts) {
   <p class="lede">The answers are in. Each fact below, and the person behind it.</p>
   ${answerKey(parts)}
 
+  ${ownCta("fact",
+    "Need an icebreaker for your next meeting?",
+    "Make your own")}
   <footer class="page-foot">
     <p class="fine">Played it already? The organiser can start a fresh round
     any time — new names, new facts.</p>
@@ -248,9 +293,6 @@ function revealedPage(row, data, parts) {
 }
 
 function collectionPage(row, data, parts) {
-  const claimed = parts.filter((p) => p.claimed_at).length;
-  const inCount = parts.filter((p) => pfact(p)).length;
-
   const cards = parts.map((p) => {
     if (!p.claimed_at) {
       return `<li><button class="fact-name" type="button" data-name="${esc(p.name)}">
@@ -269,7 +311,8 @@ function collectionPage(row, data, parts) {
 <main class="wrap page">
   <p class="kicker">Fact Matcher — the facts are being collected</p>
   <h1>${esc(row.title || "Fact Matcher")}</h1>
-  <p class="page-sub">${parts.length} on the list · ${claimed} joined · ${inCount} fact${inCount === 1 ? "" : "s"} in</p>
+  <p class="page-sub">${subLine(parts, false)}</p>
+  ${leadFill(parts)}
   ${noteBlock(data)}
 
   <div class="fact-banner" id="factBanner" hidden>
@@ -281,9 +324,12 @@ function collectionPage(row, data, parts) {
   write your answer to: <strong>${esc(data.prompt)}</strong>. Nobody sees it
   until the big reveal.</p>
 
-  <p class="form-error" id="factError" hidden></p>
+  <p class="form-error" id="factError" role="alert" hidden></p>
   <ul class="fact-grid">${cards}</ul>
 
+  ${ownCta("fact",
+    "Need an icebreaker for your next meeting?",
+    "Make your own")}
   <footer class="page-foot">
     <p class="fine">One claim per name. Grabbed the wrong one, or someone took
     yours? The organiser can reset it. The answers stay hidden until the
@@ -421,8 +467,6 @@ async function participantPage(prow, row, env) {
 async function editPage(row, env, origin) {
   const data = JSON.parse(row.data);
   const parts = await allParticipants(env, row.id);
-  const claimed = parts.filter((p) => p.claimed_at).length;
-  const inCount = parts.filter((p) => pfact(p)).length;
   const revealed = !!data.revealed;
   const shareUrl = `${origin}/s/${row.slug}`;
 
@@ -453,14 +497,18 @@ async function editPage(row, env, origin) {
 
   <p class="kicker">Organiser view</p>
   <h1>${esc(row.title || "Fact Matcher")}</h1>
-  <p class="page-sub">${parts.length} on the list · ${claimed} joined · ${inCount} fact${inCount === 1 ? "" : "s"} in${revealed ? " · revealed" : ""}</p>
+  <p class="page-sub">${subLine(parts, revealed)}</p>
+  ${leadFill(parts)}
   ${noteBlock(data)}
+
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("fact", row.title || "Fact Matcher")}
 
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link — everyone claims their name and adds a fact</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("🔎 Fun-facts icebreaker — claim your name and add one secret fact before the big reveal (takes 20 seconds): " + shareUrl, row.edit_token)}
@@ -484,6 +532,7 @@ async function editPage(row, env, origin) {
   ${revealed
     ? `<p class="lede">Revealed. Everyone with the shared link can now see who said what.</p>`
     : `<p class="lede">Read these out and let the room guess. Names appear here once you reveal.</p>`}
+  <button class="btn" id="printBtn" type="button">Print the answer key</button>
   ${readout}
 
   <div class="organiser-actions">
@@ -504,6 +553,7 @@ async function editPage(row, env, origin) {
 <script>
 (function () {
   var token = ${JSON.stringify(row.edit_token)};
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   document.getElementById("copyBtn").addEventListener("click", function () {
     var input = document.getElementById("shareUrl");
     input.select();

@@ -12,7 +12,7 @@
    ============================================================ */
 import {
   esc, json, html, randomString, badInput, pageShell,
-  getBySlug, getByToken, createInstance, deleteInstance, logEvent, ownCta, shareNudge,
+  getBySlug, getByToken, createInstance, deleteInstance, logEvent, ownCta, shareNudge, cardPreview, fillTrack,
 } from "../lib.js";
 
 const MAX_TITLE = 80;
@@ -189,6 +189,21 @@ async function adminData(token, env) {
 
 /* ---------- rendering --------------------------------------- */
 
+/* The section rung, one per shift. Same shape as lib.js's fillTrack —
+   notched at M <= 24, nothing when M is falsy — but drawn with the
+   .fill-sect geometry (10px, 2px --ink) rather than the lead rung's
+   .fill-track (22px, 3px --ink). There's no shared helper for this one:
+   fillTrack owns the one lead rung a page gets, and a section rung is a
+   per-shift repeat of the same two numbers, so it stays local to the
+   tool that draws it rather than growing lib.js a second export for a
+   shape only the bounded board-style tools use. */
+function fillSect(n, m) {
+  if (!Number.isFinite(m) || m <= 0) return "";
+  const done = Math.min(m, Math.max(0, Number(n) || 0));
+  return `
+      <div class="fill-sect${m <= 24 ? " notched" : ""}" style="--n:${done};--m:${m}" aria-hidden="true"><i></i></div>`;
+}
+
 function board(data, bySlot, organiser) {
   return data.shifts.map((shift, si) => {
     let filled = 0;
@@ -212,7 +227,7 @@ function board(data, bySlot, organiser) {
       } else {
         cards.push(`
       <li class="rost-slot open" data-slot="${sid}">
-        <button class="btn rost-put" type="button">Put me down</button>
+        <button class="btn primary rost-put" type="button">Put me down</button>
         <form class="rost-form" hidden>
           <input type="text" name="name" maxlength="${MAX_NAME}" placeholder="Your name" aria-label="Your name" autocomplete="name">
           <input type="text" name="message" maxlength="${MAX_MESSAGE}" placeholder="Note for the coordinator (optional) — phone, 'can bring urn'" aria-label="Note (optional)">
@@ -228,8 +243,8 @@ function board(data, bySlot, organiser) {
     const full = filled >= shift.capacity;
     return `
   <section class="rost-shift">
-    <h2 class="rost-shift-head">${esc(shift.label)} <span class="rost-count">— ${filled} of ${shift.capacity} filled</span>${
-      full ? ` <span class="rost-tick" role="img" aria-label="fully staffed">✓</span>` : ""}</h2>
+    <h2 class="rost-shift-head">${esc(shift.label)} <span class="rost-count">— <strong>${filled}</strong> of ${shift.capacity} filled</span>${
+      full ? ` <span class="rost-tick" role="img" aria-label="fully staffed">✓</span>` : ""}</h2>${fillSect(filled, shift.capacity)}
     <ul class="rost-grid">${cards.join("")}
     </ul>
   </section>`;
@@ -246,7 +261,17 @@ function topMeta(data) {
 function subLine(data, claimCount) {
   const total = data.shifts.reduce((s, c) => s + c.capacity, 0);
   const n = data.shifts.length;
-  return `${claimCount} of ${total} spots filled · ${n} ${n === 1 ? "shift" : "shifts"}`;
+  const full = claimCount >= total;
+  return `<strong>${claimCount}</strong> of ${total} spots filled · ${n} ${n === 1 ? "shift" : "shifts"}${
+    full ? ` <span class="rost-tick" role="img" aria-label="fully staffed">✓</span>` : ""}`;
+}
+
+/* The lead rung, one per page. N and total are exactly the two numbers
+   subLine() just put into words above it — this draws the same fact,
+   never a different one. */
+function leadFill(data, claimCount) {
+  const total = data.shifts.reduce((s, c) => s + c.capacity, 0);
+  return fillTrack({ n: claimCount, m: total });
 }
 
 async function publicPage(row, env) {
@@ -260,6 +285,7 @@ async function publicPage(row, env) {
   <p class="kicker">Who's on which shift</p>
   <h1>${esc(row.title || "Volunteer roster")}</h1>
   <p class="page-sub">${subLine(data, claims.length)}</p>
+  ${leadFill(data, claims.length)}
   ${topMeta(data)}
   ${board(data, bySlot, false)}
   ${ownCta("roster",
@@ -412,13 +438,17 @@ async function editPage(row, env, origin) {
   <p class="kicker">Coordinator view</p>
   <h1>${esc(row.title || "Volunteer roster")}</h1>
   <p class="page-sub">${subLine(data, claims.length)}</p>
+  ${leadFill(data, claims.length)}
   ${topMeta(data)}
+
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("roster", row.title || "Volunteer roster")}
 
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link with your volunteers</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("We need hands for " + (row.title || "the day") + " — grab a shift here (takes 20 seconds, no sign-up): " + shareUrl, row.edit_token)}

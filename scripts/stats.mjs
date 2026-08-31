@@ -23,8 +23,13 @@
  * kringle and roles have participant rows from the moment they are created,
  * so a bare EXISTS(participants) would score every fresh instance as a win.
  *
- * sweep and bracket write to neither table. They are structurally
- * unmeasurable here and are labelled as such rather than reported as zero.
+ * sweep and bracket write to neither table, which made them structurally
+ * unmeasurable — not "reads as zero", genuinely no signal at all. Migration
+ * 0004 gives every instance a first_opened_at, set from the generic /s/
+ * handler, so sweep and bracket now read it as their only reach signal.
+ * Rows created before that migration shipped have no first_opened_at and
+ * will never get one retroactively — their reach stays 0 by construction,
+ * same as always, and that is correct rather than a regression.
  *
  * REACHED has no time threshold, and on 26 Aug 2026 that made it lie. It
  * reported 5 of 11 instances as reaching a second person. Every one of those
@@ -68,7 +73,8 @@ const NO_STAMP = "'giftidea','kudos','pulse'";
 const REACHED =
   `(EXISTS (SELECT 1 FROM claims c WHERE c.instance_id = i.id)` +
   ` OR EXISTS (SELECT 1 FROM participants p WHERE p.instance_id = i.id AND p.claimed_at IS NOT NULL)` +
-  ` OR (i.tool_type IN (${NO_STAMP}) AND EXISTS (SELECT 1 FROM participants p2 WHERE p2.instance_id = i.id)))`;
+  ` OR (i.tool_type IN (${NO_STAMP}) AND EXISTS (SELECT 1 FROM participants p2 WHERE p2.instance_id = i.id))` +
+  ` OR (i.tool_type IN ('sweep','bracket') AND i.first_opened_at IS NOT NULL))`;
 
 /* Anything sooner than this after creation is the maker checking their own
    link, not a second person arriving. Five minutes is deliberately generous:
@@ -80,7 +86,8 @@ const LATE = (t) => `julianday(${t}) - julianday(i.created_at) > ${COLD_MINUTES}
 const COLD =
   `(EXISTS (SELECT 1 FROM claims c WHERE c.instance_id = i.id AND ${LATE("c.created_at")})` +
   ` OR EXISTS (SELECT 1 FROM participants p WHERE p.instance_id = i.id AND p.claimed_at IS NOT NULL AND ${LATE("p.claimed_at")})` +
-  ` OR (i.tool_type IN (${NO_STAMP}) AND EXISTS (SELECT 1 FROM participants p2 WHERE p2.instance_id = i.id AND ${LATE("p2.created_at")})))`;
+  ` OR (i.tool_type IN (${NO_STAMP}) AND EXISTS (SELECT 1 FROM participants p2 WHERE p2.instance_id = i.id AND ${LATE("p2.created_at")}))` +
+  ` OR (i.tool_type IN ('sweep','bracket') AND i.first_opened_at IS NOT NULL AND ${LATE("i.first_opened_at")}))`;
 
 const rows = sql(
   `SELECT i.tool_type AS tool, COUNT(*) AS made,` +
@@ -112,7 +119,7 @@ console.log("  " + "-".repeat(47));
 let made = 0, shared = 0, reached = 0, cold = 0;
 for (const r of rows) {
   made += r.made; shared += r.shared; reached += r.reached; cold += r.cold;
-  const note = UNMEASURABLE.has(r.tool) ? "   (reach not recorded)" : "";
+  const note = UNMEASURABLE.has(r.tool) ? "   (reach: first_opened_at only, since migration 0004)" : "";
   console.log(`  ${pad(r.tool, 11)}${num(r.made, 5)}${num(r.shared, 8)}${num(r.reached, 9)}${num(r.cold, 7)}${num(r.touched, 8)}${note}`);
 }
 console.log("  " + "-".repeat(47));
@@ -131,7 +138,7 @@ console.log("");
 
 console.log("  refused creates (a person pressed the button and got nothing):");
 if (!fails.length) console.log("    none recorded");
-for (const f of fails) console.log(`    ${pad(f.tool, 11)} ${pad(f.kind, 10)} ${f.n}`);
+for (const f of fails) console.log(`    ${pad(f.tool, 11)} ${pad(f.kind, 22)} ${f.n}`);
 
 console.log("\n  clicks back from a shared page (foot = credit line, cta = completion prompt):");
 if (!via.length) console.log("    none recorded");
@@ -145,7 +152,10 @@ if (top && top < 50)
 
 console.log(
   `\n  Note: sweep and bracket store no claims or participants, so their\n` +
-  `  'reached' is structurally always 0 — that is not a measurement.\n` +
+  `  reach comes only from first_opened_at (migration 0004) — whether anyone\n` +
+  `  opened the shared page at all, not who or how many. Instances made\n` +
+  `  before that migration shipped will never get one and read as 0 forever;\n` +
+  `  that is old data lacking the column, not the tool failing to reach anyone.\n` +
   `  Read 'refused creates' against 'made': both zero means nobody is\n` +
   `  pressing the button, which is a geometry problem, not a broken API.\n`
 );

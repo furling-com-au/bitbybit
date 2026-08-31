@@ -80,18 +80,31 @@ if (problems.length) {
   process.exit(1);
 }
 
+/* team-picker is one-tap (B9): the names list is seeded as real textarea
+   content, not a placeholder, so the shuffle button works on first tap
+   instead of sitting disabled with nothing typed. Every other tool here
+   still asks the visitor to type their own list, so a placeholder is right
+   for them. */
+const SEEDED_VALUE = new Set(["team-picker"]);
+
 let changed = 0, already = 0;
 for (const [dir, p] of Object.entries(PROFILES)) {
   const file = `public/${dir}/index.html`;
   const html = readFileSync(file, "utf8");
   const want = p.names.join("\n");
 
-  /* The only multi-line placeholder on these pages is the list field. */
-  const re = /placeholder="([^"]*\n[^"]*)"/;
+  const re = SEEDED_VALUE.has(dir)
+    ? /(<textarea id="names"[^>]*>)([^<]*)(<\/textarea>)/
+    : /placeholder="([^"]*\n[^"]*)"/;
   const m = html.match(re);
-  if (!m) { console.error(`  ! ${dir}: no multi-line placeholder to replace`); process.exit(1); }
-  if (m[1] === want) { already++; continue; }
-  writeFileSync(file, html.replace(re, `placeholder="${want}"`));
+  if (!m) {
+    console.error(`  ! ${dir}: no ${SEEDED_VALUE.has(dir) ? "#names textarea" : "multi-line placeholder"} to replace`);
+    process.exit(1);
+  }
+  const current = SEEDED_VALUE.has(dir) ? m[2] : m[1];
+  if (current === want) { already++; continue; }
+  const replacement = SEEDED_VALUE.has(dir) ? `$1${want}$3` : `placeholder="${want}"`;
+  writeFileSync(file, html.replace(re, replacement));
   changed++;
 }
 

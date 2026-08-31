@@ -119,6 +119,7 @@ import { parseNames, findDuplicate, previewSummary, renderKringlePreview, esc }
 
       const editUrl = `/e/${data.editToken}`;
       savePrev({ title, editUrl, at: new Date().toISOString() });
+      if (window.bbbRemember) window.bbbRemember("kringle", title, editUrl);
       location.href = editUrl;
     } catch (ex) {
       fail(ex.message || "Something went wrong — try again.");

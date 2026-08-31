@@ -21,8 +21,19 @@
   };
   const LS_KEY = "bbb:coffee-made:v1";
 
+  /* Mirrors MAX_NAME_LEN in src/tools/coffee.js, and it has to. The server
+     truncates each name to forty characters and only THEN looks for
+     duplicates, so two names that agree for forty characters are one name by
+     the time they are stored. Parsing here without the same cut let the
+     browser see two distinct names, pass its own duplicate check below, and
+     post a list the server refused with a message quoting a name the typist
+     can plainly see only once. Same fix as public/preview/kringle.js. */
+  const MAX_NAME_LEN = 40;
+
   const lines = (el) =>
-    listPieces($(el).value).map((s) => s.trim().replace(/\s+/g, " ")).filter(Boolean);
+    listPieces($(el).value)
+      .map((s) => s.trim().replace(/\s+/g, " ").slice(0, MAX_NAME_LEN))
+      .filter(Boolean);
 
   function findDuplicate(names) {
     const seen = new Set();
@@ -136,6 +147,7 @@
 
       const editUrl = `/e/${data.editToken}`;
       savePrev({ title, editUrl, at: new Date().toISOString() });
+      if (window.bbbRemember) window.bbbRemember("coffee", title, editUrl);
       location.href = editUrl;
     } catch (ex) {
       fail(ex.message || "Something went wrong — try again.");

@@ -31,7 +31,7 @@
    ============================================================ */
 import {
   esc, json, html, randomString, shuffle, badInput, pageShell,
-  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge,
+  getBySlug, getByToken, createInstance, deleteInstance, logEvent, shareNudge, ownCta, cardPreview,
 } from "../lib.js";
 
 const MAX_TEAM = 60;
@@ -465,6 +465,9 @@ async function publicPage(row, env) {
 
   ${results}
 
+  ${ownCta("pulse",
+    "Want an honest pulse check on your own team?",
+    "Start your own pulse")}
   <footer class="page-foot">
     <p class="fine"><strong>Nobody can tell it was you.</strong> There are no
     accounts here, no email addresses and no cookies, so there is nothing to
@@ -571,11 +574,14 @@ async function editPage(row, env, origin) {
   <h1>${esc(data.team ? `${data.team} — weekly pulse` : "Weekly pulse")}</h1>
   <p class="page-sub">${esc(data.question || "How was your week?")}</p>
 
+  <p class="share-label">This is what shows when you paste the link:</p>
+  ${cardPreview("pulse", data.team ? `${data.team} — weekly pulse` : "Weekly pulse")}
+
   <div class="share-box">
     <label class="share-label" for="shareUrl">Share this link once — the team bookmarks it</label>
     <div class="share-row">
       <input id="shareUrl" class="share-input" type="text" readonly value="${esc(shareUrl)}">
-      <button class="btn primary" id="copyBtn" type="button">Copy</button>
+      <button class="btn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
   ${shareNudge("Weekly pulse — one tap, takes five seconds, and nobody can tell who said what. Same link every week: " + shareUrl, row.edit_token)}
@@ -591,6 +597,7 @@ async function editPage(row, env, origin) {
   </div>
 
   <h2 class="meal-section-h">Response counts by week</h2>
+  <button class="btn" id="printBtn" type="button">Print this history</button>
   <div class="table-scroll">
     <table class="api-table">
       <thead><tr><th>Week of</th><th>Responses</th><th>Average</th></tr></thead>
@@ -612,6 +619,7 @@ async function editPage(row, env, origin) {
 <script>
 (function () {
   var token = ${JSON.stringify(row.edit_token)};
+  document.getElementById("printBtn").addEventListener("click", function () { window.print(); });
   document.getElementById("copyBtn").addEventListener("click", function () {
     var i = document.getElementById("shareUrl");
     i.select();
