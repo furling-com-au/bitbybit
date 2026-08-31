@@ -44,7 +44,7 @@
     "cupfield": "node scripts/gen-cup-field.mjs"
   },
   "devDependencies": {
-    "wrangler": "^4.0.0"
+    "wrangler": "^4.127.1"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "^2.0.0",
