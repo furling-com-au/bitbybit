@@ -26,6 +26,19 @@
  * mistake than pasting none, and it would render a table that looks finished
  * and is wrong. So a non-empty list must be exactly 24 runners numbered 1-24
  * with no repeats, or the build fails and says which numbers are missing.
+ *
+ * A field that does not exist yet. This one is written from experience: while
+ * building the page I pasted twenty-four past Cup runners with invented
+ * barrier numbers, purely to exercise the declared branch, and the only thing
+ * that stopped them shipping was remembering to undo it before the next
+ * build. On a page whose whole job is telling somebody which horse is number
+ * seven, a reader has no way to know an invented barrier is invented.
+ *
+ * So runners dated before declaredOn now fail the build outright. It is not a
+ * warning, because the failure mode is silent and the cost of it is a page
+ * confidently stating fiction. Pass --preview to render them anyway for a
+ * visual check; the next ordinary build fails again, which is the point — you
+ * cannot deploy without building.
  */
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 
@@ -107,6 +120,16 @@ const data = JSON.parse(readFileSync(DATA, "utf8"));
 const problems = [];
 let written = 0, already = 0, empty = 0;
 
+const PREVIEW = process.argv.includes("--preview");
+
+const daysUntil = (iso) =>
+  Math.ceil((Date.parse(iso + "T00:00:00Z") - Date.parse(todayInSydney() + "T00:00:00Z")) / 86400000);
+
+/* Australian local date, because the field is declared on an Australian
+   Saturday and a build machine on UTC is eleven hours behind it. */
+const todayInSydney = () =>
+  new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Sydney" });
+
 for (const [year, y] of Object.entries(data.years)) {
   const file = `public/melbourne-cup-sweep/${year}/index.html`;
   if (!existsSync(file)) {
@@ -121,6 +144,26 @@ for (const [year, y] of Object.entries(data.years)) {
   }
 
   const runners = y.runners || [];
+
+  /* Runners cannot exist before the day they are declared. */
+  if (runners.length && todayInSydney() < y.declaredOn) {
+    if (!PREVIEW) {
+      problems.push(
+        `${year}: the field is not declared until ${y.declaredOn} (today is ` +
+        `${todayInSydney()} in Sydney), but ${DATA} already lists ` +
+        `${runners.length} runners. A field that does not exist yet must not ` +
+        `ship. Clear them, or pass --preview to render locally for a look.`);
+      continue;
+    }
+    console.warn(
+      `
+  ! PREVIEW ONLY — ${year} runners rendered ${daysUntil(y.declaredOn)} day(s) ` +
+      `before the field is declared.
+  ! This page must not be committed or deployed. ` +
+      `The next plain build will fail until ${DATA} is cleared.
+`);
+  }
+
   if (runners.length) {
     /* A partial or mis-numbered paste must never render as a finished table. */
     const nums = runners.map((r) => Number(r.no));
