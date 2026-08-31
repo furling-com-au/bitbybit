@@ -1,0 +1,25 @@
+{
+  "_comment": [
+    "The declared field for each Melbourne Cup, and the only place it is written.",
+    "public/melbourne-cup-sweep/<year>/index.html is generated from this by",
+    "gen-cup-field.mjs — never edit the field markup in the page by hand.",
+    "",
+    "ON THE MORNING THE FIELD IS DECLARED (the Saturday before the race), the",
+    "whole job is: paste the 24 runners below, npm run build, deploy. That is the",
+    "point of this file — the alternative was hand-editing a table in HTML under",
+    "time pressure on a Saturday, which is how a wrong barrier number ships.",
+    "",
+    "Leave runners empty until the field is official. The page renders a",
+    "draw-by-numbers explanation while it is empty and the runner table once it",
+    "is filled, so it is useful either way and never claims a field it lacks.",
+    "",
+    "runners: { no, horse, barrier }. no is the saddlecloth number 1-24."
+  ],
+  "years": {
+    "2026": {
+      "raceDate": "2026-11-03",
+      "declaredOn": "2026-10-31",
+      "runners": []
+    }
+  }
+}

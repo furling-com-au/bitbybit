@@ -31,7 +31,7 @@ Every year a horse or two is scratched between the draw and the race, and every 
 
 ## Timing
 
-The race runs at **3:00pm AEDT on the first Tuesday of November** — 3 November in 2026. The final field of 24 is declared the Saturday before. You can draw your sweep early using horse numbers 1–24 and match them to the printed field on the day, or wait for the declared field and use names.
+The race runs at **3:00pm AEDT on the first Tuesday of November** — [3 November in 2026](https://bitibybit.com/melbourne-cup-sweep/2026/). The final field of 24 is declared the Saturday before. You can draw your sweep early using horse numbers 1–24 and match them to the printed field on the day, or wait for the declared field and use names.
 
 ## Run it without the scissors
 

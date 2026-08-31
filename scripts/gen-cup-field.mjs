@@ -1,0 +1,138 @@
+/* Render each Melbourne Cup year page's field block from scripts/cup-field.json.
+ * Run: node scripts/gen-cup-field.mjs
+ *
+ * WHY A GENERATOR FOR ONE TABLE
+ *
+ * The field of 24 is declared the Saturday before the race — 31 October for
+ * the 2026 Cup, three days out. That is the worst possible moment to be
+ * hand-editing a table in HTML: one afternoon, real traffic arriving, and a
+ * mistyped barrier number that nothing would catch. So the page ships in
+ * September with the block generated empty, and the job on the Saturday is to
+ * paste 24 rows into a JSON file and run the build.
+ *
+ * The same reasoning as gen-live-preview.mjs: the page owns the words, this
+ * owns the part that changes, and the fence marks the seam.
+ *
+ * TWO STATES, BOTH USEFUL
+ *
+ * Empty runners renders the draw-by-numbers explanation, which is the correct
+ * advice for anyone running a sweep before the field exists — and that is most
+ * of October. A filled list renders the runner table. The page is never a stub
+ * waiting for data and never claims a field it does not have.
+ *
+ * WHAT IT REFUSES TO SHIP
+ *
+ * A partial field. Pasting 18 of 24 rows on the Saturday is a far more likely
+ * mistake than pasting none, and it would render a table that looks finished
+ * and is wrong. So a non-empty list must be exactly 24 runners numbered 1-24
+ * with no repeats, or the build fails and says which numbers are missing.
+ */
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+
+const DATA = "scripts/cup-field.json";
+const FENCE = /([ \t]*)<!-- cup-field:start -->[\s\S]*?<!-- cup-field:end -->/;
+const FIELD_SIZE = 24;
+
+const esc = (s) =>
+  String(s).replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+/* "2026-11-03" -> "Tuesday 3 November 2026". The site writes dates in words,
+   and a page about one specific race should not make anyone parse an ISO
+   string to find out when it is. */
+function longDate(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("en-AU", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
+  });
+}
+
+const undeclared = (year, declaredOn) => `<p>The field for the ${year} Cup is
+    not declared yet — that happens on <strong>${longDate(declaredOn)}</strong>,
+    three days out. Until then the runners genuinely do not exist, and no site
+    can tell you what they are.</p>
+
+    <p>That does not stop you drawing. <strong>Draw the numbers 1 to 24
+    now</strong> and match them to the saddlecloths on the day — the draw is
+    the part that needs organising, and it is fair whether or not anyone knows
+    which horse is number 7 yet. This page fills in with the real field the
+    morning it is declared.</p>`;
+
+const declaredTable = (year, runners) => `<p>The declared field for the ${year}
+    Melbourne Cup, by saddlecloth number. This is the list to draw from.</p>
+
+    <div class="status-wrap">
+      <table class="status-table">
+        <thead>
+          <tr><th>No.</th><th>Horse</th><th>Barrier</th></tr>
+        </thead>
+        <tbody>
+${runners.map((r) => `          <tr><td class="st-name">${esc(r.no)}</td><td>${esc(r.horse)}</td><td>${esc(r.barrier)}</td></tr>`).join("\n")}
+        </tbody>
+      </table>
+    </div>`;
+
+const data = JSON.parse(readFileSync(DATA, "utf8"));
+const problems = [];
+let written = 0, already = 0, empty = 0;
+
+for (const [year, y] of Object.entries(data.years)) {
+  const file = `public/melbourne-cup-sweep/${year}/index.html`;
+  if (!existsSync(file)) {
+    problems.push(`${DATA} has ${year} but there is no page at ${file}`);
+    continue;
+  }
+  const html = readFileSync(file, "utf8");
+  const fence = html.match(FENCE);
+  if (!fence) {
+    problems.push(`${file} has no <!-- cup-field --> fence to render into`);
+    continue;
+  }
+
+  const runners = y.runners || [];
+  if (runners.length) {
+    /* A partial or mis-numbered paste must never render as a finished table. */
+    const nums = runners.map((r) => Number(r.no));
+    const missing = Array.from({ length: FIELD_SIZE }, (_, i) => i + 1)
+      .filter((n) => !nums.includes(n));
+    if (runners.length !== FIELD_SIZE || missing.length) {
+      problems.push(
+        `${year}: the field must be ${FIELD_SIZE} runners numbered 1-${FIELD_SIZE} — ` +
+        `got ${runners.length}${missing.length ? `, missing ${missing.join(", ")}` : ""}`);
+      continue;
+    }
+    if (new Set(nums).size !== nums.length)
+      { problems.push(`${year}: two runners share a saddlecloth number`); continue; }
+    runners.sort((a, b) => a.no - b.no);
+  } else {
+    empty++;
+  }
+
+  const body = runners.length
+    ? declaredTable(year, runners)
+    : undeclared(year, y.declaredOn);
+
+  const indent = fence[1];
+  const block =
+    `${indent}<!-- cup-field:start -->\n` +
+    `${indent}<!-- Generated by scripts/gen-cup-field.mjs from scripts/cup-field.json.\n` +
+    `${indent}     Do not edit by hand — the next build will overwrite it. -->\n` +
+    `${indent}${body}\n` +
+    `${indent}<!-- cup-field:end -->`;
+
+  const next = html.replace(FENCE, block);
+  if (next === html) { already++; continue; }
+  writeFileSync(file, next);
+  written++;
+}
+
+console.log(
+  `cup field: ${Object.keys(data.years).length} year(s), ${written} rewritten, ` +
+  `${already} already current, ${empty} awaiting a declared field`);
+
+if (problems.length) {
+  console.error("\n  ! The Cup field pages could not be generated.\n");
+  for (const p of problems) console.error(`      ${p}`);
+  console.error("");
+  process.exit(1);
+}

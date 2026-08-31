@@ -8,6 +8,7 @@ The classic sweep assumes twenty-four people, a hat and a tin of gold coins. Mos
 - What to play for
 - No money at all
 - Remote, schools, clubs
+- [The 2026 field](https://bitibybit.com/melbourne-cup-sweep/2026/)
 
 ## Start with how many people you've got
 
