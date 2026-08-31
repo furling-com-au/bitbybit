@@ -62,6 +62,13 @@ DuckDuckGo and friends which pages actually changed. Ownership is proved by
 Only pages whose HTML hash moved are submitted, so a rebuild that changes
 nothing sends nothing. Preview it with `npm run indexnow -- --dry-run`.
 
+`npm run build` regenerates `public/sitemap.xml`. Each URL's `<lastmod>`
+comes from `scripts/sitemap-lastmod.json`, which records a content hash and
+a date per page and only advances the date when the hash moves — a build
+that rewrites every file with identical bytes changes no dates. **Commit
+that manifest.** It is the only record of when each page really changed; if
+it is missing, the next build stamps the whole site with today.
+
 ## Principles
 
 - Free, no accounts, no tracking, no ads.

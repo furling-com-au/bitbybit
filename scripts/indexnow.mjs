@@ -14,13 +14,16 @@
  * in public/ whose name is its own contents, which is exactly what makes a key
  * file a key file. Two copies of a key is how a rotation half-happens.
  *
- * WHICH URLS. The protocol asks for pages that CHANGED, not the catalogue. Two
- * obvious sources are both wrong:
+ * WHICH URLS. The protocol asks for pages that CHANGED, not the catalogue.
+ * Neither obvious source is the right key:
  *
- *   - the sitemap's own lastmod is a file mtime, and npm run build rewrites
- *     most of public/ whether or not the bytes moved, so mtime says "all 100
- *     pages changed" on every deploy. That is a submission a crawler is right
- *     to start ignoring.
+ *   - the sitemap's own lastmod looks like the answer and used to be a
+ *     trap: it was a file mtime, and npm run build rewrites most of public/
+ *     whether or not the bytes moved, so it said "all 54 pages changed" on
+ *     every deploy. gen-sitemap now derives lastmod from the same hash this
+ *     script does, so the two finally agree — but this still keys off its own
+ *     state file, because "changed" and "already accepted by the endpoint"
+ *     are different facts and only the second one belongs to this machine.
  *   - "everything, every time" is the same lie with fewer steps, and 429 is
  *     a documented response to it.
  *
@@ -41,7 +44,7 @@
  * actually accepted, so a failed run simply resubmits next time.
  */
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
-import { createHash } from "node:crypto";
+import { pageHash } from "./page-hash.mjs";
 import { join } from "node:path";
 
 const PUB = "public";
@@ -96,7 +99,7 @@ function sitemapPages() {
       console.error(`  ! ${url} is in the sitemap but ${file} does not exist`);
       process.exit(1);
     }
-    out.push({ url, hash: createHash("sha256").update(readFileSync(file)).digest("hex").slice(0, 16) });
+    out.push({ url, hash: pageHash(file) });
   }
   return out;
 }
