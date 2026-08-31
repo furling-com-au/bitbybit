@@ -1,0 +1,4 @@
+# Wrangler serves every file under public/ as a static asset, and it does NOT
+# read .gitignore — a stray file here is published at the site root. This is
+# the only thing that stops that. Checked by scripts/check-public-assets.mjs.
+*.log

@@ -13,6 +13,7 @@ backups/
 # Claude Code's scratch worktrees (a full second copy of the repo).
 .claude/worktrees/
 
-# Dev-server logs. Anything under public/ is served by the assets layer,
-# so a stray log here would be published at the site root.
+# Dev-server logs. Note this only keeps them out of git - wrangler does NOT
+# read .gitignore, so what actually stops a deploy publishing them is
+# public/.assetsignore, checked by scripts/check-public-assets.mjs.
 public/*.log
