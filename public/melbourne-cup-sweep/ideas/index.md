@@ -2,73 +2,91 @@
 
 Twenty-four horses, however many people
 
-The classic sweep assumes twenty-four people, a hat and a tin of gold coins. Most workplaces have none of those. Here's what to do when the numbers don't line up, when the office can't handle cash at all, and how to make a race that lasts three minutes fill an afternoon.
+The classic sweep assumes twenty-four people, a hat and a tin of gold coins. Most offices have none of those. Here's what to do when the numbers don't match, when the workplace can't touch cash, and how to make a three-minute race fill an afternoon.
 
-## When you don't have twenty-four people
+- Your numbers don't fit
+- What to play for
+- No money at all
+- Remote, schools, clubs
 
-This is the real problem with a Cup sweep, and it comes up in every office. The field is twenty-four. Your team is nine. Four options, in rough order of how well they work:
+## Start with how many people you've got
 
-- **Everyone draws more than one.** Nine people, twenty-four horses, so most draw three and a few draw two. Better odds each, and nobody sits the race out. This is the one to reach for first.
-- **Draw the whole field anyway, and pool the spares.** Every horse gets drawn; the leftovers go to the tea fund, the Christmas kitty, or whoever organised it. Keeps the full field in play so the finish is still a real finish.
-- **Shorten the field.** Draw only the first twelve in the betting and ignore the roughies. Faster, and everyone holds something with a chance — though the Cup is the one race a year where a hundred-to-one shot genuinely wins, so you may be throwing away the best story.
-- **Open it up beyond your team.** The floor below, the warehouse, the parents at drop-off. Twenty-four is a lot of people, and a sweep is a reason to talk to somebody you don't normally.
+The field is twenty-four. Your team is nine, or thirty-one. This is the only part of a sweep that genuinely trips people up, and it has four answers:
 
-## When you have more than twenty-four
+| You've got | Do this | What it costs you |
+| --- | --- | --- |
+| Under 24 | Everyone draws two or three horses | Nothing — better odds each, nobody sits it out |
+| Exactly 24 | The textbook sweep, one each | Nothing, and it will never happen again |
+| 25 to 48 | Pairs share a horse and split it | One extra sentence of explaining |
+| Over 48 | Two boards, split by floor or team | Two pots to collect and pay out |
 
-- **Pairs share a horse** and split whatever it pays. Works well up to about forty-eight and needs no extra rules.
-- **Run a second sweep on another race.** There are eight or nine races at Flemington on the day; the Cup is only one of them. Second sweep, different race, same board.
-- **Two boards, two pots.** Simplest of all if you've got sixty people — split by floor or by team and run them side by side.
+Two variations worth knowing. You can **draw the whole field anyway and pool the spares** — every horse gets drawn, the leftovers go to the tea fund — which keeps a full field so the finish is a real finish. Or you can **shorten the field** to the first twelve in the betting, though the Cup is the one race a year where a hundred-to-one shot genuinely wins, so you may be throwing away the best story.
+
+Short on people rather than horses?
+
+A sweep is a
+ reason to talk to somebody you don't normally. The floor below, the
+ warehouse, the parents at drop-off — twenty-four is a lot of people, and
+ the invitation is the point.
+
+## What to play for
+
+First past the post is over in three minutes and pays one person. The sweeps people remember pay several — and the ones at the back of the field are what keep twenty-three people watching.
+
+- **Last place**The wooden spoon is the most reliable laugh on the board.
+- **Second and third**What most offices settle on. The [rules page](https://bitibybit.com/melbourne-cup-sweep/rules/) has the usual percentage splits.
+- **Fashions on the field**Best hat, best op-shop outfit, best effort from someone who clearly forgot.
+- **Closest to the time**Everyone guesses to the tenth of a second when they draw. Ten seconds to set up.
+- **The trifecta**First, second and third in order. Almost nobody gets it, so it rolls over to next year.
 
 ## Sweeps with no money in them at all
 
 Plenty of workplaces genuinely can't run a cash sweep — schools, most government offices, anywhere with a gambling policy, and any team where one person quietly can't spare five dollars. The draw is the fun part, and the draw is free. Play for:
 
-- The good carpark for a week.
-- First pick of the January leave dates.
-- A coffee run, shouted by everyone who drew a horse that finished behind yours.
-- A block of chocolate, a bottle from the Kris Kringle cupboard, or the last of the good biscuits.
-- Leaving an hour early on Friday, which costs the business almost nothing and is worth more than the pot.
-- Nothing. Bragging rights until the following November are a perfectly good prize, and the argument about the photo finish is free.
+- **The good carpark**For a week. Worth more than the pot in most offices.
+- **First pick of leave**The January dates, chosen before anyone else gets a look.
+- **A coffee run**Shouted by everyone whose horse finished behind yours.
+- **An hour early Friday**Costs the business almost nothing.
+- **The good biscuits**Or a block of chocolate, or a bottle from the Kris Kringle cupboard.
+- **Nothing at all**Bragging rights until next November, and the argument about the photo finish is free.
 
-A no-money sweep is also the version you can run with a mixed group without anyone having to opt out of the office thing, which is usually the actual goal.
+This is also the inclusive version.
 
-## Prizes for more than just the winner
+A no-money
+ sweep is the one you can run across a whole mixed team without anybody
+ having to quietly opt out of the office thing — which is usually the
+ actual goal.
 
-First past the post is over in three minutes and pays one person. Most of the good office sweeps pay several:
+## Three situations that need a tweak
 
-- **Last place.** The wooden spoon is the most reliable laugh on the board, and it gives twenty-three people something to watch for at the back of the field.
-- **Second and third**, which is what most offices settle on. The [rules page](https://bitibybit.com/melbourne-cup-sweep/rules/) has the usual percentage splits.
-- **Fashions on the field.** Run it in the office — best hat, best op-shop outfit, best effort from someone who clearly forgot.
-- **Closest to the winning time.** Everyone guesses to the tenth of a second when they draw. Costs nothing, takes ten seconds, and gives the people whose horse is beaten at the turn something to still care about.
-- **The trifecta.** A side sweep where people pick first, second and third in order. Almost nobody gets it, which is the point — it usually rolls over to next year.
+### Half the office is at home
 
-## If half the office is at home
+- Draw it online so everyone sees the same board at the same moment — a hat over video never convinces anyone.
+- Share the link *before* the race. The anticipation is the bit remote teams miss.
+- Keep a call open through the race even if nobody talks.
 
-A hat doesn't work over video, and the person holding it always ends up accused of something. Draw it online instead, and share one link so everyone sees the same board at the same moment — the [Cup sweep generator](https://bitibybit.com/melbourne-cup-sweep/) does exactly that and takes about a minute. Then:
+### Schools and kids
 
-- Put the link in the team chat before the race, not after. The anticipation is most of the fun and it's the bit remote teams miss.
-- Keep a call open through the race even if nobody talks. Three minutes of shouting at the same thing is the whole event.
-- Collect money afterwards, by transfer, or don't collect any at all and use the no-money list above.
+- Horse names only, no money. Kids remember the names far longer than adults do.
+- Print the field and let them colour the silks before the race.
+- Two or three each across the class; the winner picks the Friday afternoon activity.
 
-## Schools, clubs and kids
+### Clubs and fundraisers
 
-- Draw for horse names only, no money. Kids remember the names far longer than adults do.
-- Print the field and let them colour in the silks for their horse before the race.
-- Sweep the whole class, two or three each, and the winner picks the Friday afternoon activity.
-- For a sports club, the sweep is a fundraiser: entries to the club, a set prize off the top, and the rest to the season kitty. Say which it is on the sheet before anyone draws.
+- Entries to the club, one set prize off the top, the rest to the season kitty.
+- Say which it is on the sheet *before* anyone draws.
+- A second sweep on another race doubles the take without doubling the admin.
 
 ## Making three minutes last an afternoon
 
-The race is over quickly and the sweep is over quicker. What actually fills the day:
-
-- Draw in the morning, not at 2:55pm. A board up on the wall from nine o'clock gets talked about all day.
-- Pin the sheet somewhere everyone walks past — the [printable version](https://bitibybit.com/melbourne-cup-sweep/printable/) exists for the tearoom wall, and a screen nobody walks past is not the same thing.
-- Bring-a-plate lunch alongside it. If you want the food sorted without six people bringing pavlova, a [potluck board](https://bitibybit.com/bring-a-plate/) handles the list.
-- Book the room and the screen a week early. Every year someone doesn't, and everyone watches on a phone.
+- **Draw in the morning, not at 2:55pm.** A board on the wall from nine o'clock gets talked about all day.
+- **Pin it somewhere people walk past.** The [printable sheet](https://bitibybit.com/melbourne-cup-sweep/printable/) exists for the tearoom wall; a screen nobody walks past is not the same thing.
+- **Bring-a-plate lunch alongside it.** A [potluck board](https://bitibybit.com/bring-a-plate/) stops six people bringing pavlova.
+- **Book the room and the screen a week early.** Every year someone doesn't, and everyone watches on a phone.
 
 ## Run it without the scissors
 
-The [Cup sweep generator](https://bitibybit.com/melbourne-cup-sweep/) does the drawing and the sharing — paste your names, hit draw, send one link. Free, no signup, and it deliberately never touches the money: collect the gold coins however your office always has. If you want the rules and the pot conventions settled first, that's the [sweep rules page](https://bitibybit.com/melbourne-cup-sweep/rules/).
+The [Cup sweep generator](https://bitibybit.com/melbourne-cup-sweep/) does the drawing and the sharing — paste your names, hit draw, send one link. Free, no signup, and it deliberately never touches the money: collect the gold coins however your office always has. For the pot conventions and the scratchings argument, that's the [sweep rules page](https://bitibybit.com/melbourne-cup-sweep/rules/).
 
 ## Common questions
 

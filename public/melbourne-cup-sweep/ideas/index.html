@@ -17,6 +17,58 @@
 <meta name="theme-color" content="#f4ead8">
 <link rel="icon" href="/favicon.svg">
 <link rel="stylesheet" href="/styles.css">
+<style>
+  /* Page-scoped, same pattern as the plate and hens ideas pages. Every colour
+     is a token, so dark mode needs no second block — see the ink ladder note
+     in styles.css before introducing any literal here. */
+
+  /* Someone arrives at this page with ONE problem: a number of people, or an
+     office that can't take cash. The jump row lets them land on it instead of
+     reading nine sections to find out which one is theirs. */
+  .jump { display: flex; flex-wrap: wrap; gap: .45rem; list-style: none;
+    margin: 0 0 2rem; padding: 0; }
+  .jump a {
+    display: inline-block; font-size: .72rem; letter-spacing: .06em;
+    text-transform: uppercase; text-decoration: none;
+    color: var(--ink-soft); background: var(--paper-2);
+    border: 2px solid var(--line); padding: .28rem .65rem;
+  }
+  .jump a:hover, .jump a:focus-visible { color: var(--ink); border-color: var(--ink); }
+
+  /* Prizes are a browsing list, not an argument — you skim it for the one
+     that suits your office. Sentences in a bulleted column made people read
+     all eleven to find the two that applied. */
+  .prizes { display: grid; gap: .6rem; list-style: none; margin: 1.1rem 0 0;
+    padding: 0; grid-template-columns: repeat(auto-fit, minmax(265px, 1fr)); }
+  .prizes li { background: var(--paper-2); border: 2px solid var(--line);
+    padding: .6rem .75rem; font-size: .88rem; line-height: 1.5;
+    color: var(--ink-soft); }
+  .prizes b { display: block; color: var(--ink); font-size: .8rem;
+    letter-spacing: .04em; text-transform: uppercase; margin-bottom: .15rem; }
+
+  .tip { background: var(--paper-2); border-left: 6px solid var(--sage-dark);
+    padding: .8rem 1.05rem; margin: 1.3rem 0; font-size: .88rem; line-height: 1.7;
+    color: var(--ink-soft); max-width: 54ch; }
+  .tip b { color: var(--ink); }
+
+  /* .content caps at 66ch, which is the right measure for READING and the
+     wrong one for scanning: it squeezed both grids to two narrow columns and
+     left the page as tall as the prose version it replaced. So the sections
+     built from blocks get the full wrap width and their prose is pulled back
+     to the reading measure individually. */
+  #numbers, #prizes, #nomoney, #situations { max-width: none; }
+  #numbers > p, #prizes > p, #nomoney > p, #situations > p,
+  .tip { max-width: 62ch; }
+
+  /* The three short "situation" blocks read as one comparison rather than
+     three more h2s in a stack of nine. */
+  .cases { display: grid; gap: 1.4rem; margin-top: 1.2rem;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
+  .cases section { border-top: 3px solid var(--ink); padding-top: .6rem; }
+  .cases h3 { margin: 0 0 .35rem; }
+  .cases ul { margin: .4rem 0 0; padding-left: 1.1rem; }
+  .cases li { font-size: .9rem; line-height: 1.55; }
+</style>
 </head>
 <body class="article">
 <header class="site-head wrap">
@@ -31,136 +83,168 @@
   <p class="kicker">Twenty-four horses, however many people</p>
   <h1>Melbourne Cup sweep ideas</h1>
   <p class="lede">The classic sweep assumes twenty-four people, a hat and a
-  tin of gold coins. Most workplaces have none of those. Here's what to do
-  when the numbers don't line up, when the office can't handle cash at all,
-  and how to make a race that lasts three minutes fill an afternoon.</p>
+  tin of gold coins. Most offices have none of those. Here's what to do when
+  the numbers don't match, when the workplace can't touch cash, and how to
+  make a three-minute race fill an afternoon.</p>
 
-  <section class="content">
-    <h2>When you don't have twenty-four people</h2>
-    <p>This is the real problem with a Cup sweep, and it comes up in every
-    office. The field is twenty-four. Your team is nine. Four options, in
-    rough order of how well they work:</p>
-    <ul>
-      <li><strong>Everyone draws more than one.</strong> Nine people, twenty-four
-      horses, so most draw three and a few draw two. Better odds each, and
-      nobody sits the race out. This is the one to reach for first.</li>
-      <li><strong>Draw the whole field anyway, and pool the spares.</strong>
-      Every horse gets drawn; the leftovers go to the tea fund, the Christmas
-      kitty, or whoever organised it. Keeps the full field in play so the
-      finish is still a real finish.</li>
-      <li><strong>Shorten the field.</strong> Draw only the first twelve in the
-      betting and ignore the roughies. Faster, and everyone holds something
-      with a chance — though the Cup is the one race a year where a hundred-to-one
-      shot genuinely wins, so you may be throwing away the best story.</li>
-      <li><strong>Open it up beyond your team.</strong> The floor below, the
-      warehouse, the parents at drop-off. Twenty-four is a lot of people, and
-      a sweep is a reason to talk to somebody you don't normally.</li>
+  <ul class="jump">
+    <li><a href="#numbers">Your numbers don't fit</a></li>
+    <li><a href="#prizes">What to play for</a></li>
+    <li><a href="#nomoney">No money at all</a></li>
+    <li><a href="#situations">Remote, schools, clubs</a></li>
+  </ul>
+
+  <section class="content" id="numbers">
+    <h2>Start with how many people you've got</h2>
+    <p>The field is twenty-four. Your team is nine, or thirty-one. This is the
+    only part of a sweep that genuinely trips people up, and it has four
+    answers:</p>
+
+    <div class="status-wrap">
+      <table class="status-table">
+        <thead>
+          <tr><th>You've got</th><th>Do this</th><th>What it costs you</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="st-name">Under 24</td>
+            <td>Everyone draws two or three horses</td>
+            <td>Nothing — better odds each, nobody sits it out</td>
+          </tr>
+          <tr>
+            <td class="st-name">Exactly 24</td>
+            <td>The textbook sweep, one each</td>
+            <td>Nothing, and it will never happen again</td>
+          </tr>
+          <tr>
+            <td class="st-name">25 to 48</td>
+            <td>Pairs share a horse and split it</td>
+            <td>One extra sentence of explaining</td>
+          </tr>
+          <tr>
+            <td class="st-name">Over 48</td>
+            <td>Two boards, split by floor or team</td>
+            <td>Two pots to collect and pay out</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Two variations worth knowing. You can <strong>draw the whole field
+    anyway and pool the spares</strong> — every horse gets drawn, the leftovers
+    go to the tea fund — which keeps a full field so the finish is a real
+    finish. Or you can <strong>shorten the field</strong> to the first twelve
+    in the betting, though the Cup is the one race a year where a hundred-to-one
+    shot genuinely wins, so you may be throwing away the best story.</p>
+
+    <div class="tip"><b>Short on people rather than horses?</b> A sweep is a
+    reason to talk to somebody you don't normally. The floor below, the
+    warehouse, the parents at drop-off — twenty-four is a lot of people, and
+    the invitation is the point.</div>
+  </section>
+
+  <section class="content" id="prizes">
+    <h2>What to play for</h2>
+    <p>First past the post is over in three minutes and pays one person. The
+    sweeps people remember pay several — and the ones at the back of the field
+    are what keep twenty-three people watching.</p>
+    <ul class="prizes">
+      <li><b>Last place</b>The wooden spoon is the most reliable laugh on the
+      board.</li>
+      <li><b>Second and third</b>What most offices settle on. The
+      <a href="/melbourne-cup-sweep/rules/">rules page</a> has the usual
+      percentage splits.</li>
+      <li><b>Fashions on the field</b>Best hat, best op-shop outfit, best
+      effort from someone who clearly forgot.</li>
+      <li><b>Closest to the time</b>Everyone guesses to the tenth of a second
+      when they draw. Ten seconds to set up.</li>
+      <li><b>The trifecta</b>First, second and third in order. Almost nobody
+      gets it, so it rolls over to next year.</li>
     </ul>
+  </section>
 
-    <h2>When you have more than twenty-four</h2>
-    <ul>
-      <li><strong>Pairs share a horse</strong> and split whatever it pays. Works
-      well up to about forty-eight and needs no extra rules.</li>
-      <li><strong>Run a second sweep on another race.</strong> There are eight
-      or nine races at Flemington on the day; the Cup is only one of them.
-      Second sweep, different race, same board.</li>
-      <li><strong>Two boards, two pots.</strong> Simplest of all if you've got
-      sixty people — split by floor or by team and run them side by side.</li>
-    </ul>
-
+  <section class="content" id="nomoney">
     <h2>Sweeps with no money in them at all</h2>
     <p>Plenty of workplaces genuinely can't run a cash sweep — schools, most
     government offices, anywhere with a gambling policy, and any team where
-    one person quietly can't spare five dollars. The draw is the fun part,
-    and the draw is free. Play for:</p>
-    <ul>
-      <li>The good carpark for a week.</li>
-      <li>First pick of the January leave dates.</li>
-      <li>A coffee run, shouted by everyone who drew a horse that finished
-      behind yours.</li>
-      <li>A block of chocolate, a bottle from the Kris Kringle cupboard, or
-      the last of the good biscuits.</li>
-      <li>Leaving an hour early on Friday, which costs the business almost
-      nothing and is worth more than the pot.</li>
-      <li>Nothing. Bragging rights until the following November are a
-      perfectly good prize, and the argument about the photo finish is free.</li>
+    one person quietly can't spare five dollars. The draw is the fun part, and
+    the draw is free. Play for:</p>
+    <ul class="prizes">
+      <li><b>The good carpark</b>For a week. Worth more than the pot in most
+      offices.</li>
+      <li><b>First pick of leave</b>The January dates, chosen before anyone
+      else gets a look.</li>
+      <li><b>A coffee run</b>Shouted by everyone whose horse finished behind
+      yours.</li>
+      <li><b>An hour early Friday</b>Costs the business almost nothing.</li>
+      <li><b>The good biscuits</b>Or a block of chocolate, or a bottle from
+      the Kris Kringle cupboard.</li>
+      <li><b>Nothing at all</b>Bragging rights until next November, and the
+      argument about the photo finish is free.</li>
     </ul>
-    <p>A no-money sweep is also the version you can run with a mixed group
-    without anyone having to opt out of the office thing, which is usually
-    the actual goal.</p>
+    <div class="tip"><b>This is also the inclusive version.</b> A no-money
+    sweep is the one you can run across a whole mixed team without anybody
+    having to quietly opt out of the office thing — which is usually the
+    actual goal.</div>
+  </section>
 
-    <h2>Prizes for more than just the winner</h2>
-    <p>First past the post is over in three minutes and pays one person. Most
-    of the good office sweeps pay several:</p>
-    <ul>
-      <li><strong>Last place.</strong> The wooden spoon is the most reliable
-      laugh on the board, and it gives twenty-three people something to watch
-      for at the back of the field.</li>
-      <li><strong>Second and third</strong>, which is what most offices settle
-      on. The <a href="/melbourne-cup-sweep/rules/">rules page</a> has the
-      usual percentage splits.</li>
-      <li><strong>Fashions on the field.</strong> Run it in the office — best
-      hat, best op-shop outfit, best effort from someone who clearly forgot.</li>
-      <li><strong>Closest to the winning time.</strong> Everyone guesses to
-      the tenth of a second when they draw. Costs nothing, takes ten seconds,
-      and gives the people whose horse is beaten at the turn something to
-      still care about.</li>
-      <li><strong>The trifecta.</strong> A side sweep where people pick first,
-      second and third in order. Almost nobody gets it, which is the point —
-      it usually rolls over to next year.</li>
-    </ul>
+  <section class="content" id="situations">
+    <h2>Three situations that need a tweak</h2>
+    <div class="cases">
+      <section>
+        <h3>Half the office is at home</h3>
+        <ul>
+          <li>Draw it online so everyone sees the same board at the same
+          moment — a hat over video never convinces anyone.</li>
+          <li>Share the link <em>before</em> the race. The anticipation is the
+          bit remote teams miss.</li>
+          <li>Keep a call open through the race even if nobody talks.</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Schools and kids</h3>
+        <ul>
+          <li>Horse names only, no money. Kids remember the names far longer
+          than adults do.</li>
+          <li>Print the field and let them colour the silks before the race.</li>
+          <li>Two or three each across the class; the winner picks the Friday
+          afternoon activity.</li>
+        </ul>
+      </section>
+      <section>
+        <h3>Clubs and fundraisers</h3>
+        <ul>
+          <li>Entries to the club, one set prize off the top, the rest to the
+          season kitty.</li>
+          <li>Say which it is on the sheet <em>before</em> anyone draws.</li>
+          <li>A second sweep on another race doubles the take without doubling
+          the admin.</li>
+        </ul>
+      </section>
+    </div>
+  </section>
 
-    <h2>If half the office is at home</h2>
-    <p>A hat doesn't work over video, and the person holding it always ends
-    up accused of something. Draw it online instead, and share one link so
-    everyone sees the same board at the same moment — the
-    <a href="/melbourne-cup-sweep/">Cup sweep generator</a> does exactly that
-    and takes about a minute. Then:</p>
-    <ul>
-      <li>Put the link in the team chat before the race, not after. The
-      anticipation is most of the fun and it's the bit remote teams miss.</li>
-      <li>Keep a call open through the race even if nobody talks. Three
-      minutes of shouting at the same thing is the whole event.</li>
-      <li>Collect money afterwards, by transfer, or don't collect any at all
-      and use the no-money list above.</li>
-    </ul>
-
-    <h2>Schools, clubs and kids</h2>
-    <ul>
-      <li>Draw for horse names only, no money. Kids remember the names far
-      longer than adults do.</li>
-      <li>Print the field and let them colour in the silks for their horse
-      before the race.</li>
-      <li>Sweep the whole class, two or three each, and the winner picks the
-      Friday afternoon activity.</li>
-      <li>For a sports club, the sweep is a fundraiser: entries to the club,
-      a set prize off the top, and the rest to the season kitty. Say which
-      it is on the sheet before anyone draws.</li>
-    </ul>
-
+  <section class="content">
     <h2>Making three minutes last an afternoon</h2>
-    <p>The race is over quickly and the sweep is over quicker. What actually
-    fills the day:</p>
     <ul>
-      <li>Draw in the morning, not at 2:55pm. A board up on the wall from
-      nine o'clock gets talked about all day.</li>
-      <li>Pin the sheet somewhere everyone walks past — the
-      <a href="/melbourne-cup-sweep/printable/">printable version</a> exists
-      for the tearoom wall, and a screen nobody walks past is not the same
-      thing.</li>
-      <li>Bring-a-plate lunch alongside it. If you want the food sorted
-      without six people bringing pavlova, a
-      <a href="/bring-a-plate/">potluck board</a> handles the list.</li>
-      <li>Book the room and the screen a week early. Every year someone
-      doesn't, and everyone watches on a phone.</li>
+      <li><strong>Draw in the morning, not at 2:55pm.</strong> A board on the
+      wall from nine o'clock gets talked about all day.</li>
+      <li><strong>Pin it somewhere people walk past.</strong> The
+      <a href="/melbourne-cup-sweep/printable/">printable sheet</a> exists for
+      the tearoom wall; a screen nobody walks past is not the same thing.</li>
+      <li><strong>Bring-a-plate lunch alongside it.</strong> A
+      <a href="/bring-a-plate/">potluck board</a> stops six people bringing
+      pavlova.</li>
+      <li><strong>Book the room and the screen a week early.</strong> Every
+      year someone doesn't, and everyone watches on a phone.</li>
     </ul>
 
     <h2>Run it without the scissors</h2>
     <p>The <a href="/melbourne-cup-sweep/">Cup sweep generator</a> does the
-    drawing and the sharing — paste your names, hit draw, send one link.
-    Free, no signup, and it deliberately never touches the money: collect
-    the gold coins however your office always has. If you want the rules and
-    the pot conventions settled first, that's the
+    drawing and the sharing — paste your names, hit draw, send one link. Free,
+    no signup, and it deliberately never touches the money: collect the gold
+    coins however your office always has. For the pot conventions and the
+    scratchings argument, that's the
     <a href="/melbourne-cup-sweep/rules/">sweep rules page</a>.</p>
   </section>
 
