@@ -93,4 +93,27 @@ cupScene(112, 32).toPng("public/art/cup-hero.png", 10);
   g.toPng("public/art/og-cup.png", 10);
 }
 
+/* ---------- silk glyphs, for the field diagram ---------------
+   The ideas page has to show "twenty-four horses, eight people, three
+   each". One wide PNG of the whole field would be unreadable at 375px and
+   would carry a cream background into dark mode, so the diagram is
+   composed in HTML from these instead: one horse per file, transparent
+   ground, laid out and grouped by CSS that reflows.
+
+   Only the SILKS vary. The horse is the same bay in every one, which is
+   both how a real field looks and what makes the silk read as the thing
+   identifying a runner. Grouping in the page is done with a bordered cell
+   per person as well as by colour, so the diagram still says "three each"
+   to a reader who cannot separate eight hues. */
+const SILKS = {
+  terra: P.terra, sage: P.sageDark, gold: P.gold, plum: P.plum,
+  sky: P.sky, red: P.red, slate: P.greyDark, grass: P.grass,
+};
+
+for (const [name, silk] of Object.entries(SILKS)) {
+  const g = new Grid(14, 10, null); // null ground = transparent in both themes
+  horse(g, 0, 0, P.brown, P.brownDark, silk);
+  g.toPng(`public/art/silk-${name}.png`, 4); // 56x40 — 2x the 28x20 it renders at
+}
+
 console.log("done");

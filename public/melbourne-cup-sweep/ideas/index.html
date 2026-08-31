@@ -35,6 +35,22 @@
   }
   .jump a:hover, .jump a:focus-visible { color: var(--ink); border-color: var(--ink); }
 
+  /* The field diagram. Composed from eight one-horse PNGs rather than baked
+     as a single wide image: at 375px a 24-across strip is unreadable, and a
+     baked PNG would carry a cream ground into dark mode. The glyphs are
+     transparent, so the theme shows through.
+
+     Grouped by a bordered cell per person AS WELL AS by silk colour, so
+     "three each" still reads for anyone who cannot separate eight hues. */
+  .field { margin: 1.3rem 0 1.5rem; }
+  .field-people { display: grid; gap: .5rem; list-style: none; margin: 0; padding: 0;
+    grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); }
+  .field-people li { display: flex; gap: .15rem; justify-content: center;
+    align-items: center; background: var(--paper-2);
+    border: 2px solid var(--line); padding: .45rem .2rem; }
+  .field-people img { width: 28px; height: 20px; display: block; }
+  .field figcaption { margin-top: .7rem; font-size: .86rem; color: var(--ink-soft); }
+
   /* Prizes are a browsing list, not an argument — you skim it for the one
      that suits your office. Sentences in a bulleted column made people read
      all eleven to find the two that applied. */
@@ -96,58 +112,53 @@
 
   <section class="content" id="numbers">
     <h2>Start with how many people you've got</h2>
-    <p>The field is twenty-four. Your team is nine, or thirty-one. This is the
-    only part of a sweep that genuinely trips people up, and it has four
-    answers:</p>
+    <p>The field is twenty-four. Your team is nine, or thirty-one. Nobody has
+    to sit out — they just hold more than one:</p>
+
+    <figure class="field">
+      <ul class="field-people">
+        <li><img class="pixel" src="/art/silk-terra.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-terra.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-terra.png" width="28" height="20" alt="" decoding="async"></li>
+        <li><img class="pixel" src="/art/silk-sage.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-sage.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-sage.png" width="28" height="20" alt="" decoding="async"></li>
+        <li><img class="pixel" src="/art/silk-gold.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-gold.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-gold.png" width="28" height="20" alt="" decoding="async"></li>
+        <li><img class="pixel" src="/art/silk-plum.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-plum.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-plum.png" width="28" height="20" alt="" decoding="async"></li>
+        <li><img class="pixel" src="/art/silk-sky.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-sky.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-sky.png" width="28" height="20" alt="" decoding="async"></li>
+        <li><img class="pixel" src="/art/silk-red.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-red.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-red.png" width="28" height="20" alt="" decoding="async"></li>
+        <li><img class="pixel" src="/art/silk-slate.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-slate.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-slate.png" width="28" height="20" alt="" decoding="async"></li>
+        <li><img class="pixel" src="/art/silk-grass.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-grass.png" width="28" height="20" alt="" decoding="async"><img class="pixel" src="/art/silk-grass.png" width="28" height="20" alt="" decoding="async"></li>
+      </ul>
+      <figcaption>Twenty-four horses, eight people, three silks each. Under
+      twenty-four, this is the whole answer.</figcaption>
+    </figure>
 
     <div class="status-wrap">
       <table class="status-table">
         <thead>
-          <tr><th>You've got</th><th>Do this</th><th>What it costs you</th></tr>
+          <tr><th>You've got</th><th>Do this</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td class="st-name">Under 24</td>
-            <td>Everyone draws two or three horses</td>
-            <td>Nothing — better odds each, nobody sits it out</td>
-          </tr>
-          <tr>
-            <td class="st-name">Exactly 24</td>
-            <td>The textbook sweep, one each</td>
-            <td>Nothing, and it will never happen again</td>
-          </tr>
-          <tr>
-            <td class="st-name">25 to 48</td>
-            <td>Pairs share a horse and split it</td>
-            <td>One extra sentence of explaining</td>
-          </tr>
-          <tr>
-            <td class="st-name">Over 48</td>
-            <td>Two boards, split by floor or team</td>
-            <td>Two pots to collect and pay out</td>
-          </tr>
+          <tr><td class="st-name">Under 24</td><td>Everyone draws two or three horses</td></tr>
+          <tr><td class="st-name">Exactly 24</td><td>The textbook sweep, one each — and it will never happen again</td></tr>
+          <tr><td class="st-name">25 to 48</td><td>Pairs share a horse and split whatever it pays</td></tr>
+          <tr><td class="st-name">Over 48</td><td>Two boards, split by floor or team</td></tr>
         </tbody>
       </table>
     </div>
 
-    <p>Two variations worth knowing. You can <strong>draw the whole field
-    anyway and pool the spares</strong> — every horse gets drawn, the leftovers
-    go to the tea fund — which keeps a full field so the finish is a real
-    finish. Or you can <strong>shorten the field</strong> to the first twelve
-    in the betting, though the Cup is the one race a year where a hundred-to-one
-    shot genuinely wins, so you may be throwing away the best story.</p>
+    <p>Two variations worth knowing: <strong>pool the spares</strong> — draw
+    every horse and the leftovers go to the tea fund — or <strong>shorten the
+    field</strong> to the first twelve in the betting, though the Cup is the
+    one race a year where a hundred-to-one shot wins, so that may be throwing
+    away the best story.</p>
 
-    <div class="tip"><b>Short on people rather than horses?</b> A sweep is a
-    reason to talk to somebody you don't normally. The floor below, the
-    warehouse, the parents at drop-off — twenty-four is a lot of people, and
-    the invitation is the point.</div>
+    <div class="tip"><b>Or find more people.</b> The floor below, the
+    warehouse, the parents at drop-off — a sweep is a reason to talk to
+    somebody you don't normally.</div>
   </section>
 
   <section class="content" id="prizes">
     <h2>What to play for</h2>
-    <p>First past the post is over in three minutes and pays one person. The
-    sweeps people remember pay several — and the ones at the back of the field
-    are what keep twenty-three people watching.</p>
+    <p>First past the post pays one person. The sweeps people remember pay
+    several:</p>
     <ul class="prizes">
       <li><b>Last place</b>The wooden spoon is the most reliable laugh on the
       board.</li>

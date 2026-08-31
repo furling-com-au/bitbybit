@@ -11,27 +11,29 @@ The classic sweep assumes twenty-four people, a hat and a tin of gold coins. Mos
 
 ## Start with how many people you've got
 
-The field is twenty-four. Your team is nine, or thirty-one. This is the only part of a sweep that genuinely trips people up, and it has four answers:
+The field is twenty-four. Your team is nine, or thirty-one. Nobody has to sit out — they just hold more than one:
 
-| You've got | Do this | What it costs you |
-| --- | --- | --- |
-| Under 24 | Everyone draws two or three horses | Nothing — better odds each, nobody sits it out |
-| Exactly 24 | The textbook sweep, one each | Nothing, and it will never happen again |
-| 25 to 48 | Pairs share a horse and split it | One extra sentence of explaining |
-| Over 48 | Two boards, split by floor or team | Two pots to collect and pay out |
+Twenty-four horses, eight people, three silks each. Under
+ twenty-four, this is the whole answer.
 
-Two variations worth knowing. You can **draw the whole field anyway and pool the spares** — every horse gets drawn, the leftovers go to the tea fund — which keeps a full field so the finish is a real finish. Or you can **shorten the field** to the first twelve in the betting, though the Cup is the one race a year where a hundred-to-one shot genuinely wins, so you may be throwing away the best story.
+| You've got | Do this |
+| --- | --- |
+| Under 24 | Everyone draws two or three horses |
+| Exactly 24 | The textbook sweep, one each — and it will never happen again |
+| 25 to 48 | Pairs share a horse and split whatever it pays |
+| Over 48 | Two boards, split by floor or team |
 
-Short on people rather than horses?
+Two variations worth knowing: **pool the spares** — draw every horse and the leftovers go to the tea fund — or **shorten the field** to the first twelve in the betting, though the Cup is the one race a year where a hundred-to-one shot wins, so that may be throwing away the best story.
 
-A sweep is a
- reason to talk to somebody you don't normally. The floor below, the
- warehouse, the parents at drop-off — twenty-four is a lot of people, and
- the invitation is the point.
+Or find more people.
+
+The floor below, the
+ warehouse, the parents at drop-off — a sweep is a reason to talk to
+ somebody you don't normally.
 
 ## What to play for
 
-First past the post is over in three minutes and pays one person. The sweeps people remember pay several — and the ones at the back of the field are what keep twenty-three people watching.
+First past the post pays one person. The sweeps people remember pay several:
 
 - **Last place**The wooden spoon is the most reliable laugh on the board.
 - **Second and third**What most offices settle on. The [rules page](https://bitibybit.com/melbourne-cup-sweep/rules/) has the usual percentage splits.
