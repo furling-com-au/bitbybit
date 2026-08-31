@@ -47,30 +47,61 @@ function longDate(iso) {
   });
 }
 
-const undeclared = (year, declaredOn) => `<p>The field for the ${year} Cup is
-    not declared yet — that happens on <strong>${longDate(declaredOn)}</strong>,
-    three days out. Until then the runners genuinely do not exist, and no site
-    can tell you what they are.</p>
+/* Short form for a chip: "Sat 31 Oct". */
+const shortDate = (iso) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString("en-AU", {
+    weekday: "short", day: "numeric", month: "short", timeZone: "UTC",
+  });
+};
 
-    <p>That does not stop you drawing. <strong>Draw the numbers 1 to 24
-    now</strong> and match them to the saddlecloths on the day — the draw is
-    the part that needs organising, and it is fair whether or not anyone knows
-    which horse is number 7 yet. This page fills in with the real field the
-    morning it is declared.</p>`;
+/* The three dates that decide what an organiser does, as a sequence rather
+   than a paragraph. Generated so they cannot drift from cup-field.json. */
+const timeline = (declaredOn, raceDate) => `<ol class="timeline">
+      <li>
+        <b>Any time now</b>
+        <strong>Draw the numbers</strong>
+        <span>1 to 24. Just as random before the field exists as after.</span>
+      </li>
+      <li>
+        <b>${shortDate(declaredOn)}</b>
+        <strong>Field declared</strong>
+        <span>Final acceptances and the barrier draw. This page fills in.</span>
+      </li>
+      <li class="is-race">
+        <b>${shortDate(raceDate)}</b>
+        <strong>They jump at 3:00pm</strong>
+        <span>Match your numbers to the saddlecloths and watch.</span>
+      </li>
+    </ol>`;
 
-const declaredTable = (year, runners) => `<p>The declared field for the ${year}
-    Melbourne Cup, by saddlecloth number. This is the list to draw from.</p>
+/* The 24 saddlecloths, which are the thing a sweep actually draws from.
+   ONE component for both states: numbers alone before the field is
+   declared - which is literally what you are drawing, so the advice needs
+   no paragraph - and the same cells carrying horse names afterwards. */
+const saddles = (runners) => `<ol class="saddles">
+${Array.from({ length: FIELD_SIZE }, (_, i) => {
+  const r = runners.find((x) => Number(x.no) === i + 1);
+  return `        <li><span class="n">${i + 1}</span>` +
+    (r ? `<span class="h">${esc(r.horse)}</span><span class="b">Barrier ${esc(r.barrier)}</span>` : "") +
+    `</li>`;
+}).join("\n")}
+    </ol>`;
 
-    <div class="status-wrap">
-      <table class="status-table">
-        <thead>
-          <tr><th>No.</th><th>Horse</th><th>Barrier</th></tr>
-        </thead>
-        <tbody>
-${runners.map((r) => `          <tr><td class="st-name">${esc(r.no)}</td><td>${esc(r.horse)}</td><td>${esc(r.barrier)}</td></tr>`).join("\n")}
-        </tbody>
-      </table>
-    </div>`;
+const fieldBlock = (year, y) => {
+  const runners = y.runners || [];
+  const lead = runners.length
+    ? `<p>The declared field for the ${year} Melbourne Cup, by saddlecloth
+    number &mdash; the list to draw from.</p>`
+    : `<p>Not declared until <strong>${longDate(y.declaredOn)}</strong>. Until
+    then these are the twenty-four you draw, and the numbers are all you need
+    &mdash; names get matched to them on the day.</p>`;
+  return `${timeline(y.declaredOn, y.raceDate)}
+
+    <h3>${runners.length ? "The field" : "The twenty-four"}</h3>
+    ${lead}
+    ${saddles(runners)}`;
+};
 
 const data = JSON.parse(readFileSync(DATA, "utf8"));
 const problems = [];
@@ -108,9 +139,17 @@ for (const [year, y] of Object.entries(data.years)) {
     empty++;
   }
 
-  const body = runners.length
-    ? declaredTable(year, runners)
-    : undeclared(year, y.declaredOn);
+  const body = fieldBlock(year, y);
+
+  /* The facts strip at the top of the page states the race date in its own
+     words. It is not generated - it is the page's headline - so it can drift
+     from cup-field.json without anything noticing. Check it. */
+  if (!html.includes(longDate(y.raceDate))) {
+    problems.push(
+      `${file} does not state "${longDate(y.raceDate)}" anywhere, but that is ` +
+      `the race date in ${DATA} — the page and the data disagree`);
+    continue;
+  }
 
   const indent = fence[1];
   const block =

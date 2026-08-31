@@ -9,27 +9,47 @@ Everything a sweep organiser needs for this year's Cup: when it runs, when the f
 - **Where**Flemington, Melbourne
 - **Field**24 runners
 
-## The field
+## The field, and when it lands
 
-The field for the 2026 Cup is not declared yet — that happens on **Saturday 31 October 2026**, three days out. Until then the runners genuinely do not exist, and no site can tell you what they are.
+1. **Any time now** **Draw the numbers** 1 to 24. Just as random before the field exists as after.
+2. **Sat, 31 Oct** **Field declared** Final acceptances and the barrier draw. This page fills in.
+3. **Tue, 3 Nov** **They jump at 3:00pm** Match your numbers to the saddlecloths and watch.
 
-That does not stop you drawing. **Draw the numbers 1 to 24 now** and match them to the saddlecloths on the day — the draw is the part that needs organising, and it is fair whether or not anyone knows which horse is number 7 yet. This page fills in with the real field the morning it is declared.
+### The twenty-four
 
-## Draw it now, name the horses later
+Not declared until **Saturday 31 October 2026**. Until then these are the twenty-four you draw, and the numbers are all you need — names get matched to them on the day.
 
-This is the part people get wrong. A sweep drawn in mid-October is exactly as fair as one drawn on the Tuesday morning — the randomness is in who gets which number, not in whether the numbers have names attached yet. Drawing early is better, in fact: everyone has their runner before the day, which is when the talking starts.
+1. 1
+2. 2
+3. 3
+4. 4
+5. 5
+6. 6
+7. 7
+8. 8
+9. 9
+10. 10
+11. 11
+12. 12
+13. 13
+14. 14
+15. 15
+16. 16
+17. 17
+18. 18
+19. 19
+20. 20
+21. 21
+22. 22
+23. 23
+24. 24
 
-The [Cup sweep generator](https://bitibybit.com/melbourne-cup-sweep/) takes a minute and needs no signup. Paste the names, hit draw, share one link. Prefer paper? The [printable sheet](https://bitibybit.com/melbourne-cup-sweep/printable/) has room to write the horses in once they're declared.
+## Two things that catch people out
 
-## What changes between now and the race
+- **Barrier is not saddlecloth.** A sweep draws the saddlecloth number, set by weight. The barrier is only where the horse jumps from.
+- **Scratchings run right up to race morning.** Settle the house rule *before* you draw — the [rules page](https://bitibybit.com/melbourne-cup-sweep/rules/) has the three usual answers.
 
-- **Final acceptances and the barrier draw** land on the Saturday before — that's when the 24 becomes official and this page fills in.
-- **Scratchings** can happen right up to race morning. Settle the house rule *before* you draw, not after somebody's horse is pulled: the [rules page](https://bitibybit.com/melbourne-cup-sweep/rules/) covers the three usual answers.
-- **Barrier numbers are not saddlecloth numbers.** Sweeps draw the saddlecloth number, which is set by weight. The barrier is where the horse jumps from, and it changes nothing about who holds what.
-
-## Running the office sweep
-
-If your team isn't twenty-four people, or your workplace can't take cash, that's the ordinary case rather than a problem — [sweep ideas](https://bitibybit.com/melbourne-cup-sweep/ideas/) covers what to do instead, including the versions with no money in them at all. For the pot splits and the scratchings conventions, the [rules page](https://bitibybit.com/melbourne-cup-sweep/rules/) settles them.
+Draw it with the [Cup sweep generator](https://bitibybit.com/melbourne-cup-sweep/) in about a minute, or on the [printable sheet](https://bitibybit.com/melbourne-cup-sweep/printable/). Not twenty-four people, or an office that can't take cash? [Sweep ideas](https://bitibybit.com/melbourne-cup-sweep/ideas/) covers both.
 
 ## Common questions
 
