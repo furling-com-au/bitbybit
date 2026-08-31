@@ -5,6 +5,11 @@ node_modules/
 # Local operational data: the daily stats watcher appends to this.
 .stats-history.jsonl
 
+# Which page hashes have already gone to IndexNow. Local for the same reason:
+# it records what THIS machine has submitted, and a fresh clone should submit
+# the whole sitemap once rather than trust someone else's record of it.
+.indexnow-state.json
+
 # Local D1 dumps. These hold real production rows — participant names and
 # organiser edit_tokens in plaintext — and the edit token is the only
 # credential a board has. This repo is public; the backups stay local.

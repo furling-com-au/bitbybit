@@ -53,8 +53,14 @@ Regenerate the art after editing shapes: `npm run art`.
 ```bash
 npx wrangler d1 create bitbybit        # paste the id into wrangler.jsonc
 npx wrangler d1 migrations apply bitbybit --remote
-npx wrangler deploy
+npm run deploy
 ```
+
+`npm run deploy` also runs `npm run indexnow`, which tells Bing, Yandex,
+DuckDuckGo and friends which pages actually changed. Ownership is proved by
+`public/<key>.txt` — no account, no secret; the key is public by design.
+Only pages whose HTML hash moved are submitted, so a rebuild that changes
+nothing sends nothing. Preview it with `npm run indexnow -- --dry-run`.
 
 ## Principles
 

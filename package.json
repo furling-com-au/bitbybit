@@ -5,7 +5,7 @@
   "description": "Small free tools for groups — bitibybit.com",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "deploy": "wrangler deploy && npm run indexnow",
     "art": "node scripts/gen-art.mjs && node scripts/art-cup.mjs && node scripts/art-kringle.mjs && node scripts/art-roles.mjs && node scripts/art-plate.mjs && node scripts/art-bracket.mjs && node scripts/art-card.mjs && node scripts/art-registry.mjs && node scripts/art-teams.mjs && node scripts/art-fact.mjs && node scripts/art-baby.mjs && node scripts/art-roster.mjs && node scripts/art-meal.mjs && node scripts/art-404.mjs && node scripts/art-coffee.mjs && node scripts/art-pulse.mjs && node scripts/art-kudos.mjs && node scripts/art-poker.mjs",
     "migrate:local": "wrangler d1 migrations apply bitbybit --local",
     "migrate:remote": "wrangler d1 migrations apply bitbybit --remote",
@@ -18,6 +18,7 @@
     "faq": "node scripts/sync-faq-schema.mjs",
     "build": "npm run eol && npm run robots && npm run apidocs && npm run templates && npm run pages && npm run cupfield && npm run faq && npm run fold && npm run examples && npm run live && npm run previews && npm run articleface && npm run cardcopy && npm run names && npm run pressfacts && npm run sitemap && npm run markdown && npm run syntax && npm run accept && npm run authmd && npm run poker && npm run seasons && npm run claims && npm run mcp && npm run qotd && npm run herolcp && npm run sharenudge && npm run publicassets",
     "stats": "node scripts/stats.mjs",
+    "indexnow": "node scripts/indexnow.mjs",
     "fold": "node scripts/builder-above-fold.mjs",
     "articleface": "node scripts/sync-article-face.mjs",
     "cardcopy": "node scripts/sync-card-copy.mjs",
