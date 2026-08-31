@@ -20,7 +20,7 @@ Paste everyone's names and hit draw. The shuffle uses your browser's cryptograph
 
 You get two links: a **share link** that shows everyone the drawn board, and an **organiser link** that lets you re-draw or delete. Bookmark the organiser one — there are no accounts, so the link is the only key. The shared page prints cleanly for the tea-room fridge.
 
-Want the conventions in full — pot splits, scratchings, entry etiquette? See the [Cup sweep rules](https://bitibybit.com/melbourne-cup-sweep/rules/), or grab the [printable sheet](https://bitibybit.com/melbourne-cup-sweep/printable/) if your office insists on scissors.
+Want the conventions in full — pot splits, scratchings, entry etiquette? See the [Cup sweep rules](https://bitibybit.com/melbourne-cup-sweep/rules/), or grab the [printable sheet](https://bitibybit.com/melbourne-cup-sweep/printable/) if your office insists on scissors. Fewer than 24 people, or an office that can’t run a cash sweep? There are [sweep ideas for both](https://bitibybit.com/melbourne-cup-sweep/ideas/).
 
 ## FAQ
 

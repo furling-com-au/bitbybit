@@ -45,4 +45,4 @@ Entry:
 2. **Agree the rules first.** Fill in the entry amount, the pot split, and the scratchings rule at the bottom of the sheet before anyone draws. Nobody argues about the split at 2:59pm; everybody argues about it at 3:04pm.
 3. **Cut the numbers up and draw them from a hat**, writing each person's name next to the horse they pull. Stick the sheet on the tea-room wall so nobody has to ask you who they got.
 
-Not sure on the conventions? The [sweep rules page](https://bitibybit.com/melbourne-cup-sweep/rules/) covers entries, pot splits and the scratchings argument. The field of 24 is declared the Saturday before the race — write the horse names in then, or just draw numbers and match them on the day.
+Not sure on the conventions? The [sweep rules page](https://bitibybit.com/melbourne-cup-sweep/rules/) covers entries, pot splits and the scratchings argument. The field of 24 is declared the Saturday before the race — write the horse names in then, or just draw numbers and match them on the day. If your group isn’t twenty-four people, [sweep ideas](https://bitibybit.com/melbourne-cup-sweep/ideas/) covers what to do instead.

@@ -35,7 +35,7 @@ The race runs at **3:00pm AEDT on the first Tuesday of November** — 3 November
 
 ## Run it without the scissors
 
-The [Cup sweep generator](https://bitibybit.com/melbourne-cup-sweep/) does the drawing — paste your names, hit draw, share one link. It's free, there's no signup, and it deliberately doesn't touch the money: collect the gold coins the way your office always has. Prefer paper? There's a [printable sweep sheet](https://bitibybit.com/melbourne-cup-sweep/printable/) too.
+The [Cup sweep generator](https://bitibybit.com/melbourne-cup-sweep/) does the drawing — paste your names, hit draw, share one link. It's free, there's no signup, and it deliberately doesn't touch the money: collect the gold coins the way your office always has. Prefer paper? There's a [printable sweep sheet](https://bitibybit.com/melbourne-cup-sweep/printable/) too, and [sweep ideas](https://bitibybit.com/melbourne-cup-sweep/ideas/) for the offices where twenty-four people and a tin of coins isn’t the situation.
 
 ## Common questions
 
