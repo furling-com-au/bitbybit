@@ -513,6 +513,44 @@ export function fillTrack({ n, m } = {}) {
   <div class="fill-track${total <= 24 ? " notched" : ""}" style="--n:${done};--m:${total}" aria-hidden="true"><i></i></div>`;
 }
 
+/* ---------- counter ----------------------------------------- */
+
+/* GoatCounter on /s/ only — never /e/ or /p/, which are the two page
+   types whose URL IS the secret.
+ *
+ * Everything identifying is pinned to a constant before count.js can
+ * read the page, because every default it has would leak something:
+ *
+ *   path      the /s/ slug is the capability. Anyone holding it can
+ *             open the board. So the tool name is all that is sent —
+ *             "bitibybit.com/s/sweep" for every sweep in existence.
+ *             The host prefix matches what the public pages send.
+ *   title     <title> here is the organiser's own words: "Sarah's baby
+ *             shower", "Q3 offsite". Their text, not ours to forward.
+ *   referrer  an organiser arriving from their own /e/:token page
+ *             would otherwise hand that token over in document.referrer
+ *             — a working edit link, to a third party, on page load.
+ *
+ * A plain "" is the way to say "send nothing": count.js only falls back
+ * to its own defaults when a value is null, undefined, or a function
+ * (its is_empty), so an empty string survives to the request intact.
+ *
+ * The one field it does not let you set is q, which is always
+ * location.search. That is safe here only because no /s/ page takes a
+ * query parameter. Before you add the first one, come back and read
+ * this — a ?name= on a shared page would be sent offsite. */
+function counter(shareType) {
+  const settings = JSON.stringify({
+    path: `bitibybit.com/s/${shareType}`,
+    title: "",
+    referrer: "",
+  });
+  return `
+<script data-goatcounter="https://furling.goatcounter.com/count"
+        data-goatcounter-settings='${settings}'
+        async src="//gc.zgo.at/count.js"></script>`;
+}
+
 /* ---------- page shell -------------------------------------- */
 
 /* `shareType` + `shareSlug` are passed ONLY by publicPage (/s/). The
@@ -554,7 +592,7 @@ export function pageShell({ title, body, shareType, shareSlug, shareImg }) {
     biti by bit
   </a>
 </header>
-${body}
+${body}${shared ? counter(shareType) : ""}
 </body>
 </html>`;
 }

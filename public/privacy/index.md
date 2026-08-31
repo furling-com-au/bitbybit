@@ -24,7 +24,9 @@ Some tools deliberately keep things private within a shared page: a Kris Kringle
 
 ## Cookies and tracking
 
-**Shared pages set no cookies and make no third-party requests at all.** That is every `/s/`, `/e/` and `/p/` page — the ones an ordinary participant actually opens. Nothing is loaded from any other company, so nobody else learns you were there.
+**Shared pages set no cookies.** The organiser page (`/e/`) and the private participant page (`/p/`) make no third-party requests at all — nothing on them is loaded from any other company.
+
+The page you open from a shared link (`/s/`) loads one counter, GoatCounter, and tells it only which tool this is — every office sweep in the country is recorded as the same line, `/s/sweep`. The link itself is never sent, nor the title the organiser gave it, nor the page you came from. So it is possible to know that sweeps get opened, and not possible to learn anything about yours.
 
 The public pages — this one, the homepage, the tool descriptions — load two counters: Cloudflare Web Analytics and GoatCounter. Both count page views in aggregate. Neither sets cookies, fingerprints the browser, or follows anyone between sites. They are there so it is possible to tell whether anything is being used at all.
 
